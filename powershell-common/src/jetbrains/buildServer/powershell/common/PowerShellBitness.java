@@ -35,6 +35,16 @@ public enum PowerShellBitness {
   }
 
   @NotNull
+  public String getValue() {
+    return this.toString();
+  }
+
+  @NotNull
+  public String getDescription() {
+    return getValue();
+  }
+
+  @NotNull
   public String getPathKey() {
     return getVersionKey() + "_Path";
   }

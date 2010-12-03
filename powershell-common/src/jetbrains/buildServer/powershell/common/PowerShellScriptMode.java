@@ -16,6 +16,7 @@
 
 package jetbrains.buildServer.powershell.common;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -27,10 +28,15 @@ public enum PowerShellScriptMode {
   FILE,
   ;
 
+  @NotNull
+  public String getValue() {
+    return this.toString();
+  }
+
   @Nullable
   public static PowerShellScriptMode fromString(@Nullable String sMode) {
     for (PowerShellScriptMode mode : values()) {
-      if (mode.toString().equals(sMode)) {
+      if (mode.getValue().equals(sMode)) {
         return mode;
       }
     }
