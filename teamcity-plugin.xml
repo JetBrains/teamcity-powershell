@@ -4,10 +4,11 @@
   <info>
     <name>powershell-runner</name> <!-- the name of plugin used in teamcity -->
     <display-name>PowerShell Runner</display-name>
-    <version>@Plugin_Version@</version>
+    <version>1.0-SNAPSHOT</version>
     <vendor>
-      <name>@Plugin_Vendor@</name>
-      <url>@Plugin_Vendor_Url@</url>
+      <name>JetBrains s.r.o.</name>
+      <url>http://www.jetbrains.com/teamcity</url>
     </vendor>
   </info>
+  <deployment use-separate-classloader="true"/>
 </teamcity-plugin>

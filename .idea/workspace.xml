@@ -27,7 +27,6 @@
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="727ddef8-7843-4d5f-b94f-882c9e11e23d" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/editPowerShell.jsp" afterPath="$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/editPowerShell.jsp" />
     </list>
     <ignored path="powershell.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -1096,7 +1095,7 @@
     <option name="CHANGED_ON_SERVER_INTERVAL" value="60" />
     <option name="SHOW_ONLY_CHANGED_IN_SELECTION_DIFF" value="true" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="workaround security issues" />
+    <option name="LAST_COMMIT_MESSAGE" value="polish UI" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -1118,6 +1117,7 @@
     <MESSAGE value="fix validator" />
     <MESSAGE value="make it work on TeamCity" />
     <MESSAGE value="workaround security issues" />
+    <MESSAGE value="polish UI" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
