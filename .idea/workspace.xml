@@ -27,6 +27,9 @@
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="727ddef8-7843-4d5f-b94f-882c9e11e23d" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/powershell-common/src/main/java/jetbrains/buildServer/powershell/common/PowerShellConstants.java" afterPath="$PROJECT_DIR$/powershell-common/src/main/java/jetbrains/buildServer/powershell/common/PowerShellConstants.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/editPowerShell.jsp" afterPath="$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/editPowerShell.jsp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/viewPowerShell.jsp" afterPath="$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/viewPowerShell.jsp" />
     </list>
     <ignored path="powershell.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -338,15 +341,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="StringUtil.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="jar://$teamcitydistribution$/devPackage/src/openApi-source.jar!/jetbrains/buildServer/util/StringUtil.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="108" column="29" selection-start="3662" selection-end="3662" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="build.gradle" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/build.gradle">
           <provider selected="true" editor-type-id="text-editor">
@@ -368,7 +362,7 @@
       <file leaf-file-name="editPowerShell.jsp" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/editPowerShell.jsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="50" column="64" selection-start="1972" selection-end="1972" vertical-scroll-proportion="0.0">
+            <state line="19" column="28" selection-start="883" selection-end="883" vertical-scroll-proportion="-12.423077">
               <folding />
             </state>
           </provider>
@@ -386,16 +380,25 @@
       <file leaf-file-name="viewPowerShell.jsp" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/viewPowerShell.jsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="20" column="88" selection-start="1046" selection-end="1046" vertical-scroll-proportion="-13.076923">
+            <state line="18" column="28" selection-start="828" selection-end="828" vertical-scroll-proportion="-11.769231">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="powershell-agent.iml" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="PowerShellConstants.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/powershell-common/src/main/java/jetbrains/buildServer/powershell/common/PowerShellConstants.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="32" column="40" selection-start="1364" selection-end="1364" vertical-scroll-proportion="0.5503597">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="powershell-agent.iml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/powershell-agent/powershell-agent.iml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="23" column="43" selection-start="1094" selection-end="1094" vertical-scroll-proportion="0.68118465">
+            <state line="14" column="30" selection-start="583" selection-end="651" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -438,8 +441,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/powershell-agent/src/jetbrains/buildServer/powershell/agent/PowerShellServiceFactory.java" />
-        <option value="$PROJECT_DIR$/powershell-agent/src/META-INF/build-agent-plugin-powershell.xml" />
         <option value="$PROJECT_DIR$/powershell-agent/src/jetbrains/buildServer/powershell/agent/PowerShellInfoProvider.java" />
         <option value="$PROJECT_DIR$/powershell-agent/src/jetbrains/buildServer/powershell/agent/detect/PowerShellDetector.java" />
         <option value="$PROJECT_DIR$/powershell-agent/src/jetbrains/buildServer/powershell/agent/detect/PowerShellInfo.java" />
@@ -454,6 +455,8 @@
         <option value="$PROJECT_DIR$/powershell-server/resources/buildServerResources/viewPowerShell.jsp" />
         <option value="$PROJECT_DIR$/build.gradle" />
         <option value="$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/editPowerShell.jsp" />
+        <option value="$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/viewPowerShell.jsp" />
+        <option value="$PROJECT_DIR$/powershell-common/src/main/java/jetbrains/buildServer/powershell/common/PowerShellConstants.java" />
       </list>
     </option>
   </component>
@@ -580,6 +583,42 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="powershell" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="powershell-common" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="powershell" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="powershell-common" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="common" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -912,7 +951,7 @@
     <frame x="54" y="-8" width="1874" height="1216" extended-state="6" />
     <editor active="false" />
     <layout>
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.43248346" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.43248346" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -947,7 +986,7 @@
     <option name="CHANGED_ON_SERVER_INTERVAL" value="60" />
     <option name="SHOW_ONLY_CHANGED_IN_SELECTION_DIFF" value="true" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="make idea resolve references from plugin .jsp files" />
+    <option name="LAST_COMMIT_MESSAGE" value="minor" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -964,6 +1003,7 @@
     <MESSAGE value="agent code" />
     <MESSAGE value="server side" />
     <MESSAGE value="make idea resolve references from plugin .jsp files" />
+    <MESSAGE value="minor" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -1009,13 +1049,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/editPowerShell.jsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="50" column="64" selection-start="1972" selection-end="1972" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$APPLICATION_HOME_DIR$/plugins/jsp/lib/jsp-impl.jar!/standardSchemas/jspdirectives2_1.xsd">
       <provider selected="true" editor-type-id="text-editor">
         <state line="185" column="8" selection-start="6467" selection-end="6467" vertical-scroll-proportion="0.0">
@@ -1044,16 +1077,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/viewPowerShell.jsp">
+    <entry file="file://$PROJECT_DIR$/powershell-agent/powershell-agent.iml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="88" selection-start="1046" selection-end="1046" vertical-scroll-proportion="-13.076923">
+        <state line="14" column="30" selection-start="583" selection-end="651" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/powershell-agent/powershell-agent.iml">
+    <entry file="file://$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/editPowerShell.jsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="43" selection-start="1094" selection-end="1094" vertical-scroll-proportion="0.68118465">
+        <state line="19" column="28" selection-start="883" selection-end="883" vertical-scroll-proportion="-12.423077">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/viewPowerShell.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="18" column="28" selection-start="828" selection-end="828" vertical-scroll-proportion="-11.769231">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/powershell-common/src/main/java/jetbrains/buildServer/powershell/common/PowerShellConstants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="32" column="40" selection-start="1364" selection-end="1364" vertical-scroll-proportion="0.5503597">
           <folding />
         </state>
       </provider>
