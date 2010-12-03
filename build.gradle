@@ -14,46 +14,47 @@
  * limitations under the License.
  */
 def TCPathVar = "path.variable.teamcitydistribution"
+def TCPathVarServer = "teamcity.path.variable.teamcitydistribution"
 
 dependencies {
-  if (project.hasProperty(TCPathVar)) {
-    def teamCityDir = project.getProperties()[TCPathVar]
-
-    if (!new File(teamCityDir).isDirectory()) {
-       throw new StopExecutionException("Failed to find TeamCity home at ${teamCityDir}");
-    }
-
-    teamCityLib = fileTree(teamCityDir + "/webapps/ROOT/WEB-INF/lib").matching {
-      include 'annotations.jar'
-      include 'openapi.jar'
-      include 'util.jar'
-    }
-
-    annotationsJar = fileTree(teamCityDir + "/webapps/ROOT/WEB-INF/lib").matching {
-      include 'annotations.jar'
-    }
-
-    log4j = fileTree(teamCityDir + "/webapps/ROOT/WEB-INF/lib").matching {
-      include 'log4j*.jar'
-    }
-   
-    agentApi = fileTree(teamCityDir + "/devPackage").matching {
-      include 'agent-api.jar'
-    }
-
-    serverApi = fileTree(teamCityDir + "/devPackage").matching {
-      include 'server-api.jar'
-    }
-
-    commonApi = fileTree(teamCityDir + "/devPackage").matching {
-      include 'common-api.jar'
-    }
-
-    
-  } else {
-    throw new StopExecutionException("""TeamCity distribution not available.
-    Please, set path to valid TeamCity distribution in gradle.properties file.""")
+  def teamCityDir = '';
+  if (project.hasProperty(TCPathVarServer)) {
+    teamCityDir = project.getProperties()[TCPathVarServer];
   }
+  if (project.hasProperty(TCPathVar)) {
+    teamCityDir = project.getProperties()[TCPathVar];
+  }
+
+  if (!new File(teamCityDir).isDirectory()) {
+     throw new StopExecutionException("Failed to find TeamCity home at ${teamCityDir}");
+  }
+
+  teamCityLib = fileTree(teamCityDir + "/webapps/ROOT/WEB-INF/lib").matching {
+    include 'annotations.jar'
+    include 'openapi.jar'
+    include 'util.jar'
+  }
+
+  annotationsJar = fileTree(teamCityDir + "/webapps/ROOT/WEB-INF/lib").matching {
+    include 'annotations.jar'
+  }
+
+  log4j = fileTree(teamCityDir + "/webapps/ROOT/WEB-INF/lib").matching {
+    include 'log4j*.jar'
+  }
+
+  agentApi = fileTree(teamCityDir + "/devPackage").matching {
+    include 'agent-api.jar'
+  }
+
+  serverApi = fileTree(teamCityDir + "/devPackage").matching {
+    include 'server-api.jar'
+  }
+
+  commonApi = fileTree(teamCityDir + "/devPackage").matching {
+    include 'common-api.jar'
+  }
+
 }
 
 allprojects {
