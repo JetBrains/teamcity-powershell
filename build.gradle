@@ -1,0 +1,151 @@
+/*
+ * Copyright 2000-2010 JetBrains s.r.o.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+def TCPathVar = "path.variable.teamcitydistribution"
+
+dependencies {
+  if (project.hasProperty(TCPathVar)) {
+    def teamCityDir = project.getProperties()[TCPathVar]
+
+    if (!new File(teamCityDir).isDirectory()) {
+       throw new StopExecutionException("Failed to find TeamCity home at ${teamCityDir}");
+    }
+
+    teamCityLib = fileTree(teamCityDir + "/webapps/ROOT/WEB-INF/lib").matching {
+      include 'annotations.jar'
+      include 'openapi.jar'
+      include 'util.jar'
+    }
+
+    annotationsJar = fileTree(teamCityDir + "/webapps/ROOT/WEB-INF/lib").matching {
+      include 'annotations.jar'
+    }
+
+    log4j = fileTree(teamCityDir + "/webapps/ROOT/WEB-INF/lib").matching {
+      include 'log4j*.jar'
+    }
+   
+    agentApi = fileTree(teamCityDir + "/devPackage").matching {
+      include 'agent-api.jar'
+    }
+
+    serverApi = fileTree(teamCityDir + "/devPackage").matching {
+      include 'server-api.jar'
+    }
+
+    commonApi = fileTree(teamCityDir + "/devPackage").matching {
+      include 'common-api.jar'
+    }
+
+    
+  } else {
+    throw new StopExecutionException("""TeamCity distribution not available.
+    Please, set path to valid TeamCity distribution in gradle.properties file.""")
+  }
+}
+
+allprojects {
+  tcVersion="6.0-SNAPSHOT"
+  apply plugin: 'java'
+}
+
+subprojects {
+  dependencies {
+    compile annotationsJar
+    compile log4j
+    compile teamCityLib
+  }
+}
+
+task debug << {
+  [annotationsJar, commonApi, log4j].each { println it; println "${it.empty}"}
+}
+
+
+project(':powershell-common') {
+  dependencies {
+    compile commonApi
+    compile annotationsJar
+  }
+}
+
+project (':powershell-agent') {
+  dependencies {
+    compile project(':powershell-common')
+    compile agentApi
+  }
+}
+
+
+project (':powershell-server') {
+  dependencies {
+    compile project(':powershell-common')    
+    compile serverApi
+  }
+}
+
+project (':powershell-test') {
+  dependencies {
+     compile project(':powershell-common')
+     compile project(':powershell-agent')     
+     compile project(':powershell-server')
+  }                                             
+}
+
+
+/*
+task dist(dependsOn: [  ':gradle-runner-common:build',
+                        ':gradle-runner-server:build',
+                        ':gradle-runner-agent:dist'  ]) {
+  description = 'Create Powershell Runner plugin package for TeamCity'
+  doLast {
+    gradleDir = new File(distsDir, 'gradle-runner')
+    gradleServer = new File(gradleDir, 'server')
+    gradleAgent = new File(gradleDir, 'agent')
+
+    gradleServer.mkdirs()
+    gradleAgent.mkdirs()
+
+    task zipAgent(type: Zip) {
+      from project(':gradle-runner-agent').distsDir
+      include 'gradle-runner/**'
+      archiveName='gradle-runner.zip'
+      destinationDir=gradleAgent
+    }
+    zipAgent.execute()
+
+    copy {
+      from project(':gradle-runner-server').libsDir
+      from project(':gradle-runner-common').libsDir
+      into gradleServer
+    }
+
+    copy {
+      from projectDir
+      include 'teamcity-plugin.xml'
+      into gradleDir
+    }
+
+    task zipPlugin(type: Zip) {
+      from gradleDir
+      archiveName='gradle-runner.zip'
+    }
+
+    zipPlugin.execute()
+  }
+}
+
+
+*/
