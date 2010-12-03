@@ -17,10 +17,7 @@ def TCPathVar = "path.variable.teamcitydistribution"
 def TCPathVarServer = "teamcity.path.variable.teamcitydistribution"
 
 dependencies {
-  def teamCityDir = '';
-  if (project.hasProperty(TCPathVarServer)) {
-    teamCityDir = project.getProperties()[TCPathVarServer];
-  }
+  def teamCityDir = System.getProperty(TCPathVarServer);
   if (project.hasProperty(TCPathVar)) {
     teamCityDir = project.getProperties()[TCPathVar];
   }
