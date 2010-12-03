@@ -16,22 +16,28 @@
 
 package jetbrains.buildServer.powershell.agent.detect;
 
+import jetbrains.buildServer.agent.BuildAgentConfiguration;
+import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellVersion;
-import jetbrains.buildServer.util.Bitness;
+import jetbrains.buildServer.util.FileUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.util.Map;
+
+import static jetbrains.buildServer.powershell.common.PowerShellVersion.fromString;
 
 /**
  * @author Eugene Petrenko (eugene.petrenko@jetbrains.com)
  *         03.12.10 14:06
  */
 public class PowerShellInfo {
-  private final Bitness myBitness;
+  private final PowerShellBitness myBitness;
   private final File myHome;
   private final PowerShellVersion myVersion;
 
-  public PowerShellInfo(@NotNull final Bitness bitness,
+  public PowerShellInfo(@NotNull final PowerShellBitness bitness,
                         @NotNull final File home,
                         @NotNull final PowerShellVersion version) {
     myBitness = bitness;
@@ -40,7 +46,7 @@ public class PowerShellInfo {
   }
 
   @NotNull
-  public Bitness getBitness() {
+  public PowerShellBitness getBitness() {
     return myBitness;
   }
 
@@ -56,14 +62,31 @@ public class PowerShellInfo {
 
   @Override
   public String toString() {
-    return "PowerShell v" + myVersion + " " + bitness() + "(" + getHome() + ")";
+    return "PowerShell v" + myVersion + " " + myBitness + "(" + getHome() + ")";
   }
 
-  private String bitness() {
-    switch (myBitness) {
-      case BIT32: return "x86";
-      case BIT64: return "x64";
-      default: return myBitness.toString();
+  @Nullable
+  public static PowerShellInfo loadInfo(@NotNull final BuildAgentConfiguration config,
+                                        @Nullable final PowerShellBitness bitness) {
+    if (bitness == null) return null;
+
+    final Map<String, String> ps = config.getConfigurationParameters();
+    final PowerShellVersion ver = fromString(ps.get(bitness.getVersionKey()));
+    final String path = ps.get(bitness.getPathKey());
+
+    if (path != null && ver != null) {
+      return (new PowerShellInfo(bitness, new File(path), ver));
     }
+    return null;
+  }
+
+  public void saveInfo(@NotNull BuildAgentConfiguration config) {
+    config.addConfigurationParameter(myBitness.getVersionKey(), getVersion().toString());
+    config.addConfigurationParameter(myBitness.getPathKey(), getHome().toString());
+  }
+
+  @NotNull
+  public String getExecutablePath() {
+    return FileUtil.getCanonicalFile(new File(getHome(), "powershell.exe")).getPath();
   }
 }

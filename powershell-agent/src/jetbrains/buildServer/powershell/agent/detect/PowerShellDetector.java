@@ -16,8 +16,8 @@
 
 package jetbrains.buildServer.powershell.agent.detect;
 
+import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellVersion;
-import jetbrains.buildServer.util.Bitness;
 import jetbrains.buildServer.util.Win32RegistryAccessor;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -41,8 +41,8 @@ public class PowerShellDetector {
 
   public Collection<PowerShellInfo> findPowerShells() {
     Collection<PowerShellInfo> col = new ArrayList<PowerShellInfo>(2);
-    for (Bitness bitness : Bitness.values()) {
-      final PowerShellRegistry reg = new PowerShellRegistry(bitness, myAccesor);
+    for (PowerShellBitness bitness : PowerShellBitness.values()) {
+      final PowerShellRegistry reg = new PowerShellRegistry(bitness.toBitness(), myAccesor);
 
       if (!reg.isPowerShellInstalled()) {
         LOG.debug("Powershell for " + bitness + " was not found.");
