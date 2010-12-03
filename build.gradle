@@ -105,30 +105,38 @@ project (':powershell-test') {
 }
 
 
-/*
-task dist(dependsOn: [  ':gradle-runner-common:build',
-                        ':gradle-runner-server:build',
-                        ':gradle-runner-agent:dist'  ]) {
+task dist(dependsOn: [  ':powershell-common:build',
+                        ':powershell-server:build',
+                        ':powershell-agent:build'  ]) {
   description = 'Create Powershell Runner plugin package for TeamCity'
   doLast {
-    gradleDir = new File(distsDir, 'gradle-runner')
+    gradleDir = new File(distsDir, 'powershell')
     gradleServer = new File(gradleDir, 'server')
     gradleAgent = new File(gradleDir, 'agent')
+    gradleTmp = new File(distsDir, 'tmp')
 
     gradleServer.mkdirs()
     gradleAgent.mkdirs()
+    gradleTmp.mkdirs()
+
+    copy {
+      [
+        project(':powershell-common'),
+        project(':powershell-agent')
+      ].each { from it.libsDir }
+      into new File(gradleTmp, 'powershell-agent'){{mkdirs();}}
+    }
 
     task zipAgent(type: Zip) {
-      from project(':gradle-runner-agent').distsDir
-      include 'gradle-runner/**'
-      archiveName='gradle-runner.zip'
-      destinationDir=gradleAgent
+      from gradleTmp  
+      archiveName ='powershell-agent.zip'
+      destinationDir = gradleAgent
     }
     zipAgent.execute()
 
     copy {
-      from project(':gradle-runner-server').libsDir
-      from project(':gradle-runner-common').libsDir
+      from project(':powershell-server').libsDir
+      from project(':powershell-common').libsDir
       into gradleServer
     }
 
@@ -140,12 +148,10 @@ task dist(dependsOn: [  ':gradle-runner-common:build',
 
     task zipPlugin(type: Zip) {
       from gradleDir
-      archiveName='gradle-runner.zip'
+      archiveName='powershell.zip'
     }
 
     zipPlugin.execute()
   }
 }
 
-
-*/
