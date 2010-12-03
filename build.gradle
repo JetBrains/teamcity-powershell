@@ -24,6 +24,11 @@ dependencies {
     }
   }
 
+  def tmp = System.getProperty(TCPathVarServer);
+  if (tmp != null) {
+    teamCityDir = tmp;
+  }
+
   
   if (!new File(teamCityDir).isDirectory()) {
      throw new StopExecutionException("Failed to find TeamCity home at ${teamCityDir}");
