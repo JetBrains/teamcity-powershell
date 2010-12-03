@@ -26,10 +26,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="727ddef8-7843-4d5f-b94f-882c9e11e23d" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/powershell-test/src/test/java/jetbrains/buildServer/powershell/agent/detect/PowerShellInfoTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/powershell-common/src/main/java/jetbrains/buildServer/powershell/common/PowerShellConstants.java" afterPath="$PROJECT_DIR$/powershell-common/src/main/java/jetbrains/buildServer/powershell/common/PowerShellConstants.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/editPowerShell.jsp" afterPath="$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/editPowerShell.jsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/viewPowerShell.jsp" afterPath="$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/viewPowerShell.jsp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/PowerShellService.java" afterPath="$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/PowerShellService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/PowerShellServiceFactory.java" afterPath="$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/PowerShellServiceFactory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/detect/PowerShellInfo.java" afterPath="$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/detect/PowerShellInfo.java" />
     </list>
     <ignored path="powershell.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -341,91 +342,93 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="build.gradle" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/build.gradle">
+      <file leaf-file-name="PowerShellServiceFactory.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/PowerShellServiceFactory.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="84" column="23" selection-start="2238" selection-end="2238" vertical-scroll-proportion="0.0">
+            <state line="34" column="43" selection-start="1232" selection-end="1232" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Bitness.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="jar://$teamcitydistribution$/devPackage/src/openApi-source.jar!/jetbrains/buildServer/util/Bitness.java">
+      <file leaf-file-name="PowerShellVersion.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/powershell-common/src/main/java/jetbrains/buildServer/powershell/common/PowerShellVersion.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="14" selection-start="144" selection-end="144" vertical-scroll-proportion="0.0">
+            <state line="12" column="3" selection-start="295" selection-end="295" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="editPowerShell.jsp" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/editPowerShell.jsp">
+      <file leaf-file-name="PowerShellDetector.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/detect/PowerShellDetector.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="19" column="28" selection-start="883" selection-end="883" vertical-scroll-proportion="-12.423077">
+            <state line="61" column="49" selection-start="2098" selection-end="2098" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="jspdirectives2_1.xsd" pinned="false" current="false" current-in-tab="false">
-        <entry file="jar://$APPLICATION_HOME_DIR$/plugins/jsp/lib/jsp-impl.jar!/standardSchemas/jspdirectives2_1.xsd">
+      <file leaf-file-name="CommandLineBuildServiceFactory.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="jar://$teamcitydistribution$/devPackage/src/openApi-source.jar!/jetbrains/buildServer/agent/runner/CommandLineBuildServiceFactory.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="185" column="8" selection-start="6467" selection-end="6467" vertical-scroll-proportion="0.0">
+            <state line="25" column="19" selection-start="868" selection-end="868" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="viewPowerShell.jsp" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/viewPowerShell.jsp">
+      <file leaf-file-name="PowerShellInfoProvider.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/PowerShellInfoProvider.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="18" column="28" selection-start="828" selection-end="828" vertical-scroll-proportion="-11.769231">
+            <state line="58" column="36" selection-start="2188" selection-end="2188" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="PowerShellConstants.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/powershell-common/src/main/java/jetbrains/buildServer/powershell/common/PowerShellConstants.java">
+      <file leaf-file-name="PowerShellDetectorTest.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/powershell-test/src/test/java/jetbrains/buildServer/powershell/agent/detect/PowerShellDetectorTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="32" column="40" selection-start="1364" selection-end="1364" vertical-scroll-proportion="0.5503597">
+            <state line="35" column="5" selection-start="1219" selection-end="1219" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="powershell-agent.iml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/powershell-agent/powershell-agent.iml">
+      <file leaf-file-name="Test.class" pinned="false" current="false" current-in-tab="false">
+        <entry file="jar://$PROJECT_DIR$/powershell-test/lib/testng/testng-5.14.1.jar!/org/testng/annotations/Test.class">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="14" column="30" selection-start="583" selection-end="651" vertical-scroll-proportion="0.0">
+            <state line="7" column="18" selection-start="400" selection-end="400" vertical-scroll-proportion="-4.08">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="_pluginsTable.jspf" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$teamcitydistribution$/webapps/ROOT/_pluginsTable.jspf">
+      <file leaf-file-name="PowerShellInfoTest.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/powershell-test/src/test/java/jetbrains/buildServer/powershell/agent/detect/PowerShellInfoTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="6" column="59" selection-start="305" selection-end="305" vertical-scroll-proportion="0.0">
+            <state line="67" column="16" selection-start="2516" selection-end="2516" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PowerShellService.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/PowerShellService.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="90" column="53" selection-start="3140" selection-end="3140" vertical-scroll-proportion="0.2905297">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="auditFilter.jsp" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$teamcitydistribution$/webapps/ROOT/admin/auditFilter.jsp">
+      <file leaf-file-name="PowerShellInfo.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/detect/PowerShellInfo.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="1" column="34" selection-start="105" selection-end="105" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="include-internal.jsp" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$teamcitydistribution$/webapps/ROOT/include-internal.jsp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+            <state line="84" column="89" selection-start="2771" selection-end="2771" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -441,12 +444,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/powershell-agent/src/jetbrains/buildServer/powershell/agent/PowerShellInfoProvider.java" />
-        <option value="$PROJECT_DIR$/powershell-agent/src/jetbrains/buildServer/powershell/agent/detect/PowerShellDetector.java" />
-        <option value="$PROJECT_DIR$/powershell-agent/src/jetbrains/buildServer/powershell/agent/detect/PowerShellInfo.java" />
-        <option value="$PROJECT_DIR$/powershell-common/src/jetbrains/buildServer/powershell/common/PowerShellConstants.java" />
-        <option value="$PROJECT_DIR$/powershell-agent/src/jetbrains/buildServer/powershell/agent/PowerShellService.java" />
-        <option value="$PROJECT_DIR$/powershell-server/src/META-INF/build-server-plugin-powershell.xml" />
         <option value="$PROJECT_DIR$/powershell-server/src/jetbrains/buildServer/powershell/server/PowerShellRunType.java" />
         <option value="$PROJECT_DIR$/powershell-common/src/jetbrains/buildServer/powershell/common/PowerShellBitness.java" />
         <option value="$PROJECT_DIR$/powershell-common/src/jetbrains/buildServer/powershell/common/PowerShellScriptMode.java" />
@@ -457,6 +454,12 @@
         <option value="$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/editPowerShell.jsp" />
         <option value="$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/viewPowerShell.jsp" />
         <option value="$PROJECT_DIR$/powershell-common/src/main/java/jetbrains/buildServer/powershell/common/PowerShellConstants.java" />
+        <option value="$PROJECT_DIR$/powershell-server/src/main/java/jetbrains/buildServer/powershell/server/PowerShellRunType.java" />
+        <option value="$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/PowerShellServiceFactory.java" />
+        <option value="$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/detect/PowerShellDetector.java" />
+        <option value="$PROJECT_DIR$/powershell-test/src/test/java/jetbrains/buildServer/powershell/agent/detect/PowerShellInfoTest.java" />
+        <option value="$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/detect/PowerShellInfo.java" />
+        <option value="$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/PowerShellService.java" />
       </list>
     </option>
   </component>
@@ -516,7 +519,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="powershell-server" />
+              <option name="myItemId" value="ROOT" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -526,7 +529,121 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="powershell-server" />
+              <option name="myItemId" value="ROOT" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="WEB-INF" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="powershell" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ROOT" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="WEB-INF" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tags" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="powershell" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ROOT" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="WEB-INF" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tags" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="props" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="powershell" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ROOT" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="powershell" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="powershell-test" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="powershell" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="powershell-test" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="test" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="detect" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="powershell" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="powershell-agent" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="powershell" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="powershell-agent" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -537,10 +654,6 @@
               <option name="myItemId" value="main" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="resources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -548,61 +661,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="powershell-server" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="resources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="buildServerResources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="powershell" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="powershell-server" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="powershell" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="powershell-common" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="powershell" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="powershell-common" />
+              <option name="myItemId" value="powershell-agent" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -618,7 +677,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="common" />
+              <option name="myItemId" value="agent" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -631,6 +690,26 @@
               <option name="myItemId" value="powershell-agent" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="agent" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="detect" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
@@ -641,7 +720,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="GoToFile.includeJavaFiles" value="false" />
-    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="OverrideImplement.combined" value="true" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="options.splitter.main.proportions" value="0.3" />
@@ -664,7 +743,7 @@
       <recent name="jetbrains.buildServer.powershell.common.detect" />
     </key>
   </component>
-  <component name="RunManager" selected="TestNG.PowerShellDetectorTest">
+  <component name="RunManager" selected="TestNG.PowerShellInfoTest">
     <configuration default="false" name="PowerShellDetectorTest" type="TestNG" factoryName="TestNG" temporary="true">
       <extension name="coverage" enabled="false" merge="false">
         <pattern>
@@ -699,6 +778,41 @@
       <RunnerSettings RunnerId="Profile ">
         <option name="myExternalizedOptions" />
       </RunnerSettings>
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <configuration default="false" name="PowerShellInfoTest" type="TestNG" factoryName="TestNG" temporary="true">
+      <extension name="coverage" enabled="false" merge="false">
+        <pattern>
+          <option name="PATTERN" value="jetbrains.buildServer.powershell.agent.detect.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <module name="powershell-test" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" value="jetbrains.buildServer.powershell.agent.detect" />
+      <option name="MAIN_CLASS_NAME" value="jetbrains.buildServer.powershell.agent.detect.PowerShellInfoTest" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="ANNOTATION_TYPE" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <option name="USE_DEFAULT_REPORTERS" value="false" />
+      <option name="PROPERTIES_FILE" />
+      <envs />
+      <properties />
+      <listeners />
       <RunnerSettings RunnerId="Run" />
       <ConfigurationWrapper RunnerId="Run" />
       <method />
@@ -811,8 +925,9 @@
         <option name="Maven.BeforeRunTask" enabled="false" />
       </method>
     </configuration>
-    <list size="1">
+    <list size="2">
       <item index="0" class="java.lang.String" itemvalue="TestNG.PowerShellDetectorTest" />
+      <item index="1" class="java.lang.String" itemvalue="TestNG.PowerShellInfoTest" />
     </list>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
       <Host>localhost</Host>
@@ -951,8 +1066,9 @@
     <frame x="54" y="-8" width="1874" height="1216" extended-state="6" />
     <editor active="false" />
     <layout>
-      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.43248346" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.36921623" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TeamCity" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3295562" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -961,12 +1077,11 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25234678" sideWeight="0.5675165" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25234678" sideWeight="0.63078374" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3295562" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25181058" sideWeight="0.66474545" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -986,7 +1101,7 @@
     <option name="CHANGED_ON_SERVER_INTERVAL" value="60" />
     <option name="SHOW_ONLY_CHANGED_IN_SELECTION_DIFF" value="true" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="minor" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix validator" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -1004,6 +1119,8 @@
     <MESSAGE value="server side" />
     <MESSAGE value="make idea resolve references from plugin .jsp files" />
     <MESSAGE value="minor" />
+    <MESSAGE value="fix .jsp files,&#10;remove dots from runner parameters" />
+    <MESSAGE value="fix validator" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -1013,94 +1130,116 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://C:/Java/jdk1.5.0_19/src.zip!/java/io/FileWriter.java">
+    <entry file="file://$PROJECT_DIR$/powershell-server/src/main/java/jetbrains/buildServer/powershell/server/PowerShellBean.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="41" column="12" selection-start="1404" selection-end="1404" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="jar://$teamcitydistribution$/devPackage/src/openApi-source.jar!/jetbrains/buildServer/util/FileUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="41" column="13" selection-start="1350" selection-end="1350" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="jar://$teamcitydistribution$/devPackage/src/openApi-source.jar!/jetbrains/buildServer/runner/simpleRunner/SimpleRunnerRunType.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="29" column="50" selection-start="934" selection-end="934" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="jar://$teamcitydistribution$/devPackage/src/openApi-source.jar!/jetbrains/buildServer/util/StringUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="108" column="29" selection-start="3662" selection-end="3662" vertical-scroll-proportion="0.0">
+        <state line="69" column="40" selection-start="1918" selection-end="1918" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/build.gradle">
+    <entry file="file://$teamcitydistribution$/webapps/ROOT/WEB-INF/tags/props/textProperty.tag">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="84" column="23" selection-start="2238" selection-end="2238" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$teamcitydistribution$/devPackage/src/openApi-source.jar!/jetbrains/buildServer/util/Bitness.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="14" selection-start="144" selection-end="144" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/jsp/lib/jsp-impl.jar!/standardSchemas/jspdirectives2_1.xsd">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="185" column="8" selection-start="6467" selection-end="6467" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$teamcitydistribution$/webapps/ROOT/_pluginsTable.jspf">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="59" selection-start="305" selection-end="305" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$teamcitydistribution$/webapps/ROOT/admin/auditFilter.jsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="1" column="34" selection-start="105" selection-end="105" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$teamcitydistribution$/webapps/ROOT/include-internal.jsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/powershell-agent/powershell-agent.iml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="30" selection-start="583" selection-end="651" vertical-scroll-proportion="0.0">
+        <state line="15" column="24" selection-start="1105" selection-end="1105" vertical-scroll-proportion="-9.807693">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/editPowerShell.jsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="28" selection-start="883" selection-end="883" vertical-scroll-proportion="-12.423077">
+        <state line="26" column="68" selection-start="1206" selection-end="1206" vertical-scroll-proportion="-13.807693">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/viewPowerShell.jsp">
+    <entry file="file://$PROJECT_DIR$/powershell-server/src/main/java/jetbrains/buildServer/powershell/server/PowerShellRunType.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="28" selection-start="828" selection-end="828" vertical-scroll-proportion="-11.769231">
+        <state line="50" column="32" selection-start="1875" selection-end="1875" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/powershell-common/src/main/java/jetbrains/buildServer/powershell/common/PowerShellConstants.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="32" column="40" selection-start="1364" selection-end="1364" vertical-scroll-proportion="0.5503597">
+        <state line="23" column="31" selection-start="811" selection-end="811" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/powershell-common/src/main/java/jetbrains/buildServer/powershell/common/PowerShellBitness.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="32" column="24" selection-start="959" selection-end="959" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$teamcitydistribution$/devPackage/src/openApi-source.jar!/jetbrains/buildServer/agent/runner/CommandLineBuildServiceFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="25" column="19" selection-start="868" selection-end="868" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/detect/PowerShellDetector.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="61" column="49" selection-start="2098" selection-end="2098" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/PowerShellServiceFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="34" column="43" selection-start="1232" selection-end="1232" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/PowerShellInfoProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="58" column="36" selection-start="2188" selection-end="2188" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/powershell-common/src/main/java/jetbrains/buildServer/powershell/common/PowerShellVersion.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="12" column="3" selection-start="295" selection-end="295" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/powershell-test/lib/testng/testng-5.14.1.jar!/org/testng/annotations/Test.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="18" selection-start="400" selection-end="400" vertical-scroll-proportion="-4.08">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/powershell-test/src/test/java/jetbrains/buildServer/powershell/agent/detect/PowerShellDetectorTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="35" column="5" selection-start="1219" selection-end="1219" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/powershell-test/src/test/java/jetbrains/buildServer/powershell/agent/detect/PowerShellInfoTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="67" column="16" selection-start="2516" selection-end="2516" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/detect/PowerShellInfo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="84" column="89" selection-start="2771" selection-end="2771" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/PowerShellService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="90" column="53" selection-start="3140" selection-end="3140" vertical-scroll-proportion="0.2905297">
           <folding />
         </state>
       </provider>
@@ -1159,7 +1298,7 @@
       </state>
       <state key="ModuleStructureConfigurable.UI">
         <settings>
-          <last-edited>Web|powershell-server</last-edited>
+          <last-edited>ResolveHelper</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>

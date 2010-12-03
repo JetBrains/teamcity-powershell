@@ -88,6 +88,7 @@ public class PowerShellService extends BuildServiceAdapter {
       throw new RunBuildException("PowerShell script mode was not defined.");
     }
 
+    //TODO: copy this file to ensure '.ps1' estension
     if (mode == PowerShellScriptMode.FILE) {
       return FileUtil.resolvePath(getCheckoutDirectory(), getRunnerParameters().get(RUNNER_SCRIPT_FILE));
     }
@@ -104,7 +105,7 @@ public class PowerShellService extends BuildServiceAdapter {
       }
       text = StringUtil.convertLineSeparators(text, "\r\n");
 
-      final File code = FileUtil.createTempFile(getBuildTempDirectory(), "powershell", "teamcity", true);
+      final File code = FileUtil.createTempFile(getBuildTempDirectory(), "powershell", ".ps1", true);
       OutputStreamWriter w = new OutputStreamWriter(new FileOutputStream(code), "utf-8");
       handle = w;
       w.write(text);

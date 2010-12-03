@@ -32,10 +32,11 @@ public class PowerShellServiceFactory implements CommandLineBuildServiceFactory,
   }
 
   public boolean canRun(@NotNull final BuildAgentConfiguration agentConfiguration) {
-    final boolean b = !myInfos.getPowerShells().isEmpty();
-    if (!b) {
+    final boolean isEmpty = myInfos.getPowerShells().isEmpty();
+    if (isEmpty) {
       LOG.info("Powershell runner is disabled: Powershell was not found.");
+      return false;
     }
-    return b;
+    return true;
   }
 }

@@ -62,7 +62,7 @@ public class PowerShellInfo {
 
   @Override
   public String toString() {
-    return "PowerShell v" + myVersion + " " + myBitness + "(" + getHome() + ")";
+    return "PowerShell v" + myVersion.getVersion() + " " + myBitness + "(" + getHome() + ")";
   }
 
   @Nullable
@@ -75,13 +75,13 @@ public class PowerShellInfo {
     final String path = ps.get(bitness.getPathKey());
 
     if (path != null && ver != null) {
-      return (new PowerShellInfo(bitness, new File(path), ver));
+      return new PowerShellInfo(bitness, new File(path), ver);
     }
     return null;
   }
 
   public void saveInfo(@NotNull BuildAgentConfiguration config) {
-    config.addConfigurationParameter(myBitness.getVersionKey(), getVersion().toString());
+    config.addConfigurationParameter(myBitness.getVersionKey(), getVersion().getVersion());
     config.addConfigurationParameter(myBitness.getPathKey(), getHome().toString());
   }
 
