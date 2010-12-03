@@ -81,10 +81,12 @@ public class PowerShellRunType extends RunType {
               if (StringUtil.isEmptyOrSpaces(properties.get(PowerShellConstants.RUNNER_SCRIPT_FILE))) {
                 col.add(new InvalidProperty(PowerShellConstants.RUNNER_SCRIPT_FILE, "Script file is not defined"));
               }
+              break;
             case CODE:
               if (StringUtil.isEmptyOrSpaces(properties.get(PowerShellConstants.RUNNER_SCRIPT_CODE))) {
                 col.add(new InvalidProperty(PowerShellConstants.RUNNER_SCRIPT_CODE, "Code should not be empty"));
               }
+              break;
           }
         }
         return col;
