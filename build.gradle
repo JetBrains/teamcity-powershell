@@ -145,13 +145,15 @@ task dist(dependsOn: [  ':powershell-common:build',
       include 'teamcity-plugin.xml'
       into gradleDir
     }
-
+  
     task zipPlugin(type: Zip) {
       from gradleDir
       archiveName='powershell.zip'
     }
 
     zipPlugin.execute()
+
+    println "##teamcity[publishArtifacts '${zipPlugin.archivePath}']"
   }
 }
 
