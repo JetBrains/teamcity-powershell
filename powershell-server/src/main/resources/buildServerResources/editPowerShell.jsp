@@ -36,7 +36,7 @@
 <tr>
   <th>Script:</th>
   <td>
-    <props:selectProperty name="${bean.scriptModeKey}">
+    <props:selectProperty name="${bean.scriptModeKey}" id="powershell_option">
       <props:option value="${bean.scriptModeFileValue}">File</props:option>
       <props:option value="${bean.scriptModeCodeValue}">Source code</props:option>
     </props:selectProperty>
@@ -44,7 +44,7 @@
   </td>
 </tr>
 
-<tr>
+<tr id="powershell_scriptFile">
   <th><label for="${bean.scriptFileKey}">Script file:</label></th>
   <td>
     <props:textProperty name="${bean.scriptFileKey}" className="longField"/>
@@ -53,15 +53,37 @@
   </td>
 </tr>
 
-<tr>
+<tr id="powershell_sourceCode">
   <th><label for="${bean.scriptCodeKey}">Script source:</label></th>
   <td>
     <props:multilineProperty name="${bean.scriptCodeKey}"
-                             linkTitle="Enter Powershell script content" cols="58" rows="10" />
+                             linkTitle="Enter Powershell script content"
+                             cols="58" rows="10"
+                             expanded="${true}"/>
     <span class="smallNote">Enter Powershell script</span>
     <span class="error" id="error_${bean.scriptCodeKey}"></span>
   </td>
 </tr>
+
+<script type="text/javascript">
+  BS.PowerShell = {
+     update : function() {
+       var val = $('powershell_option').value;
+       if (val == '${bean.scriptModeFileValue}') {
+         BS.Util.hide($('powershell_sourceCode'));
+         BS.Util.show($('powershell_scriptFile'));
+       }
+       if (val == '${bean.scriptModeCodeValue}') {
+         BS.Util.show($('powershell_sourceCode'));
+         BS.Util.hide($('powershell_scriptFile'));
+       }
+       BS.MultilineProperties.updateVisible();
+     }
+  };
+
+  Event.observe($('powershell_option'), "click", function() {BS.PowerShell.update();});
+  BS.PowerShell.update();
+</script>
 
 <tr>
   <th><label for="${bean.argumentsKey}">Additional command line parameters:</label></th>
