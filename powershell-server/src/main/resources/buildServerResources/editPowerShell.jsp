@@ -47,7 +47,7 @@
 <tr>
   <th><label for="${bean.scriptFileKey}">Script file:</label></th>
   <td>
-    <props:textProperty name="${bean.scriptFileKey}" class="longField"/>
+    <props:textProperty name="${bean.scriptFileKey}" className="longField"/>
     <span class="smallNote">Enter Powershell file path relative to checkout directory</span>
     <span class="error" id="error_${bean.scriptFileKey}"></span>
   </td>

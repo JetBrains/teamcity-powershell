@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="ResolveHelper">
+    <output-path>$PROJECT_DIR$/out/artifacts/ResolveHelper</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="powershell-server/web/Web" />
+      <element id="javaee-facet-resources" facet="ResolveHelper/web/Web" />
+      <element id="module-output" name="ResolveHelper" />
+    </root>
+  </artifact>
+</component>

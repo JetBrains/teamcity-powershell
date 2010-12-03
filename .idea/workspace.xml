@@ -26,15 +26,268 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="727ddef8-7843-4d5f-b94f-882c9e11e23d" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/copyright/profiles_settings.xml" afterPath="$PROJECT_DIR$/.idea/copyright/profiles_settings.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/artifacts" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/artifacts/ResolveHelper.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/powershell-agent/powershell-agent.iml" afterPath="$PROJECT_DIR$/powershell-agent/powershell-agent.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/powershell-common/powershell-common.iml" afterPath="$PROJECT_DIR$/powershell-common/powershell-common.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/powershell-server/powershell-server.iml" afterPath="$PROJECT_DIR$/powershell-server/powershell-server.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/powershell-test/powershell-test.iml" afterPath="$PROJECT_DIR$/powershell-test/powershell-test.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/editPowerShell.jsp" afterPath="$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/editPowerShell.jsp" />
     </list>
     <ignored path="powershell.iws" />
     <ignored path=".idea/workspace.xml" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/img/buildStates/composBuilds/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/css/jquery/jquery-ui-ufd/sexy/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/css/jquery/jquery-autocomplete/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/css/jquery/jquery-ui/images/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/css/jquery/jquery-ui/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/css/jquery/jquery-ui-ufd/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/clouds/admin/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/change/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/changes/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/clouds/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/buildLog/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/admin/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/agent/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/admin/triggers/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/admin/backup/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/admin/cleanup/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/changeViewers/img/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/clearcase/js/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/bugzilla/admin/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/admin/auditObjectLinks/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/clouds/img/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/queue/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/profile/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/project/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/tests/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/status/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/img/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/errorServlet/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/css/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/nifty/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/META-INF/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/maintenance/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/js/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/license/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/lib/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/colorerConfig/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/tags/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/update/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/Maven2/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/mercurial/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/jira/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/ldap/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/jabber/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/jetbrains.git/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/Inspection/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/Ipr/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/searchBuildByNumber/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/simpleRunner/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/rake-runner/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/remoteAccess/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/powershell-runner/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/priority-queue/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/NAnt/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/perforce/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/dotnet-dupfinder/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/cvs/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/coverage/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/cloud-amazon/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/clearcase/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/changeViewers/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/buildDurationStatisticsPlugin/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/bugzilla/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/IDE_Notificator/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/FxCop/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/feed/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/email/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/Duplicator/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/dotNetRunners/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/dotNetCoverage/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/js/aculo/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/js/bs/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/vault-vcs/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/usage-statistics/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/WindowsTray/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/vss/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/starteam/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/stacktraces/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/tfs/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/swabra/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/youtrack/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/xml-report-plugin/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/js/jquery/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/js/crypt/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/js/tree/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/img/agents/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/img/buildStates/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/img/changes/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/img/maintenance/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/img/icons/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/img/groups/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/img/dragAndDrop/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/css/buildLog/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/css/agents/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/css/admin/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/img/visibleProjects/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/img/tree/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/css/jquery/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/amazon/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/gradle-runner/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/svn/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/css/tree/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/css/status/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/artifactsSizeStatistics/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/artifacts/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/Ant/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/update/plugins/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/update/eclipse/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/remoteAccess/agent/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/priority-queue/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/remoteAccess/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/stacktraces/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/stacktraces/agent/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/starteam/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/Maven2/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/Maven2/agent/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/perforce/agent/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/perforce/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/jabber/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/java-dowser/agent/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/jira/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/ldap/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/Duplicator/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/email/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/feed/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/gradle/agent/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/gradle/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/dotNetRunners/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/dotNetRunners/agent/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/cvs/agent/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/cvs/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/cloud-amazon/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/clearcase/agent/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/clearcase/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/coverage/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/changeViewers/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/buildDurationStatisticsPlugin/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/charisma/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/bugzilla/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/vault-vcs/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/xml-report-plugin/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/xml-report-plugin/agent/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/swabra/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/swabra/agent/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/rest-api/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/rake-runner/agent/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/rake-runner/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/mercurial/agent/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/mercurial/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/jetbrains.git/license/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/jetbrains.git/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/jetbrains.git/agent/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/fxcop/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/fxcop/agent/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/dotnet-dupfinder/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/dotnet-dupfinder/agent/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/xml-report-plugin/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/vault-vcs/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/swabra/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/rest-api/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/rake-runner/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/mercurial/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/jetbrains.git/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/fxcop/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/dotnet-dupfinder/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/windowsTray/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/vss/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/TeamCityArtifactsSizeStatisticsPlugin/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/tfs/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/usage-statistics/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/stacktraces/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/starteam/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/svn/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/perforce/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/priority-queue/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/remoteAccess/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/jira/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/ldap/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/Maven2/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/jabber/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/gradle/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/java-dowser/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/email/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/Duplicator/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/feed/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/cvs/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/coverage/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/dotNetRunners/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/charisma/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/changeViewers/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/cloud-amazon/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/clearcase/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/colorerConfig/hrc/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/colorerConfig/hrd/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/colorerConfig/hrc/auto/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/colorerConfig/hrc/auto/types/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/colorerConfig/hrd/rgb/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/.unpacked/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/buildDurationStatisticsPlugin/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/bugzilla/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/update/eclipse/features/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/update/eclipse/plugins/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/youtrack/admin/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/usage-statistics/renderers/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/WindowsTray/js/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/WindowsTray/css/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/WindowsTray/img/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/usage-statistics/css/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/usage-statistics/js/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/svn/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/Maven2/triggers/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/priority-queue/css/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/priority-queue/js/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/jabber/css/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/Ipr/jps/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/ldap/js/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/jira/admin/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/jabber/js/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/email/js/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/email/css/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/Duplicator/img/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/plugins/Inspection/img/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/tags/tags/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/tags/tests/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/tags/userProfile/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/tags/ldap/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/tags/license/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/tags/myChanges/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/tags/notifications/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/tags/props/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/tags/queue/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/tags/responsible/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/tags/roles/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/tags/clouds/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/tags/graph/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/tags/forms/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/tags/eventTracker/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/tags/ext/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/tags/labels/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/tags/layout/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/tfs/agent/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/TeamCityArtifactsSizeStatisticsPlugin/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/svn/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/svn/agent/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/vss/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/windowsTray/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/tfs/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/plugins/usage-statistics/server/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/tags/authz/" />
+    <ignored path="$teamcitydistribution$/webapps/ROOT/WEB-INF/tags/admin/" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,16 +355,70 @@
       <file leaf-file-name="build.gradle" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/build.gradle">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="79" column="23" selection-start="2194" selection-end="2194" vertical-scroll-proportion="0.0">
+            <state line="84" column="23" selection-start="2238" selection-end="2238" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Bitness.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Bitness.java" pinned="false" current="false" current-in-tab="false">
         <entry file="jar://$teamcitydistribution$/devPackage/src/openApi-source.jar!/jetbrains/buildServer/util/Bitness.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="14" selection-start="144" selection-end="144" vertical-scroll-proportion="0.14217444">
+            <state line="7" column="14" selection-start="144" selection-end="144" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="editPowerShell.jsp" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/editPowerShell.jsp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="50" column="64" selection-start="1972" selection-end="1972" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="jspdirectives2_1.xsd" pinned="false" current="false" current-in-tab="false">
+        <entry file="jar://$APPLICATION_HOME_DIR$/plugins/jsp/lib/jsp-impl.jar!/standardSchemas/jspdirectives2_1.xsd">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="185" column="8" selection-start="6467" selection-end="6467" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="viewPowerShell.jsp" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/viewPowerShell.jsp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="20" column="88" selection-start="1046" selection-end="1046" vertical-scroll-proportion="0.620438">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="_pluginsTable.jspf" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$teamcitydistribution$/webapps/ROOT/_pluginsTable.jspf">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="6" column="59" selection-start="305" selection-end="305" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="auditFilter.jsp" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$teamcitydistribution$/webapps/ROOT/admin/auditFilter.jsp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="1" column="34" selection-start="105" selection-end="105" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="include-internal.jsp" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$teamcitydistribution$/webapps/ROOT/include-internal.jsp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -127,7 +434,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/powershell-agent/src/jetbrains/buildServer/powershell/agent/detect/PowerShellPropertiesExtension.java" />
         <option value="$PROJECT_DIR$/powershell-agent/src/jetbrains/buildServer/powershell/agent/PowerShellServiceFactory.java" />
         <option value="$PROJECT_DIR$/powershell-agent/src/META-INF/build-agent-plugin-powershell.xml" />
         <option value="$PROJECT_DIR$/powershell-agent/src/jetbrains/buildServer/powershell/agent/PowerShellInfoProvider.java" />
@@ -143,6 +449,7 @@
         <option value="$PROJECT_DIR$/powershell-server/resources/buildServerResources/editPowerShell.jsp" />
         <option value="$PROJECT_DIR$/powershell-server/resources/buildServerResources/viewPowerShell.jsp" />
         <option value="$PROJECT_DIR$/build.gradle" />
+        <option value="$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/editPowerShell.jsp" />
       </list>
     </option>
   </component>
@@ -173,7 +480,7 @@
     <ConfirmationsSetting value="0" id="Remove" />
   </component>
   <component name="ProjectReloadState">
-    <option name="STATE" value="2" />
+    <option name="STATE" value="0" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1" splitterProportion="0.5">
@@ -188,7 +495,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -196,10 +502,6 @@
               <option name="myItemId" value="powershell" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -207,47 +509,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="TeamCity runtime" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="powershell" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Common-Api" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="powershell" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Common-Api" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="annotations.jar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="org" />
+              <option name="myItemId" value="powershell-server" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -257,67 +519,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Common-Api" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="annotations.jar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="org" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="annotations" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="powershell" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Common-Api" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="annotations.jar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="powershell" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="powershell" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="powershell-agent" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="powershell" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="powershell-agent" />
+              <option name="myItemId" value="powershell-server" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -329,19 +531,64 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
+              <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="powershell" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="powershell-server" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="buildServerResources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="powershell" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="powershell-server" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
       <pane id="Favorites" />
       <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="GoToFile.includeJavaFiles" value="false" />
-    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.last.edited" value="Artifacts" />
     <property name="OverrideImplement.combined" value="true" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="options.splitter.main.proportions" value="0.3" />
@@ -541,28 +788,96 @@
     <option name="myMappingRoots">
       <list>
         <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell" />
+          <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-agent.x\src\main\java\jetbrains\buildServer\powershell\agent\detect\PowerShellInfo.java" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell" />
+          <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-agent.x\src\main\java\jetbrains\buildServer\powershell\agent\detect\PowerShellRegistry.java" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell" />
+          <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-agent.x\src\main\java\jetbrains\buildServer\powershell\agent\detect\PowerShellDetector.java" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
           <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-test" />
           <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-test" />
         </SvnCopyRootSimple>
         <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-server" />
-          <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-server" />
+          <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell" />
+          <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-agent.x\src\main\java\jetbrains\buildServer\powershell\agent\detect" />
         </SvnCopyRootSimple>
         <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-common" />
-          <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-common" />
+          <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell" />
+          <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-agent.x\src\main\java\jetbrains\buildServer\powershell\agent\detect\PowerShellPropertiesExtension.java" />
         </SvnCopyRootSimple>
         <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-agent" />
-          <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-agent" />
+          <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell" />
+          <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-agent.x\src\main\java\jetbrains\buildServer\powershell\agent\PowerShellInfoProvider.java" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell" />
+          <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-agent.x\src\main" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell" />
+          <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell" />
         </SvnCopyRootSimple>
         <SvnCopyRootSimple>
           <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell\.idea" />
           <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell\.idea" />
         </SvnCopyRootSimple>
         <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-common" />
+          <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-common" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
           <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell" />
-          <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell" />
+          <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-agent.x\src\main\java\jetbrains\buildServer\powershell\agent" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell" />
+          <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-agent.x\src\main\java\META-INF" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell" />
+          <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-agent.x\src\main\java" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell" />
+          <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-agent.x\src\main\java\jetbrains\buildServer" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell" />
+          <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-agent.x\src\main\java\jetbrains\buildServer\powershell\agent\PowerShellService.java" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell" />
+          <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-agent.x\src\main\resources" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell" />
+          <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-agent.x\src\main\java\jetbrains\buildServer\powershell\agent\PowerShellServiceFactory.java" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell" />
+          <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-agent.x\src\main\java\jetbrains\buildServer\powershell" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell" />
+          <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-agent.x\src\main\java\jetbrains" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-server" />
+          <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-server" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-agent" />
+          <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-agent" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell" />
+          <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-agent.x\src" />
         </SvnCopyRootSimple>
       </list>
     </option>
@@ -572,21 +887,25 @@
           <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell" />
           <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell" />
         </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\Work\TeamCity\trunk\powershell" />
+          <option name="myCopyRoot" value="E:\Work\TeamCity\trunk\powershell\powershell-agent.x\src" />
+        </SvnCopyRootSimple>
       </list>
     </option>
   </component>
   <component name="ToolWindowManager">
     <frame x="54" y="-8" width="1874" height="1216" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32949087" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18413597" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.43248346" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2458655" sideWeight="0.815864" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25234678" sideWeight="0.5675165" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TeamCity" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3295562" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3295562" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -594,6 +913,7 @@
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32949087" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25181058" sideWeight="0.66474545" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -640,23 +960,17 @@
   <component name="editorHistoryManager">
     <entry file="jar://C:/Java/jdk1.5.0_19/src.zip!/java/io/FileWriter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="41" column="12" selection-start="1404" selection-end="1404" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="41" column="12" selection-start="1404" selection-end="1404" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="jar://$teamcitydistribution$/devPackage/src/openApi-source.jar!/jetbrains/buildServer/util/FileUtil.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="41" column="13" selection-start="1350" selection-end="1350" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="41" column="13" selection-start="1350" selection-end="1350" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="jar://$teamcitydistribution$/devPackage/src/openApi-source.jar!/jetbrains/buildServer/runner/simpleRunner/SimpleRunnerRunType.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="29" column="50" selection-start="934" selection-end="934" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="29" column="50" selection-start="934" selection-end="934" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="jar://$teamcitydistribution$/devPackage/src/openApi-source.jar!/jetbrains/buildServer/util/StringUtil.java">
@@ -668,14 +982,56 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="79" column="23" selection-start="2194" selection-end="2194" vertical-scroll-proportion="0.0">
+        <state line="84" column="23" selection-start="2238" selection-end="2238" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="jar://$teamcitydistribution$/devPackage/src/openApi-source.jar!/jetbrains/buildServer/util/Bitness.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="14" selection-start="144" selection-end="144" vertical-scroll-proportion="0.14217444">
+        <state line="7" column="14" selection-start="144" selection-end="144" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/editPowerShell.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="50" column="64" selection-start="1972" selection-end="1972" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/jsp/lib/jsp-impl.jar!/standardSchemas/jspdirectives2_1.xsd">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="185" column="8" selection-start="6467" selection-end="6467" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$teamcitydistribution$/webapps/ROOT/_pluginsTable.jspf">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="6" column="59" selection-start="305" selection-end="305" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$teamcitydistribution$/webapps/ROOT/admin/auditFilter.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="1" column="34" selection-start="105" selection-end="105" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$teamcitydistribution$/webapps/ROOT/include-internal.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/viewPowerShell.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="20" column="88" selection-start="1046" selection-end="1046" vertical-scroll-proportion="0.620438">
           <folding />
         </state>
       </provider>
@@ -686,22 +1042,12 @@
       <state key="ArtifactsStructureConfigurable.UI">
         <settings>
           <artifact-editor />
+          <last-edited>ResolveHelper</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
                 <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="Copyright.UI">
-        <settings>
-          <last-edited>JetBrains open-surced</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
+                <option value="0.5" />
               </list>
             </option>
           </splitter-proportions>
@@ -709,7 +1055,7 @@
       </state>
       <state key="FacetStructureConfigurable.UI">
         <settings>
-          <last-edited>EJB</last-edited>
+          <last-edited>Web (ResolveHelper)|Web</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
@@ -744,12 +1090,11 @@
       </state>
       <state key="ModuleStructureConfigurable.UI">
         <settings>
-          <last-edited>powershell-agent</last-edited>
+          <last-edited>Web|powershell-server</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
                 <option value="0.2" />
-                <option value="0.5" />
               </list>
             </option>
           </splitter-proportions>
@@ -765,11 +1110,6 @@
               </list>
             </option>
           </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ScopeChooserConfigurable.UI">
-        <settings>
-          <splitter-proportions />
         </settings>
       </state>
     </states>
