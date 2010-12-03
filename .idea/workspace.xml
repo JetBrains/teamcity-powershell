@@ -25,12 +25,9 @@
     <option name="TOOL_WINDOW_SELECTED_CONTENT_INDEX" value="0" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" readonly="true" id="727ddef8-7843-4d5f-b94f-882c9e11e23d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/powershell-test/src/test/java/jetbrains/buildServer/powershell/agent/detect/PowerShellInfoTest.java" />
+    <list default="true" readonly="true" id="727ddef8-7843-4d5f-b94f-882c9e11e23d" name="Default" comment="make it work on TeamCity">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/PowerShellService.java" afterPath="$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/PowerShellService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/PowerShellServiceFactory.java" afterPath="$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/PowerShellServiceFactory.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/detect/PowerShellInfo.java" afterPath="$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/detect/PowerShellInfo.java" />
     </list>
     <ignored path="powershell.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -342,37 +339,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="PowerShellServiceFactory.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/PowerShellServiceFactory.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="34" column="43" selection-start="1232" selection-end="1232" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="PowerShellVersion.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/powershell-common/src/main/java/jetbrains/buildServer/powershell/common/PowerShellVersion.java">
           <provider selected="true" editor-type-id="text-editor">
             <state line="12" column="3" selection-start="295" selection-end="295" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PowerShellDetector.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/detect/PowerShellDetector.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="61" column="49" selection-start="2098" selection-end="2098" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CommandLineBuildServiceFactory.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="jar://$teamcitydistribution$/devPackage/src/openApi-source.jar!/jetbrains/buildServer/agent/runner/CommandLineBuildServiceFactory.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="25" column="19" selection-start="868" selection-end="868" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -419,7 +389,34 @@
       <file leaf-file-name="PowerShellService.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/PowerShellService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="90" column="53" selection-start="3140" selection-end="3140" vertical-scroll-proportion="0.2905297">
+            <state line="74" column="0" selection-start="2385" selection-end="2385" vertical-scroll-proportion="0.49423394">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BuildServiceAdapter.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="jar://$teamcitydistribution$/devPackage/src/openApi-source.jar!/jetbrains/buildServer/agent/runner/BuildServiceAdapter.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="71" column="22" selection-start="2427" selection-end="2427" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SimpleProgramCommandLine.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="jar://$teamcitydistribution$/devPackage/src/openApi-source.jar!/jetbrains/buildServer/agent/runner/SimpleProgramCommandLine.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="36" column="63" selection-start="1469" selection-end="1469" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ProgramCommandLine.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="jar://$teamcitydistribution$/devPackage/src/openApi-source.jar!/jetbrains/buildServer/agent/runner/ProgramCommandLine.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="26" column="19" selection-start="866" selection-end="866" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -1063,10 +1060,10 @@
     </option>
   </component>
   <component name="ToolWindowManager">
-    <frame x="54" y="-8" width="1874" height="1216" extended-state="6" />
+    <frame x="54" y="0" width="1874" height="1200" extended-state="0" />
     <editor active="false" />
     <layout>
-      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.36921623" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.37488016" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1077,7 +1074,7 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25234678" sideWeight="0.63078374" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25234678" sideWeight="0.62511986" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3295562" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -1101,7 +1098,7 @@
     <option name="CHANGED_ON_SERVER_INTERVAL" value="60" />
     <option name="SHOW_ONLY_CHANGED_IN_SELECTION_DIFF" value="true" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix validator" />
+    <option name="LAST_COMMIT_MESSAGE" value="make it work on TeamCity" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -1121,6 +1118,7 @@
     <MESSAGE value="minor" />
     <MESSAGE value="fix .jsp files,&#10;remove dots from runner parameters" />
     <MESSAGE value="fix validator" />
+    <MESSAGE value="make it work on TeamCity" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -1130,27 +1128,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/powershell-server/src/main/java/jetbrains/buildServer/powershell/server/PowerShellBean.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="69" column="40" selection-start="1918" selection-end="1918" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$teamcitydistribution$/webapps/ROOT/WEB-INF/tags/props/textProperty.tag">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="24" selection-start="1105" selection-end="1105" vertical-scroll-proportion="-9.807693">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources/editPowerShell.jsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="26" column="68" selection-start="1206" selection-end="1206" vertical-scroll-proportion="-13.807693">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/powershell-server/src/main/java/jetbrains/buildServer/powershell/server/PowerShellRunType.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="50" column="32" selection-start="1875" selection-end="1875" vertical-scroll-proportion="0.0">
@@ -1237,9 +1214,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar://$teamcitydistribution$/devPackage/src/openApi-source.jar!/jetbrains/buildServer/agent/runner/ProgramCommandLine.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="26" column="19" selection-start="866" selection-end="866" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$teamcitydistribution$/devPackage/src/openApi-source.jar!/jetbrains/buildServer/agent/runner/SimpleProgramCommandLine.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="36" column="63" selection-start="1469" selection-end="1469" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$teamcitydistribution$/devPackage/src/openApi-source.jar!/jetbrains/buildServer/agent/runner/BuildServiceAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="71" column="22" selection-start="2427" selection-end="2427" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/PowerShellService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="90" column="53" selection-start="3140" selection-end="3140" vertical-scroll-proportion="0.2905297">
+        <state line="74" column="0" selection-start="2385" selection-end="2385" vertical-scroll-proportion="0.49423394">
           <folding />
         </state>
       </provider>

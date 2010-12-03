@@ -49,17 +49,30 @@ public class PowerShellService extends BuildServiceAdapter {
   @Override
   public ProgramCommandLine makeProgramCommandLine() throws RunBuildException {
     return createProgramCommandline(
+            "cmd.exe",
+            getCmdArguments());
+/*
             selectTool().getExecutablePath(),
             getArguments()
     );
+*/
   }
 
-  private List<String> getArguments() throws RunBuildException {
-    List<String> args = new ArrayList<String>();
+  private List<String> getCmdArguments() throws RunBuildException {
+    List<String> list = new ArrayList<String>();
 
-    args.add("-File");
-    args.add(getOrCreateScriptFile().getPath());
+    list.add("/c");
+    list.add(selectTool().getExecutablePath());
+    list.add("-NonInteractive");
+    addCustomArguments(list);
+    list.add("-Command");
+    list.add("-");
+    list.add("<" + getOrCreateScriptFile());
 
+    return list;
+  }
+
+  private void addCustomArguments(final List<String> args) {
     final String custom = getRunnerParameters().get(RUNNER_CUSTOM_ARGUMENTS);
     if (!StringUtil.isEmptyOrSpaces(custom)) {
       for (String _line : custom.split("[\\r\\n]+")) {
@@ -68,8 +81,6 @@ public class PowerShellService extends BuildServiceAdapter {
         args.addAll(StringUtil.splitHonorQuotes(line));
       }
     }
-
-    return args;
   }
 
   @Override
