@@ -18,7 +18,9 @@
 
 
 test {
+  description = 'Run unit tests for Powershell Runner plugin. Fast.'
   useTestNG()
+  scanForTestClasses = true
 }
 
 
