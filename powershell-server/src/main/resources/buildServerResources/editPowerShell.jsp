@@ -60,7 +60,7 @@
                              linkTitle="Enter Powershell script content"
                              cols="58" rows="10"
                              expanded="${true}"/>
-    <span class="smallNote">Enter Powershell script</span>
+    <span class="smallNote">Enter Powershell script. TeamCity references will be replaced in the code</span>
     <span class="error" id="error_${bean.scriptCodeKey}"></span>
   </td>
 </tr>
