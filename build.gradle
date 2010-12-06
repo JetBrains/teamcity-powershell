@@ -13,8 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import org.apache.tools.ant.filters.*;
+
 def TCPathVar = "path.variable.teamcitydistribution"
 def TCPathVarServer = "teamcity.path.variable.teamcitydistribution"
+
+def version = System.getProperties()['build.number'];
+if (version == null) version = 'snapshot-' + new Date().format('yyyyMMdd'+"'z'"+'hhmmss'); 
 
 dependencies {
   def teamCityDir = '';
@@ -152,14 +158,16 @@ task dist(dependsOn: [  ':powershell-common:build',
     }
 
     copy {
-      from projectDir
-      include 'teamcity-plugin.xml'
       into gradleDir
+      from (projectDir) {
+        include 'teamcity-plugin.xml'
+        filter(ReplaceTokens, tokens:[VERSION: version ])
+      }
     }
   
     task zipPlugin(type: Zip) {
       from gradleDir
-      archiveName='powershell.zip'
+      archiveName='teamcity-powershell.zip'
     }
 
     zipPlugin.execute()
