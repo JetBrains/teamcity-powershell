@@ -47,6 +47,19 @@ public class PowerShellDetectorTest extends BaseTestCase {
   }
 
   @Test
+  public void test_readPowerShellVersion_3() {
+    final Mockery m = new Mockery();
+    final Win32RegistryAccessor acc = m.mock(Win32RegistryAccessor.class);
+
+    m.checking(new Expectations(){{
+      allowing(acc).readRegistryText(LOCAL_MACHINE, BIT32, "SOFTWARE\\Microsoft\\PowerShell\\1\\PowerShellEngine", "PowerShellVersion"); will(returnValue(null));
+    }});
+
+    final PowerShellVersion ver = new PowerShellRegistry(BIT32, acc).getInstalledVersion();
+    Assert.assertNull(ver);
+  }
+
+  @Test
   public void test_readPowerShellHome() throws IOException {
     final Mockery m = new Mockery();
     final Win32RegistryAccessor acc = m.mock(Win32RegistryAccessor.class);
@@ -59,6 +72,18 @@ public class PowerShellDetectorTest extends BaseTestCase {
 
     final File home = new PowerShellRegistry(BIT32, acc).getPowerShellHome();
     Assert.assertEquals(home, hom);
+  }
+
+  @Test
+  public void test_readPowerShellHomeNone() throws IOException {
+    final Mockery m = new Mockery();
+    final Win32RegistryAccessor acc = m.mock(Win32RegistryAccessor.class);
+    m.checking(new Expectations(){{
+      allowing(acc).readRegistryText(LOCAL_MACHINE, BIT32, "SOFTWARE\\Microsoft\\PowerShell\\1\\PowerShellEngine", "ApplicationBase"); will(returnValue(null));
+    }});
+
+    final File home = new PowerShellRegistry(BIT32, acc).getPowerShellHome();
+    Assert.assertNull(home);
   }
 
   @Test
@@ -113,4 +138,5 @@ public class PowerShellDetectorTest extends BaseTestCase {
     final boolean is = new PowerShellRegistry(BIT32, acc).isPowerShellInstalled();
     Assert.assertFalse(is);
   }
+
 }

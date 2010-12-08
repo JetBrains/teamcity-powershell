@@ -72,6 +72,7 @@ public class PowerShellRegistry {
             "SOFTWARE\\Microsoft\\PowerShell\\1\\PowerShellEngine",
             "ApplicationBase");
 
+    if (home == null) return null;
     final File path = FileUtil.getCanonicalFile(new File(home));
     return path.isDirectory() ? path : null;
   }
