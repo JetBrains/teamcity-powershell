@@ -19,11 +19,12 @@ import org.apache.tools.ant.filters.*;
 def TCPathVar = "path.variable.teamcitydistribution"
 def TCPathVarServer = "teamcity.path.variable.teamcitydistribution"
 
-def version = System.getProperties()['build.number'];
-if (version == null) version = 'snapshot-' + new Date().format('yyyyMMdd'+"'z'"+'hhmmss'); 
+def version = System.getProperties()["build.number"];
+if (version == null) version = project.getProperties()["build.number"];
+if (version == null) version = "snapshot-" + new Date().format("yyyyMMdd"+"'z'"+"hhmmss"); 
 
 dependencies {
-  def teamCityDir = '';
+  def teamCityDir = "";
   [TCPathVar, TCPathVarServer].each {
     if (project.hasProperty(it)) {
       teamCityDir = project.getProperties()[it];
