@@ -21,6 +21,7 @@ def TCPathVarServer = "teamcity.path.variable.teamcitydistribution"
 
 def version = System.getProperties()["build.number"];
 if (version == null) version = project.getProperties()["build.number"];
+if (version == null) version = System.getenv("BUILD_NUMBER");
 if (version == null) version = "snapshot-" + new Date().format("yyyyMMdd"+"'z'"+"hhmmss"); 
 
 dependencies {
