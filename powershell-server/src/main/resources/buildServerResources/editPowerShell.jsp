@@ -18,6 +18,7 @@
 <%@ taglib prefix="forms" tagdir="/WEB-INF/tags/forms" %>
 <%@ taglib prefix="l" tagdir="/WEB-INF/tags/layout" %>
 <jsp:useBean id="bean" class="jetbrains.buildServer.powershell.server.PowerShellBean"/>
+<jsp:useBean id="propertiesBean" scope="request" type="jetbrains.buildServer.controllers.BasePropertiesBean"/>
 
 <tr>
   <th><label for="${bean.bitnessKey}">Powershell run mode</label></th>
@@ -69,8 +70,8 @@
     <th><label for="${bean.executionModeKey}">Script execution mode:</label></th>
     <td>
         <props:selectProperty name="${bean.executionModeKey}" id="powershell_execution_mode" className="longField">
-            <props:option value="${bean.executionModeStdinValue}">Put script into PowerShell stdin with "-Command -" arguments</props:option>
             <props:option value="${bean.executionModeAsFileValue}">Execute .ps1 script with "-File" argument</props:option>
+            <props:option value="${bean.executionModeStdinValue}" selected="${empty propertiesBean.properties[bean.executionModeKey] or propertiesBean.properties[bean.executionModeKey] eq bean.executionModeStdinValue}">Put script into PowerShell stdin with "-Command -" arguments</props:option>
         </props:selectProperty>
         <span class="smallNote">
             Specify powershell script execution mode. By default, powershell may not allow
