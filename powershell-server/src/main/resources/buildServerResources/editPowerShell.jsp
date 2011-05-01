@@ -36,7 +36,7 @@
 <tr>
   <th>Script:</th>
   <td>
-    <props:selectProperty name="${bean.scriptModeKey}" id="powershell_option">
+    <props:selectProperty name="${bean.scriptModeKey}" id="powershell_option" className="longField">
       <props:option value="${bean.scriptModeFileValue}">File</props:option>
       <props:option value="${bean.scriptModeCodeValue}">Source code</props:option>
     </props:selectProperty>
@@ -65,9 +65,43 @@
   </td>
 </tr>
 
+<tr>
+    <th><label for="${bean.executionModeKey}">Script execution mode:</label></th>
+    <td>
+        <props:selectProperty name="${bean.executionModeKey}" id="powershell_execution_mode" className="longField">
+            <props:option value="${bean.executionModeStdinValue}">Put script into PowerShell stdin with "-Command -" arguments</props:option>
+            <props:option value="${bean.executionModeAsFileValue}">Execute .ps1 script with "-File" argument</props:option>
+        </props:selectProperty>
+        <span class="smallNote">
+            Specify powershell script execution mode. By default, powershell may not allow
+            executing arbitrary .ps1 files. Select 'Put script into powershell stdin' mode to avoid this issue.
+        </span>
+        <span class="error" id="error_${bean.executionModeKey}"></span>
+    </td>
+</tr>
+
+<tr id="powershell_scriptArguments">
+  <th><label for="${bean.scriptArgmentsKey}">Script arguments:</label></th>
+  <td>
+    <props:multilineProperty name="${bean.scriptArgmentsKey}" cols="58" linkTitle="Expand" rows="5"/>
+    <span class="smallNote">Enter script arguments</span>
+    <span class="error" id="error_${bean.scriptArgmentsKey}"></span>
+  </td>
+</tr>
+
+<tr>
+  <th><label for="${bean.argumentsKey}">Additional command line parameters:</label></th>
+  <td>
+    <props:multilineProperty name="${bean.argumentsKey}"  cols="58" linkTitle="Expand" rows="5"/>
+    <span class="smallNote">Enter additional command line parameters to powershell.exe.</span>
+    <span class="error" id="error_${bean.argumentsKey}"></span>
+  </td>
+</tr>
+
+
 <script type="text/javascript">
   BS.PowerShell = {
-     update : function() {
+     updateScriptType : function() {
        var val = $('powershell_option').value;
        if (val == '${bean.scriptModeFileValue}') {
          BS.Util.hide($('powershell_sourceCode'));
@@ -78,18 +112,22 @@
          BS.Util.hide($('powershell_scriptFile'));
        }
        BS.MultilineProperties.updateVisible();
+     },
+
+     updateScriptMode : function() {
+       var val = $('powershell_execution_mode').value;
+       if (val == '${bean.executionModeAsFileValue}') {
+         BS.Util.show($('powershell_scriptArguments'));
+       }
+       if (val == '${bean.executionModeStdinValue}') {
+         BS.Util.hide($('powershell_scriptArguments'));
+       }
+       BS.MultilineProperties.updateVisible();
      }
   };
 
-  Event.observe($('powershell_option'), "click", function() {BS.PowerShell.update();});
-  BS.PowerShell.update();
+  Event.observe($('powershell_option'), "click", function() {BS.PowerShell.updateScriptType();});
+  Event.observe($('powershell_execution_mode'), "click", function() {BS.PowerShell.updateScriptMode();});
+  BS.PowerShell.updateScriptType();
+  BS.PowerShell.updateScriptMode();
 </script>
-
-<tr>
-  <th><label for="${bean.argumentsKey}">Additional command line parameters:</label></th>
-  <td>
-    <props:textProperty name="${bean.argumentsKey}" className="longField"/>
-    <span class="smallNote">Enter additional command line parameters to powershell.exe.</span>
-    <span class="error" id="error_${bean.argumentsKey}"></span>
-  </td>
-</tr>

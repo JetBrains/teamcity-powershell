@@ -18,6 +18,7 @@ package jetbrains.buildServer.powershell.server;
 
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
+import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.powershell.common.PowerShellScriptMode;
 import org.jetbrains.annotations.NotNull;
 
@@ -66,8 +67,27 @@ public class PowerShellBean {
   }
 
   @NotNull
+  public String getExecutionModeKey() {
+    return PowerShellConstants.RUNNER_EXECUTION_MODE;
+  }
+
+  @NotNull
+  public String getExecutionModeAsFileValue() {
+    return PowerShellExecutionMode.PS1.getValue();
+  }
+
+  @NotNull
+  public String getExecutionModeStdinValue() {
+    return PowerShellExecutionMode.STDIN.getValue();
+  }
+
+  @NotNull
   public String getArgumentsKey() {
     return PowerShellConstants.RUNNER_CUSTOM_ARGUMENTS;
   }
 
+  @NotNull
+  public String getScriptArgmentsKey() {
+    return PowerShellConstants.RUNNER_SCRIPT_ARGUMENTS;
+  }
 }

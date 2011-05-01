@@ -18,6 +18,7 @@ package jetbrains.buildServer.powershell.server;
 
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
+import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.powershell.common.PowerShellScriptMode;
 import jetbrains.buildServer.requirements.Requirement;
 import jetbrains.buildServer.requirements.RequirementType;
@@ -31,6 +32,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+
+import static jetbrains.buildServer.powershell.common.PowerShellConstants.*;
+import static jetbrains.buildServer.powershell.common.PowerShellConstants.RUNNER_SCRIPT_CODE;
 
 /**
  * @author Eugene Petrenko (eugene.petrenko@jetbrains.com)
@@ -69,22 +73,30 @@ public class PowerShellRunType extends RunType {
 
         final PowerShellBitness bit = getBitness(properties);
         if (bit == null) {
-          col.add(new InvalidProperty(PowerShellConstants.RUNNER_BITNESS, "Bitness is not defined"));
+          col.add(new InvalidProperty(RUNNER_BITNESS, "Bitness is not defined"));
+        }
+
+        final PowerShellExecutionMode exe = PowerShellExecutionMode.fromString(properties.get(RUNNER_EXECUTION_MODE));
+        if (exe == null) {
+          col.add(new InvalidProperty(RUNNER_EXECUTION_MODE, "Execution mode must be specified"));
         }
 
         final PowerShellScriptMode mod = getScriptMode(properties);
         if (mod == null) {
-          col.add(new InvalidProperty(PowerShellConstants.RUNNER_SCRIPT_MODE, "Script mode is not defined"));
+          col.add(new InvalidProperty(RUNNER_SCRIPT_MODE, "Script mode is not defined"));
         } else {
           switch (mod) {
             case FILE:
-              if (StringUtil.isEmptyOrSpaces(properties.get(PowerShellConstants.RUNNER_SCRIPT_FILE))) {
-                col.add(new InvalidProperty(PowerShellConstants.RUNNER_SCRIPT_FILE, "Script file is not defined"));
+              final String script = properties.get(RUNNER_SCRIPT_FILE);
+              if (StringUtil.isEmptyOrSpaces(script)) {
+                col.add(new InvalidProperty(RUNNER_SCRIPT_FILE, "Script file is not defined"));
+              } else if (mod == PowerShellScriptMode.FILE && !script.toLowerCase().endsWith(".ps1")) {
+                col.add(new InvalidProperty(RUNNER_SCRIPT_FILE, "PowerShell requires script files to have .ps1 extension"));
               }
               break;
             case CODE:
-              if (StringUtil.isEmptyOrSpaces(properties.get(PowerShellConstants.RUNNER_SCRIPT_CODE))) {
-                col.add(new InvalidProperty(PowerShellConstants.RUNNER_SCRIPT_CODE, "Code should not be empty"));
+              if (StringUtil.isEmptyOrSpaces(properties.get(RUNNER_SCRIPT_CODE))) {
+                col.add(new InvalidProperty(RUNNER_SCRIPT_CODE, "Code should not be empty"));
               }
               break;
           }
@@ -107,7 +119,7 @@ public class PowerShellRunType extends RunType {
   @Override
   public Map<String, String> getDefaultRunnerProperties() {
     Map<String, String> map = new HashMap<String, String>();
-    map.put(PowerShellConstants.RUNNER_BITNESS, PowerShellBitness.x86.toString());
+    map.put(RUNNER_BITNESS, PowerShellBitness.x86.toString());
     return map;
   }
 
@@ -125,7 +137,7 @@ public class PowerShellRunType extends RunType {
     if (mode != null) {
       switch (mode) {
         case FILE:
-          sb.append(parameters.get(PowerShellConstants.RUNNER_SCRIPT_FILE));
+          sb.append(parameters.get(RUNNER_SCRIPT_FILE));
         case CODE:
           sb.append("<script>");
       }
@@ -135,12 +147,12 @@ public class PowerShellRunType extends RunType {
 
   @Nullable
   private PowerShellScriptMode getScriptMode(@NotNull final Map<String, String> parameters) {
-    return PowerShellScriptMode.fromString(parameters.get(PowerShellConstants.RUNNER_SCRIPT_MODE));
+    return PowerShellScriptMode.fromString(parameters.get(RUNNER_SCRIPT_MODE));
   }
 
   @Nullable
   private PowerShellBitness getBitness(@NotNull final Map<String, String> parameters) {
-    return PowerShellBitness.fromString(parameters.get(PowerShellConstants.RUNNER_BITNESS));
+    return PowerShellBitness.fromString(parameters.get(RUNNER_BITNESS));
   }
 
   @Override

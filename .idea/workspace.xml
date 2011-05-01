@@ -24,9 +24,7 @@
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="727ddef8-7843-4d5f-b94f-882c9e11e23d" name="Default" comment="">
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/powershell-common/src/main/java/jetbrains/buildServer/powershell/common/PowerShellExecutionMode.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/copyright/profiles_settings.xml" afterPath="$PROJECT_DIR$/.idea/copyright/profiles_settings.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/gradle.properties" afterPath="$PROJECT_DIR$/gradle.properties" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/PowerShellService.java" afterPath="$PROJECT_DIR$/powershell-agent/src/main/java/jetbrains/buildServer/powershell/agent/PowerShellService.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/powershell-common/src/main/java/jetbrains/buildServer/powershell/common/PowerShellConstants.java" afterPath="$PROJECT_DIR$/powershell-common/src/main/java/jetbrains/buildServer/powershell/common/PowerShellConstants.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/powershell-server/src/main/java/jetbrains/buildServer/powershell/server/PowerShellBean.java" afterPath="$PROJECT_DIR$/powershell-server/src/main/java/jetbrains/buildServer/powershell/server/PowerShellBean.java" />
@@ -1129,7 +1127,7 @@
     <option name="CHECK_COMMIT_MESSAGE_SPELLING" value="true" />
     <option name="DEFAULT_PATCH_EXTENSION" value="patch" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="call different cmd.exe processes." />
+    <option name="LAST_COMMIT_MESSAGE" value="hello IDEA 10.5" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -1153,6 +1151,7 @@
     <MESSAGE value="workaround security issues" />
     <MESSAGE value="polish UI" />
     <MESSAGE value="call different cmd.exe processes." />
+    <MESSAGE value="hello IDEA 10.5" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />

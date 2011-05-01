@@ -16,11 +16,15 @@
 
 package jetbrains.buildServer.powershell.agent;
 
+import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.util.SystemInfo;
 import jetbrains.buildServer.RunBuildException;
 import jetbrains.buildServer.agent.runner.BuildServiceAdapter;
 import jetbrains.buildServer.agent.runner.ProgramCommandLine;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
+import jetbrains.buildServer.powershell.common.PowerShellConstants;
+import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.powershell.common.PowerShellScriptMode;
 import jetbrains.buildServer.util.FileUtil;
 import jetbrains.buildServer.util.StringUtil;
@@ -38,6 +42,8 @@ import static jetbrains.buildServer.powershell.common.PowerShellConstants.*;
  *         03.12.10 16:47
  */
 public class PowerShellService extends BuildServiceAdapter {
+  private static final Logger LOG = Logger.getInstance(PowerShellService.class.getName());
+
   private final PowerShellInfoProvider myProvider;
   private File myFileToRemove = null;
 
@@ -48,32 +54,51 @@ public class PowerShellService extends BuildServiceAdapter {
   @NotNull
   @Override
   public ProgramCommandLine makeProgramCommandLine() throws RunBuildException {
+    final PowerShellInfo info = selectTool();
     return createProgramCommandline(
-            "cmd.exe",
-            getCmdArguments());
-/*
-            selectTool().getExecutablePath(),
-            getArguments()
+            selectCmd(info),
+            getCmdArguments(info)
     );
-*/
   }
 
-  private List<String> getCmdArguments() throws RunBuildException {
+  private List<String> getCmdArguments(@NotNull final PowerShellInfo info) throws RunBuildException {
     List<String> list = new ArrayList<String>();
 
     list.add("/c");
-    list.add(selectTool().getExecutablePath());
+    list.add(info.getExecutablePath());
     list.add("-NonInteractive");
-    addCustomArguments(list);
-    list.add("-Command");
-    list.add("-");
-    list.add("<" + getOrCreateScriptFile());
+    addCustomArguments(list, RUNNER_CUSTOM_ARGUMENTS);
+
+    PowerShellExecutionMode mod = PowerShellExecutionMode.fromString(getRunnerParameters().get(RUNNER_EXECUTION_MODE));
+    if (mod == null) {
+      throw new RunBuildException("'" + RUNNER_EXECUTION_MODE + "' runner parameters is not defined");
+    }
+
+    final File script = getOrCreateScriptFile();
+    switch (mod) {
+      case STDIN:
+        list.add("-Command");
+        list.add("-");
+        list.add("<" + script);
+        break;
+      case PS1:
+        if (!script.getPath().toLowerCase().endsWith(".ps1")) {
+          throw new RunBuildException("PowerShell script should have '.ps1' extension");
+        }
+        list.add("-File");
+        list.add(script.getPath());
+        addCustomArguments(list, PowerShellConstants.RUNNER_SCRIPT_ARGUMENTS);
+        break;
+      default:
+        throw new RunBuildException("Unknown ExecutionMode: " + mod);
+    }
 
     return list;
   }
 
-  private void addCustomArguments(final List<String> args) {
-    final String custom = getRunnerParameters().get(RUNNER_CUSTOM_ARGUMENTS);
+  private void addCustomArguments(@NotNull final List<String> args,
+                                  @NotNull final String runnerParametersKey) {
+    final String custom = getRunnerParameters().get(runnerParametersKey);
     if (!StringUtil.isEmptyOrSpaces(custom)) {
       for (String _line : custom.split("[\\r\\n]+")) {
         String line = _line.trim();
@@ -140,5 +165,28 @@ public class PowerShellService extends BuildServiceAdapter {
     }
 
     throw new RunBuildException("PowerShell " + bit + " was not found");
+  }
+
+  @NotNull
+  private String selectCmd(PowerShellInfo info) {
+    final String windir = getEnvironmentVariables().get("windir");
+    if (StringUtil.isEmptyOrSpaces(windir)) {
+      LOG.warn("Failed to find %windir%");
+      return "cmd.exe";
+    }
+
+    switch (info.getBitness()) {
+      case x64:
+        if (SystemInfo.is32Bit) {
+          return windir + "\\sysnative\\cmd.exe";
+        }
+        return windir + "\\system32\\cmd.exe";
+      case x86:
+        if (SystemInfo.is64Bit) {
+          return windir + "\\syswow64\\cmd.exe";
+        }
+        return windir + "\\system32\\cmd.exe";
+    }
+    return "cmd.exe";
   }
 }
