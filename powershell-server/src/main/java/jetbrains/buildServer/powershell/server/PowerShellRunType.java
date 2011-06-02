@@ -16,6 +16,7 @@
 
 package jetbrains.buildServer.powershell.server;
 
+import jetbrains.buildServer.parameters.ReferencesResolverUtil;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
@@ -90,7 +91,7 @@ public class PowerShellRunType extends RunType {
               final String script = properties.get(RUNNER_SCRIPT_FILE);
               if (StringUtil.isEmptyOrSpaces(script)) {
                 col.add(new InvalidProperty(RUNNER_SCRIPT_FILE, "Script file is not defined"));
-              } else if (mod == PowerShellScriptMode.FILE && !script.toLowerCase().endsWith(".ps1")) {
+              } else if (mod == PowerShellScriptMode.FILE && !ReferencesResolverUtil.containsReference(script) && !script.toLowerCase().endsWith(".ps1")) {
                 col.add(new InvalidProperty(RUNNER_SCRIPT_FILE, "PowerShell requires script files to have .ps1 extension"));
               }
               break;
