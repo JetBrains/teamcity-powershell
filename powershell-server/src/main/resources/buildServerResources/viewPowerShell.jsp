@@ -41,7 +41,7 @@
 
 <c:if test="${propertiesBean.properties[bean.scriptModeKey] eq bean.scriptModeCodeValue}">
 <div class="parameter">
-  Sctipt: <strong>custom</strong>
+  Script: <strong>custom</strong>
 </div>
 </c:if>
 
