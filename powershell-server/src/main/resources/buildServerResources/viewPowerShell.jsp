@@ -46,5 +46,5 @@
 </c:if>
 
 <div class="parameter">
-  Additional commandline arguments: <props:displayValue name="${bean.argumentsKey}"/>
+  Additional command line arguments: <props:displayValue name="${bean.argumentsKey}"/>
 </div>

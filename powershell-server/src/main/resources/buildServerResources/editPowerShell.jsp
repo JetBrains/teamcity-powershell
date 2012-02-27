@@ -49,7 +49,7 @@
   <th><label for="${bean.scriptFileKey}">Script file:</label></th>
   <td>
     <props:textProperty name="${bean.scriptFileKey}" className="longField"/>
-    <span class="smallNote">Enter Powershell file path relative to checkout directory</span>
+    <span class="smallNote">Path to the Powershell script, relative to the checkout directory</span>
     <span class="error" id="error_${bean.scriptFileKey}"></span>
   </td>
 </tr>
@@ -61,7 +61,7 @@
                              linkTitle="Enter Powershell script content"
                              cols="58" rows="10"
                              expanded="${true}"/>
-    <span class="smallNote">Enter Powershell script. TeamCity references will be replaced in the code</span>
+    <span class="smallNote">Enter contents of a Powershell script. TeamCity references will be replaced in the code</span>
     <span class="error" id="error_${bean.scriptCodeKey}"></span>
   </td>
 </tr>
@@ -74,8 +74,8 @@
             <props:option value="${bean.executionModeStdinValue}" selected="${empty propertiesBean.properties[bean.executionModeKey] or propertiesBean.properties[bean.executionModeKey] eq bean.executionModeStdinValue}">Put script into PowerShell stdin with "-Command -" arguments</props:option>
         </props:selectProperty>
         <span class="smallNote">
-            Specify powershell script execution mode. By default, powershell may not allow
-            executing arbitrary .ps1 files. Select 'Put script into powershell stdin' mode to avoid this issue.
+            Specify Powershell script execution mode. By default, Powershell may not allow
+            execution of arbitrary .ps1 files. Select 'Put script into powershell stdin' mode to avoid this.
         </span>
         <span class="error" id="error_${bean.executionModeKey}"></span>
     </td>
