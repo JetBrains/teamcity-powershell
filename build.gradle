@@ -73,10 +73,14 @@ dependencies {
     include 'common-api.jar'
   }
 
+  testApi = fileTree(teamCityDir + "/devPackage/tests").matching { 
+    include 'tests-support.jar' 
+  }
+
 }
 
 allprojects {
-  tcVersion="6.0-SNAPSHOT"
+  tcVersion="7.1-SNAPSHOT"
   apply plugin: 'java'
 }
 
@@ -89,7 +93,7 @@ subprojects {
 }
 
 task debug << {
-  [annotationsJar, commonApi, log4j].each { println it; println "${it.empty}"}
+  [annotationsJar, commonApi, log4j, testApi].each { println it; println "${it.empty}"}
 }
 
 
