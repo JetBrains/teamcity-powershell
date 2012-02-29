@@ -29,7 +29,9 @@ dependencies {
   jmock_latest = fileTree(projectDir.path + '/lib/jmock/').matching { include '*.jar' }
   jmock_obsolete = fileTree(projectDir.path + '/lib/jmock-1.2').matching { include '*.jar' }
   testNG = fileTree(projectDir.path + '/lib/testng').matching { include '*.jar' }
-  
+
+
+  testCompile testApi
   testCompile jmock_latest
   testCompile jmock_obsolete
   testCompile testNG
