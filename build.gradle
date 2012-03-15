@@ -182,3 +182,9 @@ task dist(dependsOn: [  ':powershell-common:build',
   }
 }
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.0-milestone-7'
+    jarPath = 'wrapper'
+}
+
+
