@@ -128,58 +128,44 @@ project (':powershell-test') {
 }
 
 
-task dist(dependsOn: [  ':powershell-common:build',
-                        ':powershell-server:build',
-                        ':powershell-agent:build'  ]) {
-  description = 'Create Powershell Runner plugin package for TeamCity'
-  doLast {
-    gradleDir = new File(distsDir, 'powershell')
-    gradleServer = new File(gradleDir, 'server')
-    gradleAgent = new File(gradleDir, 'agent')
-    gradleTmp = new File(distsDir, 'tmp')
+def pluginDist = new File(distsDir, 'powershell')
 
-    gradleServer.mkdirs()
-    gradleAgent.mkdirs()
-    gradleTmp.mkdirs()
-
-    copy {
-      [
-        project(':powershell-common'),
-        project(':powershell-agent')
-      ].each { from it.libsDir }
-      into new File(gradleTmp, 'powershell-agent'){{mkdirs();}}
-    }
-
-    task zipAgent(type: Zip) {
-      from gradleTmp  
-      archiveName ='powershell-agent.zip'
-      destinationDir = gradleAgent
-    }
-    zipAgent.execute()
+task initDistrDestinations(dependsOn: [':powershell-common:build',
+                                       ':powershell-agent:build']) << {
+    pluginServer = new File(pluginDist, 'server')
+    pluginServer.mkdirs()
 
     copy {
       from project(':powershell-server').libsDir
       from project(':powershell-common').libsDir
-      into gradleServer
+      into pluginServer
     }
 
     copy {
-      into gradleDir
+      into pluginDist
       from (projectDir) {
         include 'teamcity-plugin.xml'
         filter(ReplaceTokens, tokens:[VERSION: version ])
       }
     }
-  
-    task zipPlugin(type: Zip) {
-      from gradleDir
-      archiveName='teamcity-powershell.zip'
-    }
+}
 
-    zipPlugin.execute()
+task zipAgent(type: Zip, dependsOn: ['initDistrDestinations',
+                                     ':powershell-agent:build']) {
+  from project(':powershell-common').libsDir
+  from project(':powershell-agent').libsDir
+  archiveName ='powershell-agent.zip'
+  destinationDir = new File(pluginDist, 'agent')
+}
 
+task zipPlugin(type: Zip, dependsOn: ['initDistrDestinations',
+                                      'zipAgent']) {
+  from pluginDist
+  archiveName='teamcity-powershell.zip'
+}
+
+task dist(dependsOn: ['zipPlugin']) << {
     println "##teamcity[publishArtifacts '${zipPlugin.archivePath}']"
-  }
 }
 
 task wrapper(type: Wrapper) {
