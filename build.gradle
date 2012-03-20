@@ -152,8 +152,9 @@ task initDistrDestinations(dependsOn: [':powershell-common:build',
 
 task zipAgent(type: Zip, dependsOn: ['initDistrDestinations',
                                      ':powershell-agent:build']) {
-  from project(':powershell-common').libsDir
-  from project(':powershell-agent').libsDir
+
+  from(project(':powershell-common').libsDir ){ into('powershell-agent') }
+  from(project(':powershell-agent').libsDir ) { into('powershell-agent') }
   archiveName ='powershell-agent.zip'
   destinationDir = new File(pluginDist, 'agent')
 }
