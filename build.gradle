@@ -82,6 +82,7 @@ dependencies {
 allprojects {
   tcVersion="7.1-SNAPSHOT"
   apply plugin: 'java'
+  sourceCompatibility = '1.5'
   targetCompatibility = '1.5'
 }
 
