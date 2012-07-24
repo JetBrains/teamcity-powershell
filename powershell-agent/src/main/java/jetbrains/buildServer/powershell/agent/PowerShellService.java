@@ -93,11 +93,6 @@ public class PowerShellService extends BuildServiceAdapter {
         throw new RunBuildException("Unknown ExecutionMode: " + mod);
     }
 
-    list.add("&&");
-    list.add("exit");
-    list.add("/b");
-    list.add("%ERRORLEVEL%");
-
     return list;
   }
 
