@@ -133,7 +133,8 @@ project (':powershell-test') {
 def pluginDist = new File(distsDir, 'powershell')
 
 task initDistrDestinations(dependsOn: [':powershell-common:build',
-                                       ':powershell-agent:build']) << {
+                                       ':powershell-agent:build',
+                                       ':powershell-server:build']) << {
     pluginServer = new File(pluginDist, 'server')
     pluginServer.mkdirs()
 
