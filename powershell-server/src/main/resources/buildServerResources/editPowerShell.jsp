@@ -17,6 +17,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="forms" tagdir="/WEB-INF/tags/forms" %>
 <%@ taglib prefix="l" tagdir="/WEB-INF/tags/layout" %>
+<%@ taglib prefix="bs" tagdir="/WEB-INF/tags" %>
 <jsp:useBean id="bean" class="jetbrains.buildServer.powershell.server.PowerShellBean"/>
 <jsp:useBean id="propertiesBean" scope="request" type="jetbrains.buildServer.controllers.BasePropertiesBean"/>
 
@@ -49,6 +50,7 @@
   <th><label for="${bean.scriptFileKey}">Script file:</label></th>
   <td>
     <props:textProperty name="${bean.scriptFileKey}" className="longField"/>
+    <bs:vcsTree fieldId="${bean.scriptFileKey}"/>
     <span class="smallNote">Path to the Powershell script, relative to the checkout directory</span>
     <span class="error" id="error_${bean.scriptFileKey}"></span>
   </td>
