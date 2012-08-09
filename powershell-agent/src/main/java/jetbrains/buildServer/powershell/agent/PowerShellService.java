@@ -79,7 +79,8 @@ public class PowerShellService extends BuildServiceAdapter {
       case STDIN:
         list.add("-Command");
         list.add("-");
-        list.add("<" + script);
+        list.add("<");
+        list.add(script.getPath());
         break;
       case PS1:
         if (!script.getPath().toLowerCase().endsWith(".ps1")) {
