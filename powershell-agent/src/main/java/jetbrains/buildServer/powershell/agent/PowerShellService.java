@@ -80,7 +80,7 @@ public class PowerShellService extends BuildServiceAdapter {
         list.add("-Command");
         list.add("-");
         list.add("<");
-        list.add(script);
+        list.add(script.getPath());
         break;
       case PS1:
         if (!script.getPath().toLowerCase().endsWith(".ps1")) {
