@@ -21,6 +21,7 @@ import com.intellij.openapi.util.SystemInfo;
 import jetbrains.buildServer.RunBuildException;
 import jetbrains.buildServer.agent.runner.BuildServiceAdapter;
 import jetbrains.buildServer.agent.runner.ProgramCommandLine;
+import jetbrains.buildServer.agent.runner.SimpleProgramCommandLine;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
@@ -33,6 +34,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static jetbrains.buildServer.powershell.common.PowerShellBitness.fromString;
 import static jetbrains.buildServer.powershell.common.PowerShellConstants.*;
@@ -55,10 +58,53 @@ public class PowerShellService extends BuildServiceAdapter {
   @Override
   public ProgramCommandLine makeProgramCommandLine() throws RunBuildException {
     final PowerShellInfo info = selectTool();
-    return createProgramCommandline(
+    return new SimpleProgramCommandLine(
+            getActualEnvironmentVariables(),
+            getWorkingDirectory().getPath(),
             selectCmd(info),
             getCmdArguments(info)
     );
+  }
+
+  private boolean isInternalPropertySetExecutionPolicy(@NotNull final String name, boolean def) {
+    final String prop = getConfigParameters().get("teamcity.powershell." + name);
+    if (StringUtil.isEmptyOrSpaces(prop)) return def;
+
+    return "true".equalsIgnoreCase(prop);
+  }
+
+  @NotNull
+  private Map<String, String> getActualEnvironmentVariables() {
+    Map<String, String> map = getEnvironmentVariables();
+    //check internal property
+    if (!isInternalPropertySetExecutionPolicy("set.executionPolicyEnv", false)) return map;
+
+    final String env = "PSExecutionPolicyPreference";
+
+    //check if user had overridden the value
+    if (map.containsKey(env)) {
+      LOG.info(env + " environment variable was specified explicitly");
+      return map;
+    }
+
+    map = new TreeMap<String, String>(getEnvironmentVariables());
+    map.put(env, "ByPass");
+    return map;
+  }
+
+  private void addExecutionPolicyPreference(@NotNull List<String> list) {
+    if (!isInternalPropertySetExecutionPolicy("set.executionPolicyArg", true)) return;
+
+    final String cmdArg = "-ExecutionPolicy";
+    for (String arg : list) {
+      if (arg.trim().toLowerCase().contains(cmdArg.toLowerCase())) {
+        LOG.info(cmdArg  + " was specified explicitly");
+        return;
+      }
+    }
+
+    list.add(cmdArg);
+    list.add("ByPass");
   }
 
   private List<String> getCmdArguments(@NotNull final PowerShellInfo info) throws RunBuildException {
@@ -68,6 +114,7 @@ public class PowerShellService extends BuildServiceAdapter {
     list.add(info.getExecutablePath());
     list.add("-NonInteractive");
     addCustomArguments(list, RUNNER_CUSTOM_ARGUMENTS);
+    addExecutionPolicyPreference(list);
 
     PowerShellExecutionMode mod = PowerShellExecutionMode.fromString(getRunnerParameters().get(RUNNER_EXECUTION_MODE));
     if (mod == null) {
@@ -138,7 +185,7 @@ public class PowerShellService extends BuildServiceAdapter {
     try {
       String text = getRunnerParameters().get(RUNNER_SCRIPT_CODE);
       if (StringUtil.isEmptyOrSpaces(text)) {
-        throw new RunBuildException("Emptry build script");
+        throw new RunBuildException("Empty build script");
       }
       text = StringUtil.convertLineSeparators(text, "\r\n");
 
