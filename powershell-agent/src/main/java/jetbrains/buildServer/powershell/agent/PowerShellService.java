@@ -191,6 +191,7 @@ public class PowerShellService extends BuildServiceAdapter {
       text = "  \r\n  \r\n  \r\n" + StringUtil.convertLineSeparators(text, "\r\n") + "\r\n  \r\n   \r\n   ";
 
       final File code = FileUtil.createTempFile(getBuildTempDirectory(), "powershell", ".ps1", true);
+      myFileToRemove = code;
       OutputStreamWriter w = new OutputStreamWriter(new FileOutputStream(code), "utf-8");
       handle = w;
       w.write(text);
