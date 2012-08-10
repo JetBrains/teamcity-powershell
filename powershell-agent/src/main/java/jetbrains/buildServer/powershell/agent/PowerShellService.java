@@ -187,7 +187,8 @@ public class PowerShellService extends BuildServiceAdapter {
       if (StringUtil.isEmptyOrSpaces(text)) {
         throw new RunBuildException("Empty build script");
       }
-      text = StringUtil.convertLineSeparators(text, "\r\n");
+      //some newlines are necessary to workaround -Command - issues, like TW-19771
+      text = "  \r\n  \r\n  \r\n" + StringUtil.convertLineSeparators(text, "\r\n") + "\r\n  \r\n   \r\n   ";
 
       final File code = FileUtil.createTempFile(getBuildTempDirectory(), "powershell", ".ps1", true);
       OutputStreamWriter w = new OutputStreamWriter(new FileOutputStream(code), "utf-8");
