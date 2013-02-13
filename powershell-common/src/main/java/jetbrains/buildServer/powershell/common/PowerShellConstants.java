@@ -28,6 +28,7 @@ public class PowerShellConstants {
   public static final String RUNNER_BITNESS = "jetbrains_powershell_bitness";
   public static final String RUNNER_CUSTOM_ARGUMENTS = "jetbrains_powershell_additionalArguments";
   public static final String RUNNER_SCRIPT_ARGUMENTS = "jetbrains_powershell_scriptArguments";
+  public static final String RUNNER_LOG_ERR_TO_ERROR = "jetbrains_powershell_errorToError";
 
   public static final String RUNNER_SCRIPT_CODE = "jetbrains_powershell_script_code";
   public static final String RUNNER_SCRIPT_FILE = "jetbrains_powershell_script_file";

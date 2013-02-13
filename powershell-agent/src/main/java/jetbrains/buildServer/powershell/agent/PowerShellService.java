@@ -19,9 +19,8 @@ package jetbrains.buildServer.powershell.agent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.SystemInfo;
 import jetbrains.buildServer.RunBuildException;
-import jetbrains.buildServer.agent.runner.BuildServiceAdapter;
-import jetbrains.buildServer.agent.runner.ProgramCommandLine;
-import jetbrains.buildServer.agent.runner.SimpleProgramCommandLine;
+import jetbrains.buildServer.agent.BuildProgressLogger;
+import jetbrains.buildServer.agent.runner.*;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
@@ -32,10 +31,7 @@ import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import static jetbrains.buildServer.powershell.common.PowerShellBitness.fromString;
 import static jetbrains.buildServer.powershell.common.PowerShellConstants.*;
@@ -52,6 +48,31 @@ public class PowerShellService extends BuildServiceAdapter {
 
   public PowerShellService(final PowerShellInfoProvider provider) {
     myProvider = provider;
+  }
+
+  @NotNull
+  @Override
+  public List<ProcessListener> getListeners() {
+    final boolean logToError = !StringUtil.isEmptyOrSpaces(getRunnerParameters().get(PowerShellConstants.RUNNER_LOG_ERR_TO_ERROR));
+    final BuildProgressLogger logger = getLogger();
+    return Arrays.<ProcessListener>asList(new ProcessListenerAdapter(){
+      private final org.apache.log4j.Logger OUT_LOG = org.apache.log4j.Logger.getLogger("teamcity.out");
+      @Override
+      public void onStandardOutput(@NotNull final String text) {
+        logger.message(text);
+        OUT_LOG.info(text);
+      }
+
+      @Override
+      public void onErrorOutput(@NotNull final String text) {
+        if (logToError) {
+          logger.error(text);
+        } else {
+          logger.warning(text);
+        }
+        OUT_LOG.warn(text);
+      }
+    });
   }
 
   @NotNull

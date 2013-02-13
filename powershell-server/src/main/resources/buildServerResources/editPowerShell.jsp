@@ -33,6 +33,17 @@
   </td>
 </tr>
 
+<tr>
+  <th><label for="${bean.errorToErrorKey}">Error Output:</label></th>
+  <td>
+    <props:selectProperty name="${bean.errorToErrorKey}">
+      <props:option value="">warning</props:option>
+      <props:option value="true">error</props:option>
+    </props:selectProperty>
+    <span class="smallNote">Specify how error output is processed</span>
+  </td>
+</tr>
+
 <forms:workingDirectory/>
 
 <tr>
@@ -100,7 +111,6 @@
     <span class="error" id="error_${bean.argumentsKey}"></span>
   </td>
 </tr>
-
 
 <script type="text/javascript">
   BS.PowerShell = {

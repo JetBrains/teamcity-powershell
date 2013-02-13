@@ -90,4 +90,9 @@ public class PowerShellBean {
   public String getScriptArgmentsKey() {
     return PowerShellConstants.RUNNER_SCRIPT_ARGUMENTS;
   }
+
+  @NotNull
+  public String getErrorToErrorKey() {
+    return PowerShellConstants.RUNNER_LOG_ERR_TO_ERROR;
+  }
 }
