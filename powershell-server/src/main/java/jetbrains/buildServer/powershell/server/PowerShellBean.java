@@ -102,4 +102,10 @@ public class PowerShellBean {
   public Collection<PowerShellVersion> getVersions() {
     return Arrays.asList(PowerShellVersion.values());
   }
+
+  @NotNull
+  public String getNoProfileKey() {
+    return PowerShellConstants.RUNNER_NO_PROFILE;
+  }
+
 }

@@ -30,6 +30,7 @@ public class PowerShellConstants {
   public static final String RUNNER_SCRIPT_ARGUMENTS = "jetbrains_powershell_scriptArguments";
   public static final String RUNNER_LOG_ERR_TO_ERROR = "jetbrains_powershell_errorToError";
   public static final String RUNNER_MIN_VERSION      = "jetbrains_powershell_minVersion";
+  public static final String RUNNER_NO_PROFILE      = "jetbrains_powershell_noprofile";
 
   public static final String RUNNER_SCRIPT_CODE = "jetbrains_powershell_script_code";
   public static final String RUNNER_SCRIPT_FILE = "jetbrains_powershell_script_file";

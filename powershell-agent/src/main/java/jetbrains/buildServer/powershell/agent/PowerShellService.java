@@ -133,7 +133,11 @@ public class PowerShellService extends BuildServiceAdapter {
 
     list.add("/c");
     list.add(info.getExecutablePath());
+    if (!StringUtil.isEmptyOrSpaces(getRunnerParameters().get(RUNNER_NO_PROFILE))) {
+      list.add("-NoProfile");
+    }
     list.add("-NonInteractive");
+
     addCustomArguments(list, RUNNER_CUSTOM_ARGUMENTS);
     addExecutionPolicyPreference(list);
 

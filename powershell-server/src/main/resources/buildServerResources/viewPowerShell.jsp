@@ -39,16 +39,20 @@
 <props:viewWorkingDirectory />
 
 <c:if test="${propertiesBean.properties[bean.scriptModeKey] eq bean.scriptModeFileValue}">
-<div class="parameter">
-  Script: <props:displayValue name="${bean.scriptFileKey}"/>
-</div>
+  <div class="parameter">
+    Script: <props:displayValue name="${bean.scriptFileKey}"/>
+  </div>
 </c:if>
 
 <c:if test="${propertiesBean.properties[bean.scriptModeKey] eq bean.scriptModeCodeValue}">
-<div class="parameter">
-  Script: <strong>custom</strong>
-</div>
+  <div class="parameter">
+    Script: <strong>custom</strong>
+  </div>
 </c:if>
+
+<div class="parameter">
+  Add -NoProfile argument: <props:displayCheckboxValue name="${bean.noProfileKey}"/>
+</div>
 
 <div class="parameter">
   Additional command line arguments: <props:displayValue name="${bean.argumentsKey}"/>

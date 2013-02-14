@@ -117,6 +117,14 @@
 </tr>
 
 <tr>
+  <th>Options:</th>
+  <td>
+    <props:checkboxProperty name="${bean.noProfileKey}"/>
+    <label for="${bean.noProfileKey}">Add -NoProfile argument</label>
+  </td>
+</tr>
+
+<tr>
   <th><label for="${bean.argumentsKey}">Additional command line parameters:</label></th>
   <td>
     <props:multilineProperty name="${bean.argumentsKey}"  cols="58" linkTitle="Expand" rows="5"/>
