@@ -23,6 +23,7 @@
 
 <div class="parameter">
   Powershell run mode:
+  <props:displayValue name="${bean.minVersionKey}" emptyValue="Any"/>
   <strong>
     <c:set var="type" value="${propertiesBean.properties[bean.bitnessKey]}"/>
     <c:forEach var="val" items="${bean.bitnessValues}">

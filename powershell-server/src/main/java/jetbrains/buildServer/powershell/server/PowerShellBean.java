@@ -16,10 +16,7 @@
 
 package jetbrains.buildServer.powershell.server;
 
-import jetbrains.buildServer.powershell.common.PowerShellBitness;
-import jetbrains.buildServer.powershell.common.PowerShellConstants;
-import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
-import jetbrains.buildServer.powershell.common.PowerShellScriptMode;
+import jetbrains.buildServer.powershell.common.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -94,5 +91,15 @@ public class PowerShellBean {
   @NotNull
   public String getErrorToErrorKey() {
     return PowerShellConstants.RUNNER_LOG_ERR_TO_ERROR;
+  }
+
+  @NotNull
+  public String getMinVersionKey() {
+    return PowerShellConstants.RUNNER_MIN_VERSION;
+  }
+
+  @NotNull
+  public Collection<PowerShellVersion> getVersions() {
+    return Arrays.asList(PowerShellVersion.values());
   }
 }

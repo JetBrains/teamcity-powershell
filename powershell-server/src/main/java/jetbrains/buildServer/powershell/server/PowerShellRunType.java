@@ -17,10 +17,7 @@
 package jetbrains.buildServer.powershell.server;
 
 import jetbrains.buildServer.parameters.ReferencesResolverUtil;
-import jetbrains.buildServer.powershell.common.PowerShellBitness;
-import jetbrains.buildServer.powershell.common.PowerShellConstants;
-import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
-import jetbrains.buildServer.powershell.common.PowerShellScriptMode;
+import jetbrains.buildServer.powershell.common.*;
 import jetbrains.buildServer.requirements.Requirement;
 import jetbrains.buildServer.requirements.RequirementType;
 import jetbrains.buildServer.serverSide.InvalidProperty;
@@ -44,7 +41,7 @@ import static jetbrains.buildServer.powershell.common.PowerShellConstants.RUNNER
 public class PowerShellRunType extends RunType {
   private final PluginDescriptor myDescriptor;
 
-  public PowerShellRunType(@NotNull RunTypeRegistry reg,
+  public PowerShellRunType(@NotNull final RunTypeRegistry reg,
                            @NotNull final PluginDescriptor descriptor) {
     myDescriptor = descriptor;
     reg.registerRunType(this);
@@ -127,7 +124,12 @@ public class PowerShellRunType extends RunType {
   @NotNull
   @Override
   public String describeParameters(@NotNull final Map<String, String> parameters) {
-    StringBuilder sb = new StringBuilder("Powershell ");
+    final StringBuilder sb = new StringBuilder("Powershell ");
+
+    final PowerShellVersion minVersion = getMinimalVersion(parameters);
+    if (minVersion != null) {
+      sb.append(minVersion.getVersion()).append(" ");
+    }
 
     final PowerShellBitness bit = getBitness(parameters);
     if (bit != null) {
@@ -156,12 +158,28 @@ public class PowerShellRunType extends RunType {
     return PowerShellBitness.fromString(parameters.get(RUNNER_BITNESS));
   }
 
+  @Nullable
+  private PowerShellVersion getMinimalVersion(@NotNull final Map<String, String> parameters) {
+    return PowerShellVersion.fromString(parameters.get(RUNNER_MIN_VERSION));
+  }
+
   @Override
   public List<Requirement> getRunnerSpecificRequirements(@NotNull final Map<String, String> runParameters) {
+    final PowerShellVersion minVersion = getMinimalVersion(runParameters);
     final PowerShellBitness bit = getBitness(runParameters);
-    if (bit != null) {
+
+    if (bit == null) return Collections.emptyList();
+
+    if (minVersion == null) {
       return Collections.singletonList(new Requirement(bit.getVersionKey(), null, RequirementType.EXISTS));
     }
-    return Collections.emptyList();
+
+    final StringBuilder sb = new StringBuilder();
+    for (PowerShellVersion version : PowerShellVersion.getThisOrNewer(minVersion)) {
+      if (sb.length() > 0) sb.append("|");
+      sb.append(version.getVersionRegex());
+    }
+
+    return Collections.singletonList(new Requirement(bit.getVersionKey(), sb.toString(), RequirementType.MATCHES));
   }
 }
