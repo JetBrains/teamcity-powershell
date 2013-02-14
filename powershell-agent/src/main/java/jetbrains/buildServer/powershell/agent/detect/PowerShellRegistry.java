@@ -38,43 +38,77 @@ public class PowerShellRegistry {
   private final Bitness myBitness;
   private final Win32RegistryAccessor myRegistryAccessor;
 
+  private final VersionedPowerShell[] myDetectors = {new VersionedPowerShell("3"), new VersionedPowerShell("1")};
+
   public PowerShellRegistry(@NotNull final Bitness bitness, @NotNull Win32RegistryAccessor registryAccessor) {
     myRegistryAccessor = registryAccessor;
     myBitness = bitness;
   }
 
   public boolean isPowerShellInstalled() {
-    final String val = myRegistryAccessor.readRegistryText(
-            LOCAL_MACHINE,
-            BIT32,
-            "SOFTWARE\\Microsoft\\PowerShell\\1",
-            "Install");
-
-    return "1".equals(val);
+    for (VersionedPowerShell shell : myDetectors) {
+      if (shell.isPowerShellInstalled()) return true;
+    }
+    return false;
   }
 
   @Nullable
   public PowerShellVersion getInstalledVersion() {
-    final String ver = myRegistryAccessor.readRegistryText(
-            LOCAL_MACHINE,
-            myBitness,
-            "SOFTWARE\\Microsoft\\PowerShell\\1\\PowerShellEngine",
-            "PowerShellVersion");
-
-    return PowerShellVersion.fromString(ver);
+    for (VersionedPowerShell shell : myDetectors) {
+      PowerShellVersion version = shell.getInstalledVersion();
+      if (version != null) return version;
+    }
+    return null;
   }
 
   @Nullable
   public File getPowerShellHome() {
-    final String home = myRegistryAccessor.readRegistryText(
-            LOCAL_MACHINE,
-            myBitness,
-            "SOFTWARE\\Microsoft\\PowerShell\\1\\PowerShellEngine",
-            "ApplicationBase");
-
-    if (home == null) return null;
-    final File path = FileUtil.getCanonicalFile(new File(home));
-    return path.isDirectory() ? path : null;
+    for (VersionedPowerShell shell : myDetectors) {
+      File home = shell.getPowerShellHome();
+      if (home != null) return home;
+    }
+    return null;
   }
 
+  private class VersionedPowerShell {
+    private final String myVersion;
+
+    private VersionedPowerShell(@NotNull final String myVersion) {
+      this.myVersion = myVersion;
+    }
+
+    public boolean isPowerShellInstalled() {
+      final String val = myRegistryAccessor.readRegistryText(
+              LOCAL_MACHINE,
+              BIT32,
+              "SOFTWARE\\Microsoft\\PowerShell\\" + myVersion,
+              "Install");
+
+      return "1".equals(val);
+    }
+
+    @Nullable
+    public PowerShellVersion getInstalledVersion() {
+      final String ver = myRegistryAccessor.readRegistryText(
+              LOCAL_MACHINE,
+              myBitness,
+              "SOFTWARE\\Microsoft\\PowerShell\\" + myVersion + "\\PowerShellEngine",
+              "PowerShellVersion");
+
+      return PowerShellVersion.fromString(ver);
+    }
+
+    @Nullable
+    public File getPowerShellHome() {
+      final String home = myRegistryAccessor.readRegistryText(
+              LOCAL_MACHINE,
+              myBitness,
+              "SOFTWARE\\Microsoft\\PowerShell\\" + myVersion + "\\PowerShellEngine",
+              "ApplicationBase");
+
+      if (home == null) return null;
+      final File path = FileUtil.getCanonicalFile(new File(home));
+      return path.isDirectory() ? path : null;
+    }
+  }
 }

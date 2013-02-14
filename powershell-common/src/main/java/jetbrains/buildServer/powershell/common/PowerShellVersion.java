@@ -9,7 +9,8 @@ import org.jetbrains.annotations.Nullable;
  */
 public enum PowerShellVersion {
   V_1_0("1.0"),
-  V_2_0("2.0")
+  V_2_0("2.0"),
+  V_3_0("3.0"),
   ;
 
   private final String myVersion;
