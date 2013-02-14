@@ -23,10 +23,7 @@ import jetbrains.buildServer.agent.runner.BuildServiceAdapter;
 import jetbrains.buildServer.agent.runner.ProgramCommandLine;
 import jetbrains.buildServer.agent.runner.SimpleProgramCommandLine;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
-import jetbrains.buildServer.powershell.common.PowerShellBitness;
-import jetbrains.buildServer.powershell.common.PowerShellConstants;
-import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
-import jetbrains.buildServer.powershell.common.PowerShellScriptMode;
+import jetbrains.buildServer.powershell.common.*;
 import jetbrains.buildServer.util.FileUtil;
 import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
@@ -59,7 +56,7 @@ public class PowerShellService extends BuildServiceAdapter {
   public ProgramCommandLine makeProgramCommandLine() throws RunBuildException {
     final PowerShellInfo info = selectTool();
     return new SimpleProgramCommandLine(
-            getActualEnvironmentVariables(),
+            getActualEnvironmentVariables(info),
             getWorkingDirectory().getPath(),
             selectCmd(info),
             getCmdArguments(info)
@@ -74,10 +71,10 @@ public class PowerShellService extends BuildServiceAdapter {
   }
 
   @NotNull
-  private Map<String, String> getActualEnvironmentVariables() {
+  private Map<String, String> getActualEnvironmentVariables(@NotNull final PowerShellInfo info) {
     Map<String, String> map = getEnvironmentVariables();
     //check internal property
-    if (!isInternalPropertySetExecutionPolicy("set.executionPolicyEnv", false)) return map;
+    if (!isInternalPropertySetExecutionPolicy("set.executionPolicyEnv", info.getVersion() == PowerShellVersion.V_1_0)) return map;
 
     final String env = "PSExecutionPolicyPreference";
 
@@ -92,8 +89,8 @@ public class PowerShellService extends BuildServiceAdapter {
     return map;
   }
 
-  private void addExecutionPolicyPreference(@NotNull List<String> list) {
-    if (!isInternalPropertySetExecutionPolicy("set.executionPolicyArg", true)) return;
+  private void addExecutionPolicyPreference(@NotNull final List<String> list, @NotNull final PowerShellInfo info) {
+    if (!isInternalPropertySetExecutionPolicy("set.executionPolicyArg", info.getVersion() != PowerShellVersion.V_1_0)) return;
 
     final String cmdArg = "-ExecutionPolicy";
     for (String arg : list) {
@@ -114,7 +111,7 @@ public class PowerShellService extends BuildServiceAdapter {
     list.add(info.getExecutablePath());
     list.add("-NonInteractive");
     addCustomArguments(list, RUNNER_CUSTOM_ARGUMENTS);
-    addExecutionPolicyPreference(list);
+    addExecutionPolicyPreference(list, info);
 
     PowerShellExecutionMode mod = PowerShellExecutionMode.fromString(getRunnerParameters().get(RUNNER_EXECUTION_MODE));
     if (mod == null) {
