@@ -6,9 +6,6 @@
     </splitter-proportions>
     <settings />
   </component>
-  <component name="DependencyValidationManager">
-    <option name="SKIP_IMPORT_STATEMENTS" value="false" />
-  </component>
   <component name="EntryPointsManager">
     <entry_points version="2.0" />
   </component>
@@ -16,11 +13,6 @@
     <splitter-proportions>
       <SplitterProportionsDataImpl />
     </splitter-proportions>
-  </component>
-  <component name="Git.Settings">
-    <option name="GIT_EXECUTABLE" value="git.exe" />
-    <option name="CHECKOUT_INCLUDE_TAGS" value="false" />
-    <option name="UPDATE_CHANGES_POLICY" value="STASH" />
   </component>
   <component name="GlobalLibrariesConfigurable.UI">
     <splitter-proportions>
@@ -44,9 +36,6 @@
     <option name="HEAP_SIZE" />
     <option name="LOCALE" />
     <option name="OPEN_IN_BROWSER" value="true" />
-  </component>
-  <component name="MavenRunner">
-    <option name="jreName" value="#JAVA_INTERNAL" />
   </component>
   <component name="ModuleStructureConfigurable.UI">
     <splitter-proportions>
