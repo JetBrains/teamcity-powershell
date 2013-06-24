@@ -53,6 +53,14 @@ dependencies {
     include 'util.jar'
   }
 
+  teamCityServerRuntime = fileTree(teamCityDir + "/webapps/ROOT/WEB-INF/lib").matching {
+    include '*.jar'
+  }
+
+  teamCityAgentRuntime = fileTree(teamCityDir + "/buildAgent/lib").matching {
+    include '*.jar'
+  }
+
   annotationsJar = fileTree(teamCityDir + "/webapps/ROOT/WEB-INF/lib").matching {
     include 'annotations.jar'
   }
@@ -74,7 +82,7 @@ dependencies {
   }
 
   testApi = fileTree(teamCityDir + "/devPackage/tests").matching { 
-    include 'tests-support.jar' 
+    include '*.jar' 
   }
 
 }

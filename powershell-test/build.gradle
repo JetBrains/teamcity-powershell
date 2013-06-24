@@ -35,6 +35,8 @@ dependencies {
   testCompile jmock_latest
   testCompile jmock_obsolete
   testCompile testNG
+  testCompile teamCityServerRuntime
+  testCompile teamCityAgentRuntime
 
 
 }
