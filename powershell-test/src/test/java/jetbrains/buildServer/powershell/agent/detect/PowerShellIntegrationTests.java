@@ -1,11 +1,10 @@
 package jetbrains.buildServer.powershell.agent.detect;
 
 import jetbrains.buildServer.RunnerTest2Base;
-import jetbrains.buildServer.powershell.common.PowerShellBitness;
-import jetbrains.buildServer.powershell.common.PowerShellConstants;
-import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
-import jetbrains.buildServer.powershell.common.PowerShellScriptMode;
+import jetbrains.buildServer.powershell.common.*;
 import jetbrains.buildServer.serverSide.SFinishedBuild;
+import jetbrains.buildServer.util.TestFor;
+import junit.framework.Assert;
 import org.jetbrains.annotations.NotNull;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -35,6 +34,7 @@ public class PowerShellIntegrationTests extends RunnerTest2Base {
   }
 
   @Test
+  @TestFor(issues = "TW-29803")
   public void should_run_simple_command() throws Throwable {
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
@@ -43,5 +43,6 @@ public class PowerShellIntegrationTests extends RunnerTest2Base {
 
     final SFinishedBuild build = doTest(null);
     dumpBuildLogLocally(build);
+    Assert.assertTrue(build.getBuildStatus().isSuccessful());
   }
 }
