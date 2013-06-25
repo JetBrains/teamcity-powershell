@@ -41,7 +41,7 @@ public class PowerShellService extends BuildServiceAdapter {
   private static final Logger LOG = Logger.getInstance(PowerShellService.class.getName());
 
   private final PowerShellInfoProvider myProvider;
-  private File myFileToRemove = null;
+  private final Collection<File> myFilesToRemove = new ArrayList<File>();
 
   public PowerShellService(final PowerShellInfoProvider provider) {
     myProvider = provider;
@@ -182,10 +182,12 @@ public class PowerShellService extends BuildServiceAdapter {
   public void afterProcessFinished() throws RunBuildException {
     super.afterProcessFinished();
 
-    if (myFileToRemove != null && !getConfigParameters().containsKey(CONFIG_KEEP_GENERATED)) {
-      FileUtil.delete(myFileToRemove);
-      myFileToRemove = null;
+    if (getConfigParameters().containsKey(CONFIG_KEEP_GENERATED)) return;
+
+    for (File file : myFilesToRemove) {
+      FileUtil.delete(file);
     }
+    myFilesToRemove.clear();
   }
 
   private File getOrCreateScriptFile() throws RunBuildException {
@@ -213,7 +215,7 @@ public class PowerShellService extends BuildServiceAdapter {
       text = "  \r\n  \r\n  \r\n" + StringUtil.convertLineSeparators(text, "\r\n") + "\r\n  \r\n   \r\n   ";
 
       final File code = FileUtil.createTempFile(getBuildTempDirectory(), "powershell", ".ps1", true);
-      myFileToRemove = code;
+      myFilesToRemove.add(code);
       OutputStreamWriter w = new OutputStreamWriter(new FileOutputStream(code), "utf-8");
       handle = w;
       w.write(text);
