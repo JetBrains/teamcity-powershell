@@ -103,11 +103,11 @@ public class PowerShellService extends BuildServiceAdapter {
     try {
       bat = FileUtil.createTempFile(getBuildTempDirectory(), "powershell", ".bat", true);
       myFilesToRemove.add(bat);
-      FileUtil.writeFileAndReportErrors(bat, argumentsToGenerate);
+      FileUtil.writeFileAndReportErrors(bat, "@" + argumentsToGenerate);
     } catch (IOException e) {
       throw new RunBuildException("Failed to generate .bat file");
     }
-    return Arrays.asList(bat.getPath());
+    return Arrays.asList("/c", bat.getPath());
   }
 
   private boolean isInternalPropertySetExecutionPolicy(@NotNull final String name, boolean def) {
