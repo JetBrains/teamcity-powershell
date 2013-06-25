@@ -48,6 +48,11 @@ public class PowerShellService extends BuildServiceAdapter {
     myProvider = provider;
   }
 
+  @Override
+  public boolean isCommandLineLoggingEnabled() {
+    return false;
+  }
+
   @NotNull
   @Override
   public List<ProcessListener> getListeners() {
@@ -77,25 +82,28 @@ public class PowerShellService extends BuildServiceAdapter {
   @Override
   public ProgramCommandLine makeProgramCommandLine() throws RunBuildException {
     final PowerShellInfo info = selectTool();
+
+    final String command = generateCommand(info);
+    final String workDir = getWorkingDirectory().getPath();
+
+    getBuild().getBuildLogger().message("Starting: " + command);
+    getBuild().getBuildLogger().message("in directory: " + workDir);
+
     return new SimpleProgramCommandLine(
             getActualEnvironmentVariables(info),
-            getWorkingDirectory().getPath(),
+            workDir,
             selectCmd(info),
-            generateRunScript(getCmdArguments(info))
+            generateRunScriptArguments(command)
     );
   }
 
   @NotNull
-  private List<String> generateRunScript(@NotNull final List<String> argumentsToGenerate) throws RunBuildException {
-    final ParametersList parametersList = new ParametersList();
-    parametersList.addAll(argumentsToGenerate);
-
-    final String cmd = parametersList.getParametersString();
+  private List<String> generateRunScriptArguments(@NotNull final String argumentsToGenerate) throws RunBuildException {
     final File bat;
     try {
       bat = FileUtil.createTempFile(getBuildTempDirectory(), "powershell", ".bat", true);
       myFilesToRemove.add(bat);
-      FileUtil.writeFileAndReportErrors(bat, cmd);
+      FileUtil.writeFileAndReportErrors(bat, argumentsToGenerate);
     } catch (IOException e) {
       throw new RunBuildException("Failed to generate .bat file");
     }
@@ -141,6 +149,13 @@ public class PowerShellService extends BuildServiceAdapter {
 
     list.add(cmdArg);
     list.add("ByPass");
+  }
+
+  @NotNull
+  private String generateCommand(@NotNull final PowerShellInfo info) throws RunBuildException {
+    final ParametersList parametersList = new ParametersList();
+    parametersList.addAll(getCmdArguments(info));
+    return parametersList.getParametersString();
   }
 
   private List<String> getCmdArguments(@NotNull final PowerShellInfo info) throws RunBuildException {
