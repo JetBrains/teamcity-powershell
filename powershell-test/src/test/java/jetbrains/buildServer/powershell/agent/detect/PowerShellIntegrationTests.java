@@ -50,6 +50,7 @@ public class PowerShellIntegrationTests extends RunnerTest2Base {
     final SFinishedBuild build = doTest(null);
     dumpBuildLogLocally(build);
     Assert.assertTrue(build.getBuildStatus().isSuccessful());
+    Assert.assertTrue(getBuildLog(build).contains("works"));
   }
 
   @Test
@@ -64,6 +65,7 @@ public class PowerShellIntegrationTests extends RunnerTest2Base {
     final SFinishedBuild build = doTest(null);
     dumpBuildLogLocally(build);
     Assert.assertTrue(build.getBuildStatus().isSuccessful());
+    Assert.assertTrue(getBuildLog(build).contains("works"));
   }
 
   @Test
@@ -77,6 +79,7 @@ public class PowerShellIntegrationTests extends RunnerTest2Base {
     final SFinishedBuild build = doTest(null);
     dumpBuildLogLocally(build);
     Assert.assertTrue(build.getBuildStatus().isSuccessful());
+    Assert.assertTrue(getBuildLog(build).contains("works"));
   }
 
   @Test
@@ -94,5 +97,36 @@ public class PowerShellIntegrationTests extends RunnerTest2Base {
     final SFinishedBuild build = doTest(null);
     dumpBuildLogLocally(build);
     Assert.assertTrue(build.getBuildStatus().isSuccessful());
+
+    Assert.assertTrue(getBuildLog(build).contains("works"));
+  }
+
+
+  @Test
+  public void should_run_x86() throws Throwable {
+    setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "echo \"ptr: $([IntPtr]::size)\"");
+    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, PowerShellBitness.x86.getValue());
+
+    final SFinishedBuild build = doTest(null);
+    dumpBuildLogLocally(build);
+    Assert.assertTrue(build.getBuildStatus().isSuccessful());
+
+    Assert.assertTrue(getBuildLog(build).contains("ptr: 4 NO"));
+  }
+
+  @Test
+  public void should_run_x64() throws Throwable {
+    setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "echo \"ptr: $([IntPtr]::size)\"");
+    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, PowerShellBitness.x64.getValue());
+
+    final SFinishedBuild build = doTest(null);
+    dumpBuildLogLocally(build);
+    Assert.assertTrue(build.getBuildStatus().isSuccessful());
+
+    Assert.assertTrue(getBuildLog(build).contains("ptr: 8 NO"));
   }
 }
