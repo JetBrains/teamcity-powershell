@@ -16,6 +16,7 @@
 
 package jetbrains.buildServer.powershell.agent;
 
+import com.intellij.execution.configurations.ParametersList;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.SystemInfo;
 import jetbrains.buildServer.RunBuildException;
@@ -80,8 +81,25 @@ public class PowerShellService extends BuildServiceAdapter {
             getActualEnvironmentVariables(info),
             getWorkingDirectory().getPath(),
             selectCmd(info),
-            getCmdArguments(info)
+            generateRunScript(getCmdArguments(info))
     );
+  }
+
+  @NotNull
+  private List<String> generateRunScript(@NotNull final List<String> argumentsToGenerate) throws RunBuildException {
+    final ParametersList parametersList = new ParametersList();
+    parametersList.addAll(argumentsToGenerate);
+
+    final String cmd = parametersList.getParametersString();
+    final File bat;
+    try {
+      bat = FileUtil.createTempFile(getBuildTempDirectory(), "powershell", ".bat", true);
+      myFilesToRemove.add(bat);
+      FileUtil.writeFileAndReportErrors(bat, cmd);
+    } catch (IOException e) {
+      throw new RunBuildException("Failed to generate .bat file");
+    }
+    return Arrays.asList(bat.getPath());
   }
 
   private boolean isInternalPropertySetExecutionPolicy(@NotNull final String name, boolean def) {
@@ -126,9 +144,8 @@ public class PowerShellService extends BuildServiceAdapter {
   }
 
   private List<String> getCmdArguments(@NotNull final PowerShellInfo info) throws RunBuildException {
-    List<String> list = new ArrayList<String>();
+    final List<String> list = new ArrayList<String>();
 
-    list.add("/c");
     list.add(info.getExecutablePath());
     if (!StringUtil.isEmptyOrSpaces(getRunnerParameters().get(RUNNER_NO_PROFILE))) {
       list.add("-NoProfile");
