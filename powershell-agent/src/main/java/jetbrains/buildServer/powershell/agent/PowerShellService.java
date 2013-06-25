@@ -16,6 +16,7 @@
 
 package jetbrains.buildServer.powershell.agent;
 
+import com.intellij.execution.configurations.ParametersList;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.SystemInfo;
 import jetbrains.buildServer.RunBuildException;
@@ -41,10 +42,15 @@ public class PowerShellService extends BuildServiceAdapter {
   private static final Logger LOG = Logger.getInstance(PowerShellService.class.getName());
 
   private final PowerShellInfoProvider myProvider;
-  private File myFileToRemove = null;
+  private final Collection<File> myFilesToRemove = new ArrayList<File>();
 
   public PowerShellService(final PowerShellInfoProvider provider) {
     myProvider = provider;
+  }
+
+  @Override
+  public boolean isCommandLineLoggingEnabled() {
+    return false;
   }
 
   @NotNull
@@ -76,12 +82,32 @@ public class PowerShellService extends BuildServiceAdapter {
   @Override
   public ProgramCommandLine makeProgramCommandLine() throws RunBuildException {
     final PowerShellInfo info = selectTool();
+
+    final String command = generateCommand(info);
+    final String workDir = getWorkingDirectory().getPath();
+
+    getBuild().getBuildLogger().message("Starting: " + command);
+    getBuild().getBuildLogger().message("in directory: " + workDir);
+
     return new SimpleProgramCommandLine(
             getActualEnvironmentVariables(info),
-            getWorkingDirectory().getPath(),
+            workDir,
             selectCmd(info),
-            getCmdArguments(info)
+            generateRunScriptArguments(command)
     );
+  }
+
+  @NotNull
+  private List<String> generateRunScriptArguments(@NotNull final String argumentsToGenerate) throws RunBuildException {
+    final File bat;
+    try {
+      bat = FileUtil.createTempFile(getBuildTempDirectory(), "powershell", ".bat", true);
+      myFilesToRemove.add(bat);
+      FileUtil.writeFileAndReportErrors(bat, "@" + argumentsToGenerate);
+    } catch (IOException e) {
+      throw new RunBuildException("Failed to generate .bat file");
+    }
+    return Arrays.asList("/c", bat.getPath());
   }
 
   private boolean isInternalPropertySetExecutionPolicy(@NotNull final String name, boolean def) {
@@ -125,10 +151,16 @@ public class PowerShellService extends BuildServiceAdapter {
     list.add("ByPass");
   }
 
-  private List<String> getCmdArguments(@NotNull final PowerShellInfo info) throws RunBuildException {
-    List<String> list = new ArrayList<String>();
+  @NotNull
+  private String generateCommand(@NotNull final PowerShellInfo info) throws RunBuildException {
+    final ParametersList parametersList = new ParametersList();
+    parametersList.addAll(getCmdArguments(info));
+    return parametersList.getParametersString();
+  }
 
-    list.add("/c");
+  private List<String> getCmdArguments(@NotNull final PowerShellInfo info) throws RunBuildException {
+    final List<String> list = new ArrayList<String>();
+
     list.add(info.getExecutablePath());
     if (!StringUtil.isEmptyOrSpaces(getRunnerParameters().get(RUNNER_NO_PROFILE))) {
       list.add("-NoProfile");
@@ -182,10 +214,12 @@ public class PowerShellService extends BuildServiceAdapter {
   public void afterProcessFinished() throws RunBuildException {
     super.afterProcessFinished();
 
-    if (myFileToRemove != null && !getConfigParameters().containsKey(CONFIG_KEEP_GENERATED)) {
-      FileUtil.delete(myFileToRemove);
-      myFileToRemove = null;
+    if (getConfigParameters().containsKey(CONFIG_KEEP_GENERATED)) return;
+
+    for (File file : myFilesToRemove) {
+      FileUtil.delete(file);
     }
+    myFilesToRemove.clear();
   }
 
   private File getOrCreateScriptFile() throws RunBuildException {
@@ -213,7 +247,7 @@ public class PowerShellService extends BuildServiceAdapter {
       text = "  \r\n  \r\n  \r\n" + StringUtil.convertLineSeparators(text, "\r\n") + "\r\n  \r\n   \r\n   ";
 
       final File code = FileUtil.createTempFile(getBuildTempDirectory(), "powershell", ".ps1", true);
-      myFileToRemove = code;
+      myFilesToRemove.add(code);
       OutputStreamWriter w = new OutputStreamWriter(new FileOutputStream(code), "utf-8");
       handle = w;
       w.write(text);
