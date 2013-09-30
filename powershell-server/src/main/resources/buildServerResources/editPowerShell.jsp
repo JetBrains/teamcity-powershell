@@ -46,7 +46,7 @@
   </td>
 </tr>
 
-<tr>
+<tr class="advancedSetting">
   <th><label for="${bean.errorToErrorKey}">Error Output:</label></th>
   <td>
     <props:selectProperty name="${bean.errorToErrorKey}">
@@ -116,7 +116,7 @@
   </td>
 </tr>
 
-<tr>
+<tr class="advancedSetting">
   <th>Options:</th>
   <td>
     <props:checkboxProperty name="${bean.noProfileKey}"/>
@@ -124,10 +124,10 @@
   </td>
 </tr>
 
-<tr>
+<tr class="advancedSetting">
   <th><label for="${bean.argumentsKey}">Additional command line parameters:</label></th>
   <td>
-    <props:multilineProperty name="${bean.argumentsKey}"  cols="58" linkTitle="Expand" rows="5"/>
+    <props:textProperty name="${bean.argumentsKey}" className="longField" expandable="true"/>
     <span class="smallNote">Enter additional command line parameters to powershell.exe.</span>
     <span class="error" id="error_${bean.argumentsKey}"></span>
   </td>
