@@ -156,7 +156,7 @@ task initDistrDestinations(dependsOn: [':powershell-common:build',
       into pluginDist
       from (projectDir) {
         include 'teamcity-plugin.xml'
-        filter(ReplaceTokens, tokens:[VERSION: version ])
+        filter(ReplaceTokens, tokens:[Plugin_Version: version ])
       }
     }
 }

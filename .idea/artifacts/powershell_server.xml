@@ -1,0 +1,15 @@
+<component name="ArtifactManager">
+  <artifact name="powershell-server">
+    <output-path>$PROJECT_DIR$/out/artifacts/powershell_server</output-path>
+    <root id="root">
+      <element id="archive" name="powershell-server.jar">
+        <element id="module-output" name="powershell-server" />
+      </element>
+      <element id="archive" name="powershell-resources.jar">
+        <element id="directory" name="buildServerResources">
+          <element id="dir-copy" path="$PROJECT_DIR$/powershell-server/src/main/resources/buildServerResources" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

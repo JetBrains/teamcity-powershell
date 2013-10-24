@@ -5,6 +5,17 @@
       <configuration>
         <fileset id="fileset1" name="powershell-server" removed="false">
           <file>file://$MODULE_DIR$/src/main/resources/META-INF/build-server-plugin-powershell.xml</file>
+          <file>file://$MODULE_DIR$/fake-teamcity-server-plugin-context.xml</file>
+          <file>jar://$TeamCityDistribution$/webapps/ROOT/WEB-INF/lib/server.jar!/META-INF/build-server-declarative-extensibility.xml</file>
+          <file>jar://$TeamCityDistribution$/webapps/ROOT/WEB-INF/lib/common-impl.jar!/META-INF/plugin-model-shared-spring.xml</file>
+          <file>jar://$TeamCityDistribution$/webapps/ROOT/WEB-INF/lib/common-impl.jar!/META-INF/per-plugin-shared-spring.xml</file>
+          <file>jar://$TeamCityDistribution$/webapps/ROOT/WEB-INF/lib/common-impl.jar!/META-INF/plugin-model-shared-spring-common.xml</file>
+          <file>jar://$TeamCityDistribution$/webapps/ROOT/WEB-INF/lib/common-impl.jar!/META-INF/shared-agent-server-spring.xml</file>
+          <file>jar://$TeamCityDistribution$/webapps/ROOT/WEB-INF/lib/common-impl.jar!/META-INF/shared-spring-sub-container.xml</file>
+          <file>jar://$TeamCityDistribution$/webapps/ROOT/WEB-INF/lib/common-impl.jar!/META-INF/teamcity-global-spring-candidate-resolver.xml</file>
+          <file>jar://$TeamCityDistribution$/webapps/ROOT/WEB-INF/lib/common-impl.jar!/META-INF/teamcity-global-spring-settings.xml</file>
+          <file>file://$TeamCityDistribution$/webapps/ROOT/WEB-INF/lib/common-impl.jar</file>
+          <file>jar://$TeamCityDistribution$/webapps/ROOT/WEB-INF/lib/server.jar!/META-INF/buildServerSpring.xml</file>
         </fileset>
       </configuration>
     </facet>
@@ -33,12 +44,13 @@
     <orderEntry type="module-library" scope="RUNTIME">
       <library>
         <CLASSES>
-          <root url="jar://$teamcitydistribution$/webapps/ROOT/WEB-INF/lib/standard.jar!/" />
+          <root url="jar://$TeamCityDistribution$/webapps/ROOT/WEB-INF/lib/standard.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="Server-Runtime" level="project" />
   </component>
 </module>
 

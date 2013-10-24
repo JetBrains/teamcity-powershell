@@ -61,8 +61,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="Server-Runtime" level="project" />
-    <orderEntry type="library" name="Agent-Runtime" level="project" />
   </component>
 </module>
 
