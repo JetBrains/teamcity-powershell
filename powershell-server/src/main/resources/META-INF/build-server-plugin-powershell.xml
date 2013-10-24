@@ -5,5 +5,6 @@
        default-autowire="constructor">
 
   <bean class="jetbrains.buildServer.powershell.server.PowerShellRunType"/>
+  <bean class="jetbrains.buildServer.powershell.server.PowerShellRunnerDiscoverer"/>
 
 </beans>
