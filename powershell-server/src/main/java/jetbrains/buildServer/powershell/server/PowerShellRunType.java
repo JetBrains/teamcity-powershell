@@ -53,11 +53,13 @@ public class PowerShellRunType extends RunType {
     return PowerShellConstants.RUN_TYPE;
   }
 
+  @NotNull
   @Override
   public String getDisplayName() {
     return "Powershell";
   }
 
+  @NotNull
   @Override
   public String getDescription() {
     return "Powershell runner";
@@ -142,8 +144,10 @@ public class PowerShellRunType extends RunType {
       switch (mode) {
         case FILE:
           sb.append(parameters.get(RUNNER_SCRIPT_FILE));
+          break;
         case CODE:
           sb.append("<script>");
+          break;
       }
     }
     return sb.toString();
@@ -164,6 +168,7 @@ public class PowerShellRunType extends RunType {
     return PowerShellVersion.fromString(parameters.get(RUNNER_MIN_VERSION));
   }
 
+  @NotNull
   @Override
   public List<Requirement> getRunnerSpecificRequirements(@NotNull final Map<String, String> runParameters) {
     final PowerShellVersion minVersion = getMinimalVersion(runParameters);
