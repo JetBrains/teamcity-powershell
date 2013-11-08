@@ -27,7 +27,7 @@ public class PowerShellRunnerDiscoverer extends BreadthFirstRunnerDiscoveryExten
 
   @NotNull
   @Override
-  protected List<DiscoveredBuildRunner> discoverRunnersInDirectory(@NotNull final Element dir, @NotNull final List<Element> filesAndDirs) {
+  protected List<DiscoveredObject> discoverRunnersInDirectory(@NotNull final Element dir, @NotNull final List<Element> filesAndDirs) {
     final List<DiscoveredObject> runners = new ArrayList<DiscoveredObject>();
     for (Element e: filesAndDirs) {
       if (e.isLeaf() && PS_EXT.equals(FileUtil.getExtension(e.getName()))) {
