@@ -5,7 +5,8 @@ import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.powershell.common.PowerShellScriptMode;
-import jetbrains.buildServer.serverSide.DiscoveredBuildRunner;
+import jetbrains.buildServer.serverSide.discovery.DiscoveredObject;
+import jetbrains.buildServer.serverSide.BuildTypeSettings;
 import jetbrains.buildServer.util.browser.Browser;
 import jetbrains.buildServer.util.browser.Element;
 import org.jmock.Expectations;
@@ -30,6 +31,8 @@ public class PowerShellRunnerDiscovererTest extends BaseTestCase {
 
   private Element myRootElement;
 
+  private BuildTypeSettings myBuildTypeSettings;
+
   @Override
   @BeforeMethod
   public void setUp() throws Exception {
@@ -38,6 +41,7 @@ public class PowerShellRunnerDiscovererTest extends BaseTestCase {
     myBrowser = m.mock(Browser.class);
     myRootElement = m.mock(Element.class, "root-element");
     myDiscoverer = new PowerShellRunnerDiscoverer();
+    myBuildTypeSettings = m.mock(BuildTypeSettings.class);
   }
 
   @Test
@@ -51,7 +55,7 @@ public class PowerShellRunnerDiscovererTest extends BaseTestCase {
       will(returnValue(children));
     }});
 
-    final List<DiscoveredBuildRunner> runners = myDiscoverer.discover(myBrowser);
+    final List<DiscoveredObject> runners = myDiscoverer.discover(myBuildTypeSettings, myBrowser);
     assertNull(runners);
   }
 
@@ -144,10 +148,10 @@ public class PowerShellRunnerDiscovererTest extends BaseTestCase {
 
     }});
 
-    final List<DiscoveredBuildRunner> runners = myDiscoverer.discover(myBrowser);
+    final List<DiscoveredObject> runners = myDiscoverer.discover(myBrowser);
     assertNotNull(runners);
     assertEquals(1, runners.size());
-    final DiscoveredBuildRunner runner = runners.get(0);
+    final DiscoveredObject runner = runners.get(0);
     validateRunner(runner, fullName);
   }
 
@@ -179,13 +183,13 @@ public class PowerShellRunnerDiscovererTest extends BaseTestCase {
 
     }});
 
-    final List<DiscoveredBuildRunner> runners = myDiscoverer.discover(myBrowser);
+    final List<DiscoveredObject> runners = myDiscoverer.discover(myBrowser);
     assertNotNull(runners);
     assertEquals(1, runners.size());
     validateRunner(runners.get(0), fullName);
   }
 
-  private void validateRunner(DiscoveredBuildRunner runner, String scriptFullName) {
+  private void validateRunner(DiscoveredObject runner, String scriptFullName) {
     assertNotNull(runner);
     assertEquals(PowerShellConstants.RUN_TYPE, runner.getType());
     final Map<String, String> params = runner.getParameters();
