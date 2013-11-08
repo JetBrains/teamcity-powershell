@@ -99,7 +99,7 @@ public class PowerShellRunnerDiscovererTest extends BaseTestCase {
 
     }});
 
-    final List<DiscoveredBuildRunner> runners = myDiscoverer.discover(myBrowser);
+    final List<DiscoveredObject> runners = myDiscoverer.discover(myBrowser);
     assertNull(runners);
 
   }
