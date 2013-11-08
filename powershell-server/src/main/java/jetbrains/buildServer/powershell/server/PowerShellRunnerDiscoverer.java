@@ -36,7 +36,7 @@ public class PowerShellRunnerDiscoverer extends BreadthFirstRunnerDiscoveryExten
         parameters.put(PowerShellConstants.RUNNER_BITNESS, PowerShellBitness.values()[0].getValue());
         parameters.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
         parameters.put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.FILE.getValue());
-        runners.add(new DiscoveredObject(PowerShellConstants.RUN_TYPE, parameters, PowerShellConstants.RUN_TYPE + " " + e.getName()));
+        runners.add(new DiscoveredObject(PowerShellConstants.RUN_TYPE, parameters));
       }
     }
     return runners;
