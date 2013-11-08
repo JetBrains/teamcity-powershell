@@ -99,7 +99,7 @@ public class PowerShellRunnerDiscovererTest extends BaseTestCase {
 
     }});
 
-    final List<DiscoveredObject> runners = myDiscoverer.discover(myBrowser);
+    final List<DiscoveredObject> runners = myDiscoverer.discover(myBuildTypeSettings, myBrowser);
     assertNull(runners);
 
   }
@@ -148,7 +148,7 @@ public class PowerShellRunnerDiscovererTest extends BaseTestCase {
 
     }});
 
-    final List<DiscoveredObject> runners = myDiscoverer.discover(myBrowser);
+    final List<DiscoveredObject> runners = myDiscoverer.discover(myBuildTypeSettings, myBrowser);
     assertNotNull(runners);
     assertEquals(1, runners.size());
     final DiscoveredObject runner = runners.get(0);
@@ -183,7 +183,7 @@ public class PowerShellRunnerDiscovererTest extends BaseTestCase {
 
     }});
 
-    final List<DiscoveredObject> runners = myDiscoverer.discover(myBrowser);
+    final List<DiscoveredObject> runners = myDiscoverer.discover(myBuildTypeSettings, myBrowser);
     assertNotNull(runners);
     assertEquals(1, runners.size());
     validateRunner(runners.get(0), fullName);
