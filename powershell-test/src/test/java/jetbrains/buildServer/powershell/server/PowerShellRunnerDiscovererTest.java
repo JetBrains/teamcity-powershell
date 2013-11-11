@@ -56,7 +56,7 @@ public class PowerShellRunnerDiscovererTest extends BaseTestCase {
     }});
 
     final List<DiscoveredObject> runners = myDiscoverer.discover(myBuildTypeSettings, myBrowser);
-    assertNull(runners);
+    assertEquals(0, runners.size());
   }
 
   @Test
@@ -100,7 +100,7 @@ public class PowerShellRunnerDiscovererTest extends BaseTestCase {
     }});
 
     final List<DiscoveredObject> runners = myDiscoverer.discover(myBuildTypeSettings, myBrowser);
-    assertNull(runners);
+    assertEquals(0, runners.size());
 
   }
 
