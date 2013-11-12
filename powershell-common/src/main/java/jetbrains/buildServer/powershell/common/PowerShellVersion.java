@@ -15,6 +15,7 @@ public enum PowerShellVersion {
   V_1_0("1.0", 1),
   V_2_0("2.0", 2),
   V_3_0("3.0", 3),
+  V_4_0("4.0", 3),
   ;
 
   private final String myVersion;

@@ -63,6 +63,20 @@ public class PowerShellDetectorTest extends BaseTestCase {
   }
 
   @Test
+  public void test_readPowerShellVersion_4() {
+    final Mockery m = new Mockery();
+    final Win32RegistryAccessor acc = m.mock(Win32RegistryAccessor.class);
+
+    m.checking(new Expectations(){{
+      allowing(acc).readRegistryText(LOCAL_MACHINE, BIT32, "SOFTWARE\\Microsoft\\PowerShell\\3\\PowerShellEngine", "PowerShellVersion"); will(returnValue("4.0"));
+      allowing(acc).readRegistryText(LOCAL_MACHINE, BIT32, "SOFTWARE\\Microsoft\\PowerShell\\1\\PowerShellEngine", "PowerShellVersion"); will(returnValue("2.0"));
+    }});
+
+    final PowerShellVersion ver = new PowerShellRegistry(BIT32, acc).getInstalledVersion();
+    Assert.assertEquals(ver, PowerShellVersion.V_4_0);
+  }
+
+  @Test
   public void test_readPowerShellVersion_none() {
     final Mockery m = new Mockery();
     final Win32RegistryAccessor acc = m.mock(Win32RegistryAccessor.class);
