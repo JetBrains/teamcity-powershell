@@ -5,8 +5,9 @@ import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.powershell.common.PowerShellScriptMode;
-import jetbrains.buildServer.serverSide.discovery.DiscoveredObject;
 import jetbrains.buildServer.serverSide.BuildTypeSettings;
+import jetbrains.buildServer.serverSide.SBuildRunnerDescriptor;
+import jetbrains.buildServer.serverSide.discovery.DiscoveredObject;
 import jetbrains.buildServer.util.browser.Browser;
 import jetbrains.buildServer.util.browser.Element;
 import org.jmock.Expectations;
@@ -188,6 +189,59 @@ public class PowerShellRunnerDiscovererTest extends BaseTestCase {
     assertNotNull(runners);
     assertEquals(1, runners.size());
     validateRunner(runners.get(0), fullName);
+  }
+
+  @Test
+  public void testExcludeAlreadyUsedFiles() throws Exception {
+    final SBuildRunnerDescriptor definedRunner = m.mock(SBuildRunnerDescriptor.class, "already-defined-descriptor");
+    final String scriptFileName = "file1.ps1";
+    final Map<String, String> definedRunnerParams = new HashMap<String, String>() {{
+      put(PowerShellConstants.RUNNER_SCRIPT_FILE, scriptFileName);
+      put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.FILE.getValue());
+    }};
+    final Element file1 = m.mock(Element.class, "file1.ps1");
+    final String file2Name = "file2.ps1";
+    final Element file2 = m.mock(Element.class, file2Name);
+    m.checking(new Expectations() {{
+      oneOf(myBrowser).getRoot();
+      will(returnValue(myRootElement));
+
+      oneOf(myRootElement).getChildren();
+      will(returnValue(Arrays.asList(file1, file2)));
+
+      atLeast(1).of(file1).isLeaf();
+      will(returnValue(true));
+
+      atLeast(1).of(file2).isLeaf();
+      will(returnValue(true));
+
+      atLeast(1).of(file1).getName();
+      will(returnValue(scriptFileName));
+
+      atLeast(1).of(file2).getName();
+      will(returnValue(file2Name));
+
+      atLeast(1).of(file1).getFullName();
+      will(returnValue(scriptFileName));
+
+      atLeast(1).of(file2).getFullName();
+      will(returnValue(file2Name));
+
+      atLeast(1).of(myBuildTypeSettings).getBuildRunners();
+      will(returnValue(Arrays.asList(definedRunner)));
+
+      oneOf(definedRunner).getType();
+      will(returnValue(PowerShellConstants.RUN_TYPE));
+
+      allowing(definedRunner).getParameters();
+      will(returnValue(definedRunnerParams));
+    }});
+
+    final List<DiscoveredObject> runners = myDiscoverer.discover(myBuildTypeSettings, myBrowser);
+    assertNotNull(runners);
+    assertEquals(1, runners.size());
+    validateRunner(runners.get(0), file2Name);
+
   }
 
   private void validateRunner(DiscoveredObject runner, String scriptFullName) {

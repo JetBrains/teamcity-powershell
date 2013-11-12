@@ -5,15 +5,15 @@ import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.powershell.common.PowerShellScriptMode;
+import jetbrains.buildServer.serverSide.BuildRunnerDescriptor;
+import jetbrains.buildServer.serverSide.BuildTypeSettings;
 import jetbrains.buildServer.serverSide.discovery.BreadthFirstRunnerDiscoveryExtension;
 import jetbrains.buildServer.serverSide.discovery.DiscoveredObject;
+import jetbrains.buildServer.util.browser.Browser;
 import jetbrains.buildServer.util.browser.Element;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -40,5 +40,40 @@ public class PowerShellRunnerDiscoverer extends BreadthFirstRunnerDiscoveryExten
       }
     }
     return runners;
+  }
+
+  @NotNull
+  @Override
+  protected List<DiscoveredObject> postProcessDiscoveredObjects(@NotNull BuildTypeSettings settings,
+                                                                @NotNull Browser browser,
+                                                                @NotNull List<DiscoveredObject> discovered) {
+    if (discovered.isEmpty() || settings.getBuildRunners().isEmpty()) {
+      return discovered;
+    }
+    final Set<String> alreadyUsedFiles = getAlreadyUsedFiles(settings);
+    if (alreadyUsedFiles.isEmpty()) {
+      return discovered;
+    }
+    final Iterator<DiscoveredObject> it = discovered.iterator();
+    while (it.hasNext()) {
+      DiscoveredObject o = it.next();
+      if (alreadyUsedFiles.contains(o.getParameters().get(PowerShellConstants.RUNNER_SCRIPT_FILE))) {
+        it.remove();
+      }
+    }
+    return discovered;
+  }
+
+  private Set<String> getAlreadyUsedFiles(@NotNull final BuildTypeSettings settings) {
+    final Set<String> result = new HashSet<String>();
+    for (BuildRunnerDescriptor runner: settings.getBuildRunners()) {
+      if (PowerShellConstants.RUN_TYPE.equals(runner.getType())) {
+        final Map<String, String> params = runner.getParameters();
+        if (PowerShellScriptMode.FILE.getValue().equals(params.get(PowerShellConstants.RUNNER_SCRIPT_MODE))) {
+          result.add(runner.getParameters().get(PowerShellConstants.RUNNER_SCRIPT_FILE));
+        }
+      }
+    }
+    return result;
   }
 }
