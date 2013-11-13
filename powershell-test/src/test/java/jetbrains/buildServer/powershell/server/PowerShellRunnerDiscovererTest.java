@@ -148,6 +148,9 @@ public class PowerShellRunnerDiscovererTest extends BaseTestCase {
       atLeast(1).of(file2).getFullName();
       will(returnValue(fullName));
 
+      allowing(myBuildTypeSettings).getBuildRunners();
+      will(returnValue(Collections.emptyList()));
+
     }});
 
     final List<DiscoveredObject> runners = myDiscoverer.discover(myBuildTypeSettings, myBrowser);
@@ -183,6 +186,8 @@ public class PowerShellRunnerDiscovererTest extends BaseTestCase {
       atLeast(1).of(file1).getFullName();
       will(returnValue(fullName));
 
+      allowing(myBuildTypeSettings).getBuildRunners();
+      will(returnValue(Collections.emptyList()));
     }});
 
     final List<DiscoveredObject> runners = myDiscoverer.discover(myBuildTypeSettings, myBrowser);
