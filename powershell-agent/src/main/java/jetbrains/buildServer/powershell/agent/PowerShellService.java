@@ -41,11 +41,18 @@ import static jetbrains.buildServer.powershell.common.PowerShellConstants.*;
 public class PowerShellService extends BuildServiceAdapter {
   private static final Logger LOG = Logger.getInstance(PowerShellService.class.getName());
 
-  private final PowerShellInfoProvider myProvider;
   private final Collection<File> myFilesToRemove = new ArrayList<File>();
 
-  public PowerShellService(final PowerShellInfoProvider provider) {
-    myProvider = provider;
+  @NotNull
+  private final PowerShellInfoProvider myInfoProvider;
+
+  @NotNull
+  private final PowerShellCommandLineProvider myCmdProvider;
+
+  public PowerShellService(@NotNull final PowerShellInfoProvider powerShellInfoProvider,
+                           @NotNull final PowerShellCommandLineProvider cmdProvider) {
+    myInfoProvider = powerShellInfoProvider;
+    myCmdProvider = cmdProvider;
   }
 
   @Override
@@ -112,9 +119,11 @@ public class PowerShellService extends BuildServiceAdapter {
 
   private boolean isInternalPropertySetExecutionPolicy(@NotNull final String name, boolean def) {
     final String prop = getConfigParameters().get("teamcity.powershell." + name);
-    if (StringUtil.isEmptyOrSpaces(prop)) return def;
-
-    return "true".equalsIgnoreCase(prop);
+    if (StringUtil.isEmptyOrSpaces(prop)) {
+      return def;
+    } else {
+      return "true".equalsIgnoreCase(prop);
+    }
   }
 
   @NotNull
@@ -136,78 +145,19 @@ public class PowerShellService extends BuildServiceAdapter {
     return map;
   }
 
-  private void addExecutionPolicyPreference(@NotNull final List<String> list, @NotNull final PowerShellInfo info) {
-    if (!isInternalPropertySetExecutionPolicy("set.executionPolicyArg", info.getVersion() != PowerShellVersion.V_1_0)) return;
-
-    final String cmdArg = "-ExecutionPolicy";
-    for (String arg : list) {
-      if (arg.trim().toLowerCase().contains(cmdArg.toLowerCase())) {
-        LOG.info(cmdArg  + " was specified explicitly");
-        return;
-      }
-    }
-
-    list.add(cmdArg);
-    list.add("ByPass");
-  }
-
   @NotNull
   private String generateCommand(@NotNull final PowerShellInfo info) throws RunBuildException {
     final ParametersList parametersList = new ParametersList();
-    parametersList.addAll(getCmdArguments(info));
+    parametersList.addAll(myCmdProvider.provideCommandLine(info,
+            getRunnerParameters(),
+            getOrCreateScriptFile(),
+            useExecutionPolicy(info))
+    );
     return parametersList.getParametersString();
   }
 
-  private List<String> getCmdArguments(@NotNull final PowerShellInfo info) throws RunBuildException {
-    final List<String> list = new ArrayList<String>();
-
-    list.add(info.getExecutablePath());
-    if (!StringUtil.isEmptyOrSpaces(getRunnerParameters().get(RUNNER_NO_PROFILE))) {
-      list.add("-NoProfile");
-    }
-    list.add("-NonInteractive");
-
-    addCustomArguments(list, RUNNER_CUSTOM_ARGUMENTS);
-    addExecutionPolicyPreference(list, info);
-
-    PowerShellExecutionMode mod = PowerShellExecutionMode.fromString(getRunnerParameters().get(RUNNER_EXECUTION_MODE));
-    if (mod == null) {
-      throw new RunBuildException("'" + RUNNER_EXECUTION_MODE + "' runner parameters is not defined");
-    }
-
-    final File script = getOrCreateScriptFile();
-    switch (mod) {
-      case STDIN:
-        list.add("-Command");
-        list.add("-");
-        list.add("<");
-        list.add(script.getPath());
-        break;
-      case PS1:
-        if (!script.getPath().toLowerCase().endsWith(".ps1")) {
-          throw new RunBuildException("PowerShell script should have '.ps1' extension");
-        }
-        list.add("-File");
-        list.add(script.getPath());
-        addCustomArguments(list, PowerShellConstants.RUNNER_SCRIPT_ARGUMENTS);
-        break;
-      default:
-        throw new RunBuildException("Unknown ExecutionMode: " + mod);
-    }
-
-    return list;
-  }
-
-  private void addCustomArguments(@NotNull final List<String> args,
-                                  @NotNull final String runnerParametersKey) {
-    final String custom = getRunnerParameters().get(runnerParametersKey);
-    if (!StringUtil.isEmptyOrSpaces(custom)) {
-      for (String _line : custom.split("[\\r\\n]+")) {
-        String line = _line.trim();
-        if (StringUtil.isEmptyOrSpaces(line)) continue;
-        args.addAll(StringUtil.splitHonorQuotes(line));
-      }
-    }
+  private boolean useExecutionPolicy(@NotNull final PowerShellInfo info) {
+    return isInternalPropertySetExecutionPolicy("set.executionPolicyArg", info.getVersion() != PowerShellVersion.V_1_0);
   }
 
   @Override
@@ -263,8 +213,7 @@ public class PowerShellService extends BuildServiceAdapter {
   private PowerShellInfo selectTool() throws RunBuildException {
     final PowerShellBitness bit = fromString(getRunnerParameters().get(RUNNER_BITNESS));
     if (bit == null) throw new RunBuildException("Failed to read: " + RUNNER_BITNESS);
-
-    for (PowerShellInfo info : myProvider.getPowerShells()) {
+    for (PowerShellInfo info : myInfoProvider.getPowerShells()) {
       if (info.getBitness() == bit) {
         return info;
       }

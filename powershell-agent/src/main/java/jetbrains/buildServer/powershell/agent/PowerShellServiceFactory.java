@@ -9,16 +9,24 @@ import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import org.jetbrains.annotations.NotNull;
 
 public class PowerShellServiceFactory implements CommandLineBuildServiceFactory, AgentBuildRunnerInfo {
-  private static final Logger LOG = Logger.getInstance(PowerShellServiceFactory.class.getName());
-  private final PowerShellInfoProvider myInfos;
 
-  public PowerShellServiceFactory(@NotNull final PowerShellInfoProvider infos) {
-    myInfos = infos;
+  private static final Logger LOG = Logger.getInstance(PowerShellServiceFactory.class.getName());
+
+  @NotNull
+  private final PowerShellInfoProvider myInfoProvider;
+
+  @NotNull
+  private final PowerShellCommandLineProvider myCmdProvider;
+
+  public PowerShellServiceFactory(@NotNull final PowerShellInfoProvider powerShellInfoProvider,
+                                  @NotNull final PowerShellCommandLineProvider cmdProvider) {
+    myInfoProvider = powerShellInfoProvider;
+    myCmdProvider = cmdProvider;
   }
 
   @NotNull
   public CommandLineBuildService createService() {
-    return new PowerShellService(myInfos);
+    return new PowerShellService(myInfoProvider, myCmdProvider);
   }
 
   @NotNull
@@ -32,7 +40,7 @@ public class PowerShellServiceFactory implements CommandLineBuildServiceFactory,
   }
 
   public boolean canRun(@NotNull final BuildAgentConfiguration agentConfiguration) {
-    final boolean isEmpty = myInfos.getPowerShells().isEmpty();
+    final boolean isEmpty = myInfoProvider.getPowerShells().isEmpty();
     if (isEmpty) {
       LOG.info("Powershell runner is disabled: Powershell was not found.");
       return false;
