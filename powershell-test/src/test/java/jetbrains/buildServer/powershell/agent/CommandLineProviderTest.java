@@ -17,13 +17,12 @@
 package jetbrains.buildServer.powershell.agent;
 
 import jetbrains.buildServer.BaseTestCase;
-import jetbrains.buildServer.powershell.agent.PowerShellInfoProvider;
-import jetbrains.buildServer.powershell.agent.PowerShellService;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
+import jetbrains.buildServer.powershell.common.PowerShellConstants;
+import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.powershell.common.PowerShellVersion;
 import jetbrains.buildServer.util.TestFor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -33,9 +32,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -44,12 +41,15 @@ import java.util.Map;
  */
 public class CommandLineProviderTest extends BaseTestCase {
 
+  private static final String SCRIPT_FILE_NAME = "script.ps1";
+
   private Mockery m;
 
   private PowerShellCommandLineProvider myProvider;
 
   private File myScriptFile;
 
+  @SuppressWarnings("ResultOfMethodCallIgnored")
   @Override
   @BeforeMethod
   public void setUp() throws Exception {
@@ -58,7 +58,17 @@ public class CommandLineProviderTest extends BaseTestCase {
       setImposteriser(ClassImposteriser.INSTANCE);
     }};
     myProvider = new PowerShellCommandLineProvider();
-    myScriptFile = createTempFile();
+    final File dir = createTempDir();
+    myScriptFile = new File(dir, SCRIPT_FILE_NAME);
+    myScriptFile.createNewFile();
+    super.registerAsTempFile(myScriptFile);
+  }
+
+  @Override
+  @AfterMethod
+  public void tearDown() throws Exception {
+    super.tearDown();
+    m.assertIsSatisfied();
   }
 
   @Test(dataProvider = "powerShellVersions")
@@ -84,6 +94,34 @@ public class CommandLineProviderTest extends BaseTestCase {
     assertEquals(expectedVersionValue, result.get(2));
   }
 
+  @Test(dataProvider = "powerShellVersions")
+  @TestFor(issues = "TW-34557")
+  public void testScriptArgumentsProvided(@NotNull final PowerShellVersion version) throws Exception {
+    final PowerShellInfo info = m.mock(PowerShellInfo.class);
+    final Map<String, String> runnerParams = new HashMap<String, String>();
+    runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
+    final String args = "arg1 arg2 arg3";
+    runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_ARGUMENTS, args);
+    m.checking(new Expectations() {{
+      allowing(info).getExecutablePath();
+      will(returnValue("executablePath"));
+
+      allowing(info).getVersion();
+      will(returnValue(version));
+    }});
+    final List<String> expected = new ArrayList<String>() {{
+      add(info.getExecutablePath());
+      add("-Version");
+      add(version.getVersion());
+      add("-NonInteractive");
+      add("-File");
+      add(myScriptFile.getPath());
+      addAll(Arrays.asList(args.split("\\s+")));
+    }};
+    final List<String> result = myProvider.provideCommandLine(info, runnerParams, myScriptFile, false);
+    assertSameElements(result, expected);
+  }
+
   @DataProvider(name = "powerShellVersions")
   public Object[][] getVersions() {
     PowerShellVersion[] versions = PowerShellVersion.values();
@@ -92,12 +130,5 @@ public class CommandLineProviderTest extends BaseTestCase {
       result[i] = new Object[] {versions[i]};
     }
     return result;
-  }
-
-  @Override
-  @AfterMethod
-  public void tearDown() throws Exception {
-    super.tearDown();
-    m.assertIsSatisfied();
   }
 }

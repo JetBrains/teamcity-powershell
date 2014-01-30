@@ -19,7 +19,6 @@ package jetbrains.buildServer.powershell.agent;
 import com.intellij.openapi.diagnostic.Logger;
 import jetbrains.buildServer.RunBuildException;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
-import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
@@ -29,8 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static jetbrains.buildServer.powershell.common.PowerShellConstants.RUNNER_EXECUTION_MODE;
-import static jetbrains.buildServer.powershell.common.PowerShellConstants.RUNNER_NO_PROFILE;
+import static jetbrains.buildServer.powershell.common.PowerShellConstants.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -55,7 +53,7 @@ public class PowerShellCommandLineProvider {
     }
     result.add("-NonInteractive");
 
-    addCustomArguments(result, runnerParams);
+    addCustomArguments(result, runnerParams, RUNNER_CUSTOM_ARGUMENTS);
     if (useExecutionPolicy) {
       addExecutionPolicyPreference(result);
     }
@@ -64,7 +62,7 @@ public class PowerShellCommandLineProvider {
     if (mod == null) {
       throw new RunBuildException("'" + RUNNER_EXECUTION_MODE + "' runner parameters is not defined");
     }
-    addScriptBody(result, mod, scriptFile);
+    addScriptBody(result, mod, scriptFile, runnerParams);
     return result;
   }
 
@@ -74,8 +72,9 @@ public class PowerShellCommandLineProvider {
   }
 
   private void addCustomArguments(@NotNull final List<String> args,
-                                  @NotNull final Map<String, String> runnerParams) {
-    final String custom = runnerParams.get(PowerShellConstants.RUNNER_SCRIPT_ARGUMENTS);
+                                  @NotNull final Map<String, String> runnerParams,
+                                  @NotNull final String key) {
+    final String custom = runnerParams.get(key);
     if (!StringUtil.isEmptyOrSpaces(custom)) {
       for (String _line : custom.split("[\\r\\n]+")) {
         String line = _line.trim();
@@ -99,7 +98,8 @@ public class PowerShellCommandLineProvider {
 
   private void addScriptBody(@NotNull final List<String> args,
                              @NotNull final PowerShellExecutionMode mod,
-                             @NotNull final File scriptFile) throws RunBuildException {
+                             @NotNull final File scriptFile,
+                             @NotNull final Map<String, String> runnerParams) throws RunBuildException {
     switch (mod) {
       case STDIN:
         args.add("-Command");
@@ -113,6 +113,7 @@ public class PowerShellCommandLineProvider {
         }
         args.add("-File");
         args.add(scriptFile.getPath());
+        addCustomArguments(args, runnerParams, RUNNER_SCRIPT_ARGUMENTS);
         break;
       default:
         throw new RunBuildException("Unknown ExecutionMode: " + mod);
