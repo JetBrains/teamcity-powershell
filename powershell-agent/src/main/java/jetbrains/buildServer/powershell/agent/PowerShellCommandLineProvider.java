@@ -47,7 +47,7 @@ public class PowerShellCommandLineProvider {
     final List<String> result = new ArrayList<String>();
 
     result.add(info.getExecutablePath());
-    addVersion(result, info); // version must be the 1st arg after executable path
+    addVersion(result, info, runnerParams); // version must be the 1st arg after executable path
     if (!StringUtil.isEmptyOrSpaces(runnerParams.get(RUNNER_NO_PROFILE))) {
       result.add("-NoProfile");
     }
@@ -66,9 +66,13 @@ public class PowerShellCommandLineProvider {
     return result;
   }
 
-  private void addVersion(@NotNull final List<String> list, @NotNull final PowerShellInfo info) {
-    list.add("-Version");
-    list.add(info.getVersion().getVersion());
+  private void addVersion(@NotNull final List<String> list,
+                          @NotNull final PowerShellInfo info,
+                          @NotNull final Map<String, String> runnerParams) {
+    if (!StringUtil.isEmptyOrSpaces(runnerParams.get(RUNNER_MIN_VERSION))) {
+      list.add("-Version");
+      list.add(info.getVersion().getVersion());
+    }
   }
 
   private void addCustomArguments(@NotNull final List<String> args,

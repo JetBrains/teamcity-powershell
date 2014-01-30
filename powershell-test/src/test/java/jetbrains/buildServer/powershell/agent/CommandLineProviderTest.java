@@ -78,6 +78,7 @@ public class CommandLineProviderTest extends BaseTestCase {
     final String expectedVersionValue = version.getVersion();
     final PowerShellInfo info = m.mock(PowerShellInfo.class);
     final Map<String, String> runnerParams = new HashMap<String, String>();
+    runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, version.getVersion());
 
     m.checking(new Expectations() {{
       allowing(info).getExecutablePath();
@@ -102,6 +103,7 @@ public class CommandLineProviderTest extends BaseTestCase {
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     final String args = "arg1 arg2 arg3";
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_ARGUMENTS, args);
+    runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, version.getVersion());
     m.checking(new Expectations() {{
       allowing(info).getExecutablePath();
       will(returnValue("executablePath"));
@@ -120,6 +122,26 @@ public class CommandLineProviderTest extends BaseTestCase {
     }};
     final List<String> result = myProvider.provideCommandLine(info, runnerParams, myScriptFile, false);
     assertSameElements(result, expected);
+  }
+
+  @Test
+  @TestFor(issues = "TW-34557")
+  public void testUseDefaultPowershellIfVersionAny() throws Exception {
+    final PowerShellInfo info = m.mock(PowerShellInfo.class);
+    final Map<String, String> runnerParams = new HashMap<String, String>();
+    m.checking(new Expectations() {{
+      allowing(info).getExecutablePath();
+      will(returnValue("executablePath"));
+
+      never(info).getVersion();
+    }});
+
+    final List<String> result = myProvider.provideCommandLine(info, runnerParams, myScriptFile, false);
+    for (String str: result) {
+      if ("-Version".equals(str)) {
+        fail("Powershell version should not be supplied if Any is selected in runner parameters");
+      }
+    }
   }
 
   @DataProvider(name = "powerShellVersions")
