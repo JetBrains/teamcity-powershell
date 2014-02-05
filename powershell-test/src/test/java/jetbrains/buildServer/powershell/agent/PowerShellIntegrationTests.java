@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jetbrains.buildServer.powershell.agent.detect;
+package jetbrains.buildServer.powershell.agent;
 
-import jetbrains.buildServer.RunnerTest2Base;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
@@ -24,8 +23,6 @@ import jetbrains.buildServer.serverSide.SFinishedBuild;
 import jetbrains.buildServer.util.FileUtil;
 import jetbrains.buildServer.util.TestFor;
 import junit.framework.Assert;
-import org.jetbrains.annotations.NotNull;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.io.File;
@@ -35,24 +32,7 @@ import java.io.File;
  *
  * @author Eugene Petrenko (eugene.petrenko@jetbrains.com)
  */
-public class PowerShellIntegrationTests extends RunnerTest2Base {
-  @BeforeMethod
-  @Override
-  protected void setUp1() throws Throwable {
-    super.setUp1();
-    setPartialMessagesCheckerEx();
-  }
-
-  @NotNull
-  @Override
-  protected String getRunnerType() {
-    return PowerShellConstants.RUN_TYPE;
-  }
-
-  @Override
-  protected String getTestDataSuffixPath() {
-    return "";
-  }
+public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTest {
 
   @Test
   @TestFor(issues = "TW-29803")
@@ -144,4 +124,5 @@ public class PowerShellIntegrationTests extends RunnerTest2Base {
 
     Assert.assertTrue(getBuildLog(build).contains("ptr: 8 NO"));
   }
+
 }

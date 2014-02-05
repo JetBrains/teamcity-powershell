@@ -5,6 +5,7 @@
       <configuration>
         <fileset id="fileset1" name="powershell-agent" removed="false">
           <file>file://$MODULE_DIR$/src/main/java/META-INF/build-agent-plugin-powershell.xml</file>
+          <file>file://$MODULE_DIR$/src/main/resources/META-INF/build-agent-plugin-powershell.xml</file>
         </fileset>
       </configuration>
     </facet>

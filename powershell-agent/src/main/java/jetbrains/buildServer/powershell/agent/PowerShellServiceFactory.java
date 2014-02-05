@@ -33,15 +33,20 @@ public class PowerShellServiceFactory implements CommandLineBuildServiceFactory,
   @NotNull
   private final PowerShellCommandLineProvider myCmdProvider;
 
+  @NotNull
+  private final ScriptGenerator myGenerator;
+
   public PowerShellServiceFactory(@NotNull final PowerShellInfoProvider powerShellInfoProvider,
-                                  @NotNull final PowerShellCommandLineProvider cmdProvider) {
+                                  @NotNull final PowerShellCommandLineProvider cmdProvider,
+                                  @NotNull final ScriptGenerator generator) {
     myInfoProvider = powerShellInfoProvider;
     myCmdProvider = cmdProvider;
+    myGenerator = generator;
   }
 
   @NotNull
   public CommandLineBuildService createService() {
-    return new PowerShellService(myInfoProvider, myCmdProvider);
+    return new PowerShellService(myInfoProvider, myCmdProvider, myGenerator);
   }
 
   @NotNull

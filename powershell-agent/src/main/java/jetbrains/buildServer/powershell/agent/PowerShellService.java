@@ -23,16 +23,20 @@ import jetbrains.buildServer.RunBuildException;
 import jetbrains.buildServer.agent.BuildProgressLogger;
 import jetbrains.buildServer.agent.runner.*;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
-import jetbrains.buildServer.powershell.common.*;
+import jetbrains.buildServer.powershell.common.PowerShellBitness;
+import jetbrains.buildServer.powershell.common.PowerShellConstants;
+import jetbrains.buildServer.powershell.common.PowerShellVersion;
 import jetbrains.buildServer.util.FileUtil;
 import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 import static jetbrains.buildServer.powershell.common.PowerShellBitness.fromString;
-import static jetbrains.buildServer.powershell.common.PowerShellConstants.*;
+import static jetbrains.buildServer.powershell.common.PowerShellConstants.CONFIG_KEEP_GENERATED;
+import static jetbrains.buildServer.powershell.common.PowerShellConstants.RUNNER_BITNESS;
 
 /**
  * @author Eugene Petrenko (eugene.petrenko@jetbrains.com)
@@ -49,10 +53,15 @@ public class PowerShellService extends BuildServiceAdapter {
   @NotNull
   private final PowerShellCommandLineProvider myCmdProvider;
 
+  @NotNull
+  private final ScriptGenerator myScriptGenerator;
+
   public PowerShellService(@NotNull final PowerShellInfoProvider powerShellInfoProvider,
-                           @NotNull final PowerShellCommandLineProvider cmdProvider) {
+                           @NotNull final PowerShellCommandLineProvider cmdProvider,
+                           @NotNull final ScriptGenerator scriptGenerator) {
     myInfoProvider = powerShellInfoProvider;
     myCmdProvider = cmdProvider;
+    myScriptGenerator = scriptGenerator;
   }
 
   @Override
@@ -148,9 +157,11 @@ public class PowerShellService extends BuildServiceAdapter {
   @NotNull
   private String generateCommand(@NotNull final PowerShellInfo info) throws RunBuildException {
     final ParametersList parametersList = new ParametersList();
+    final File scriptFile = myScriptGenerator.generate(info, getRunnerParameters(), getCheckoutDirectory(), getBuildTempDirectory());
+    myFilesToRemove.add(scriptFile);
     parametersList.addAll(myCmdProvider.provideCommandLine(info,
             getRunnerParameters(),
-            getOrCreateScriptFile(),
+            scriptFile,
             useExecutionPolicy(info))
     );
     return parametersList.getParametersString();
@@ -170,44 +181,6 @@ public class PowerShellService extends BuildServiceAdapter {
       FileUtil.delete(file);
     }
     myFilesToRemove.clear();
-  }
-
-  private File getOrCreateScriptFile() throws RunBuildException {
-    PowerShellScriptMode mode = PowerShellScriptMode.fromString(getRunnerParameters().get(RUNNER_SCRIPT_MODE));
-    if (mode == null) {
-      throw new RunBuildException("PowerShell script mode was not defined.");
-    }
-
-    //TODO: copy this file to ensure '.ps1' estension
-    if (mode == PowerShellScriptMode.FILE) {
-      return FileUtil.resolvePath(getCheckoutDirectory(), getRunnerParameters().get(RUNNER_SCRIPT_FILE));
-    }
-
-    if (mode != PowerShellScriptMode.CODE) {
-      throw new IllegalArgumentException("Unknown powershell mode: " + mode);
-    }
-
-    Closeable handle = null;
-    try {
-      String text = getRunnerParameters().get(RUNNER_SCRIPT_CODE);
-      if (StringUtil.isEmptyOrSpaces(text)) {
-        throw new RunBuildException("Empty build script");
-      }
-      //some newlines are necessary to workaround -Command - issues, like TW-19771
-      text = "  \r\n  \r\n  \r\n" + StringUtil.convertLineSeparators(text, "\r\n") + "\r\n  \r\n   \r\n   ";
-
-      final File code = FileUtil.createTempFile(getBuildTempDirectory(), "powershell", ".ps1", true);
-      myFilesToRemove.add(code);
-      OutputStreamWriter w = new OutputStreamWriter(new FileOutputStream(code), "utf-8");
-      handle = w;
-      w.write(text);
-
-      return code;
-    } catch (IOException e) {
-      throw new RunBuildException("Failed to generate temporary file at " + getBuildTempDirectory(), e);
-    } finally {
-      FileUtil.close(handle);
-    }
   }
 
   private PowerShellInfo selectTool() throws RunBuildException {

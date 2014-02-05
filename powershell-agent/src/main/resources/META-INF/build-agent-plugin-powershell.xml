@@ -8,5 +8,6 @@
   <bean class="jetbrains.buildServer.powershell.agent.PowerShellCommandLineProvider"/>
   <bean class="jetbrains.buildServer.powershell.agent.detect.PowerShellDetector"/>
   <bean class="jetbrains.buildServer.powershell.agent.PowerShellServiceFactory"/>
+  <bean class="jetbrains.buildServer.powershell.agent.ScriptGenerator"/>
 
 </beans>
