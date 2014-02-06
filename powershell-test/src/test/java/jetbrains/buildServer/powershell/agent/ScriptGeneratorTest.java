@@ -233,7 +233,7 @@ public class ScriptGeneratorTest extends BaseTestCase {
   }
 
   private String getLocationPrefix(@NotNull final File scriptFile) throws IOException {
-    return "Set-Location " + scriptFile.getParentFile().getCanonicalPath();
+    return "Set-Location " + scriptFile.getParentFile().getCanonicalPath() + "\r\n";
   }
 
 }
