@@ -36,9 +36,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="powershell-common" />
     <orderEntry type="library" name="Server-Api" level="project" />
     <orderEntry type="library" name="Common-Api" level="project" />
-    <orderEntry type="module" module-name="powershell-common" />
     <orderEntry type="library" name="log4j" level="project" />
     <orderEntry type="library" name="Idea-OpenApi" level="project" />
     <orderEntry type="module-library" scope="RUNTIME">

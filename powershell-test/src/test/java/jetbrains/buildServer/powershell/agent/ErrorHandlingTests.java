@@ -97,6 +97,22 @@ public class ErrorHandlingTests extends AbstractPowerShellIntegrationTest {
     Assert.assertTrue(build.getBuildStatus().isFailed());
   }
 
+  @Test(dataProvider = "powerShellVersions")
+  @TestFor(issues = "TW-21554")
+  public void should_fail_incorrect_syntax_FILE_PS1(@NotNull final PowerShellVersion version) throws Throwable {
+    final File temp = createTempFile("param (\r\n[string]$PowerShellParam = \"value\",\r\n)\r\n");
+    final File script = FileUtil.renameFileNameOnly(temp, temp.getName() + ".ps1");
+    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.FILE.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
+
+    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_FILE, script.getCanonicalPath());
+    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, PowerShellBitness.x86.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_MIN_VERSION, version.getVersion());
+    final SFinishedBuild build = doTest(null);
+    dumpBuildLogLocally(build);
+    Assert.assertTrue(build.getBuildStatus().isFailed());
+  }
+
   /**
    * Simple powershell version provider for tests
    * that need to check pre- and post- 2.0 powershell capabilities

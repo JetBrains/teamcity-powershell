@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.*;
 
 import static jetbrains.buildServer.powershell.common.PowerShellBitness.fromString;
+import static jetbrains.buildServer.powershell.common.PowerShellConstants.CONFIG_DISABLE_ERROR_HANDLING;
 import static jetbrains.buildServer.powershell.common.PowerShellConstants.CONFIG_KEEP_GENERATED;
 import static jetbrains.buildServer.powershell.common.PowerShellConstants.RUNNER_BITNESS;
 
@@ -157,12 +158,16 @@ public class PowerShellService extends BuildServiceAdapter {
   @NotNull
   private String generateCommand(@NotNull final PowerShellInfo info) throws RunBuildException {
     final ParametersList parametersList = new ParametersList();
-    final File scriptFile = myScriptGenerator.generate(info, getRunnerParameters(), getCheckoutDirectory(), getBuildTempDirectory());
-    myFilesToRemove.add(scriptFile);
+    final Map<String, String> runnerParameters = getRunnerParameters();
+    boolean noErrorHandling = getConfigParameters().containsKey(CONFIG_DISABLE_ERROR_HANDLING);
+    final File scriptFile = myScriptGenerator.generate(info, runnerParameters, getCheckoutDirectory(), getBuildTempDirectory(), noErrorHandling);
+    if (!myScriptGenerator.isWrapping(runnerParameters, noErrorHandling)) {
+      myFilesToRemove.add(scriptFile);
+    }
     parametersList.addAll(myCmdProvider.provideCommandLine(info,
-            getRunnerParameters(),
-            scriptFile,
-            useExecutionPolicy(info))
+                    runnerParameters,
+                    scriptFile,
+                    useExecutionPolicy(info))
     );
     return parametersList.getParametersString();
   }
