@@ -125,6 +125,23 @@ public class ScriptGeneratorTest extends BaseTestCase {
   }
 
   @Test
+  @TestFor(issues = "TW-35069")
+  public void testShouldNotWrapCommand() throws Exception {
+    final Map<String, String> runnerParams = new HashMap<String, String>();
+    runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, PowerShellVersion.V_1_0.getVersion());
+    runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
+    runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.FILE.getValue());
+    final File temp = createTempFile(SAMPLE_SCRIPT);
+    final File script = FileUtil.renameFileNameOnly(temp, temp.getName() + ".ps1");
+    registerAsTempFile(script);
+    runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_FILE, script.getCanonicalPath());
+    assertFalse(myGenerator.isWrapping(runnerParams, false));
+    final File result = myGenerator.generate(myInfo, runnerParams, myCheckoutDir, myTempDir, false);
+    registerAsTempFile(result);
+    assertTrue(result.getCanonicalPath().equals(script.getCanonicalPath()));
+  }
+
+  @Test
   public void testShouldTurnOffOnProperty() throws Exception {
     final Map<String, String> runnerParams = new HashMap<String, String>();
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, PowerShellVersion.V_1_0.getVersion());
