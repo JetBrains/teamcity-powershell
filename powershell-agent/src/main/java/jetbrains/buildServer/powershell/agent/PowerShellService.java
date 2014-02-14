@@ -161,7 +161,7 @@ public class PowerShellService extends BuildServiceAdapter {
     final Map<String, String> runnerParameters = getRunnerParameters();
     boolean noErrorHandling = getConfigParameters().containsKey(CONFIG_DISABLE_ERROR_HANDLING);
     final File scriptFile = myScriptGenerator.generate(info, runnerParameters, getCheckoutDirectory(), getBuildTempDirectory(), noErrorHandling);
-    if (!myScriptGenerator.isWrapping(runnerParameters, noErrorHandling)) {
+    if (myScriptGenerator.isWrapping(runnerParameters, noErrorHandling)) {
       myFilesToRemove.add(scriptFile);
     }
     parametersList.addAll(myCmdProvider.provideCommandLine(info,
