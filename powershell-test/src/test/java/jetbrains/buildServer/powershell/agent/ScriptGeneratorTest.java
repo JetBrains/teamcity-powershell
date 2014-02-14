@@ -118,8 +118,8 @@ public class ScriptGeneratorTest extends BaseTestCase {
     final File script = FileUtil.renameFileNameOnly(temp, temp.getName() + ".ps1");
     registerAsTempFile(script);
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_FILE, script.getCanonicalPath());
-    assertTrue(myGenerator.isWrapping(runnerParams, false));
-    final File result = myGenerator.generate(myInfo, runnerParams, myCheckoutDir, myTempDir, false);
+    assertTrue(myGenerator.isWrapping(runnerParams, true));
+    final File result = myGenerator.generate(myInfo, runnerParams, myCheckoutDir, myTempDir, true);
     registerAsTempFile(result);
     assertFalse(result.getCanonicalPath().equals(script.getCanonicalPath()));
   }
@@ -135,8 +135,8 @@ public class ScriptGeneratorTest extends BaseTestCase {
     final File script = FileUtil.renameFileNameOnly(temp, temp.getName() + ".ps1");
     registerAsTempFile(script);
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_FILE, script.getCanonicalPath());
-    assertFalse(myGenerator.isWrapping(runnerParams, false));
-    final File result = myGenerator.generate(myInfo, runnerParams, myCheckoutDir, myTempDir, false);
+    assertFalse(myGenerator.isWrapping(runnerParams, true));
+    final File result = myGenerator.generate(myInfo, runnerParams, myCheckoutDir, myTempDir, true);
     registerAsTempFile(result);
     assertTrue(result.getCanonicalPath().equals(script.getCanonicalPath()));
   }
@@ -148,13 +148,12 @@ public class ScriptGeneratorTest extends BaseTestCase {
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_CODE, SAMPLE_SCRIPT);
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
-    assertFalse(myGenerator.isWrapping(runnerParams, true));
-    final File result = myGenerator.generate(myInfo, runnerParams, myCheckoutDir, myTempDir, true);
+    assertFalse(myGenerator.isWrapping(runnerParams, false));
+    final File result = myGenerator.generate(myInfo, runnerParams, myCheckoutDir, myTempDir, false);
     registerAsTempFile(result);
     // script created in temp directory
     assertEquals(myTempDir, result.getParentFile());
     final String text = FileUtil.readText(result, "UTF-8");
     assertTrue(text.trim().equals(SAMPLE_SCRIPT.trim()));
   }
-
 }

@@ -24,7 +24,7 @@ public class PowerShellConstants {
   public static final String RUN_TYPE = "jetbrains_powershell";
 
   public static final String CONFIG_KEEP_GENERATED = "powershell.keep.generated";
-  public static final String CONFIG_DISABLE_ERROR_HANDLING = "powershell.disable.error.handling";
+  public static final String CONFIG_POWERSHELL_USE_ERROR_DETECTION = "powershell.use.error.detection";
 
   public static final String RUNNER_BITNESS = "jetbrains_powershell_bitness";
   public static final String RUNNER_CUSTOM_ARGUMENTS = "jetbrains_powershell_additionalArguments";

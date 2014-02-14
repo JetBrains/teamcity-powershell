@@ -59,7 +59,7 @@ public class ScriptGenerator {
    * @param runnerParameters runner parameters
    * @param buildCheckoutDir checkout directory
    * @param buildTempDir tmp directory
-   * @param noErrorHandling if {@code true}, error handling will be disabled
+   * @param useErrorDetection if {@code true}, error detection will be used
    * @return {@code file} with patched script to be used by runner
    * @throws RunBuildException if error occurs
    */
@@ -68,9 +68,9 @@ public class ScriptGenerator {
                        @NotNull final Map<String, String> runnerParameters,
                        @NotNull final File buildCheckoutDir,
                        @NotNull final File buildTempDir,
-                       boolean noErrorHandling) throws RunBuildException {
+                       boolean useErrorDetection) throws RunBuildException {
     final File scriptFile = getScript(runnerParameters, buildCheckoutDir, buildTempDir);
-    if (isWrapping(runnerParameters, noErrorHandling)) {
+    if (isWrapping(runnerParameters, useErrorDetection)) {
       return wrap(scriptFile, info, buildTempDir, runnerParameters);
     } else {
       return scriptFile;
@@ -112,13 +112,15 @@ public class ScriptGenerator {
   /**
    * Tells, if this wrapper will be wrapping based on input params and {@code TeamCityProperties}
    * @param runnerParameters runner parameters
-   * @param noErrorHandling if {@code true}, error handling will be disabled
+   * @param useErrorDetection flag that enables error detection
    * @return {@code true} if {@code PowerShellExecutionMode.PS1} is used and
    * {@code powershell.disable.error.handling} is not set
+   *
+   * @see jetbrains.buildServer.powershell.common.PowerShellConstants#CONFIG_POWERSHELL_USE_ERROR_DETECTION
    */
-  public boolean isWrapping(@NotNull final Map<String, String> runnerParameters, boolean noErrorHandling) {
+  public boolean isWrapping(@NotNull final Map<String, String> runnerParameters, boolean useErrorDetection) {
     final PowerShellExecutionMode executionMode = PowerShellExecutionMode.fromString(runnerParameters.get(RUNNER_EXECUTION_MODE));
-    return !noErrorHandling && PowerShellExecutionMode.PS1 == executionMode;
+    return useErrorDetection && PowerShellExecutionMode.PS1 == executionMode;
   }
 
   /**
