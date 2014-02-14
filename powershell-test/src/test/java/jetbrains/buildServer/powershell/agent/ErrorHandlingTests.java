@@ -39,6 +39,7 @@ public class ErrorHandlingTests extends AbstractPowerShellIntegrationTest {
   @Test(dataProvider = "powerShellVersions")
   @TestFor(issues = "TW-21554")
   public void should_fail_nonzero_exit_code_CODE_STDIN(@NotNull final PowerShellVersion version) throws Throwable {
+    setBuildConfigurationParameter(PowerShellConstants.CONFIG_POWERSHELL_USE_ERROR_DETECTION, "true");
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
 
@@ -54,6 +55,7 @@ public class ErrorHandlingTests extends AbstractPowerShellIntegrationTest {
   @Test(dataProvider = "powerShellVersions")
   @TestFor(issues = "TW-21554")
   public void should_fail_nonzero_exit_code_CODE_PS1(@NotNull final PowerShellVersion version) throws Throwable {
+    setBuildConfigurationParameter(PowerShellConstants.CONFIG_POWERSHELL_USE_ERROR_DETECTION, "true");
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
 
@@ -68,6 +70,7 @@ public class ErrorHandlingTests extends AbstractPowerShellIntegrationTest {
   @Test(dataProvider = "powerShellVersions")
   @TestFor(issues = "TW-21554")
   public void should_fail_nonzero_exit_code_FILE_STDIN(@NotNull final PowerShellVersion version) throws Throwable {
+    setBuildConfigurationParameter(PowerShellConstants.CONFIG_POWERSHELL_USE_ERROR_DETECTION, "true");
     final File temp = createTempFile(code);
     final File script = FileUtil.renameFileNameOnly(temp, temp.getName() + ".ps1");
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.FILE.getValue());
@@ -84,6 +87,7 @@ public class ErrorHandlingTests extends AbstractPowerShellIntegrationTest {
   @Test(dataProvider = "powerShellVersions")
   @TestFor(issues = "TW-21554")
   public void should_fail_nonzero_exit_code_FILE_PS1(@NotNull final PowerShellVersion version) throws Throwable {
+    setBuildConfigurationParameter(PowerShellConstants.CONFIG_POWERSHELL_USE_ERROR_DETECTION, "true");
     final File temp = createTempFile(code);
     final File script = FileUtil.renameFileNameOnly(temp, temp.getName() + ".ps1");
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.FILE.getValue());
@@ -100,6 +104,7 @@ public class ErrorHandlingTests extends AbstractPowerShellIntegrationTest {
   @Test(dataProvider = "powerShellVersions")
   @TestFor(issues = "TW-21554")
   public void should_fail_incorrect_syntax_FILE_PS1(@NotNull final PowerShellVersion version) throws Throwable {
+    setBuildConfigurationParameter(PowerShellConstants.CONFIG_POWERSHELL_USE_ERROR_DETECTION, "true");
     final File temp = createTempFile("param (\r\n[string]$PowerShellParam = \"value\",\r\n)\r\n");
     final File script = FileUtil.renameFileNameOnly(temp, temp.getName() + ".ps1");
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.FILE.getValue());

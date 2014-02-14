@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.util.*;
 
 import static jetbrains.buildServer.powershell.common.PowerShellBitness.fromString;
-import static jetbrains.buildServer.powershell.common.PowerShellConstants.CONFIG_DISABLE_ERROR_HANDLING;
+import static jetbrains.buildServer.powershell.common.PowerShellConstants.CONFIG_POWERSHELL_USE_ERROR_DETECTION;
 import static jetbrains.buildServer.powershell.common.PowerShellConstants.CONFIG_KEEP_GENERATED;
 import static jetbrains.buildServer.powershell.common.PowerShellConstants.RUNNER_BITNESS;
 
@@ -159,9 +159,9 @@ public class PowerShellService extends BuildServiceAdapter {
   private String generateCommand(@NotNull final PowerShellInfo info) throws RunBuildException {
     final ParametersList parametersList = new ParametersList();
     final Map<String, String> runnerParameters = getRunnerParameters();
-    boolean noErrorHandling = getConfigParameters().containsKey(CONFIG_DISABLE_ERROR_HANDLING);
-    final File scriptFile = myScriptGenerator.generate(info, runnerParameters, getCheckoutDirectory(), getBuildTempDirectory(), noErrorHandling);
-    if (myScriptGenerator.isWrapping(runnerParameters, noErrorHandling)) {
+    boolean useErrorDetection = StringUtil.isTrue(getConfigParameters().get(CONFIG_POWERSHELL_USE_ERROR_DETECTION));
+    final File scriptFile = myScriptGenerator.generate(info, runnerParameters, getCheckoutDirectory(), getBuildTempDirectory(), useErrorDetection);
+    if (myScriptGenerator.isWrapping(runnerParameters, useErrorDetection)) {
       myFilesToRemove.add(scriptFile);
     }
     parametersList.addAll(myCmdProvider.provideCommandLine(info,
