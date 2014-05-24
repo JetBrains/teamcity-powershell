@@ -21,7 +21,7 @@
       <root url="jar://$teamcitydistribution$/buildAgent/lib/coverage-report.jar!/" />
       <root url="jar://$teamcitydistribution$/buildAgent/lib/duplicator-util.jar!/" />
       <root url="jar://$teamcitydistribution$/buildAgent/lib/ehcache-1.6.0-patch.jar!/" />
-      <root url="jar://$teamcitydistribution$/buildAgent/lib/ehcache-1.6.0.jar!/" />
+      <root url="jar://$teamcitydistribution$/buildAgent/lib/ehcache-1.6.2.jar!/" />
       <root url="jar://$teamcitydistribution$/buildAgent/lib/freemarker.jar!/" />
       <root url="jar://$teamcitydistribution$/buildAgent/lib/idea-settings.jar!/" />
       <root url="jar://$teamcitydistribution$/buildAgent/lib/inspections-util.jar!/" />
