@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.util.*;
 
 import static jetbrains.buildServer.powershell.common.PowerShellBitness.fromString;
-import static jetbrains.buildServer.powershell.common.PowerShellConstants.CONFIG_POWERSHELL_USE_ERROR_DETECTION;
 import static jetbrains.buildServer.powershell.common.PowerShellConstants.CONFIG_KEEP_GENERATED;
 import static jetbrains.buildServer.powershell.common.PowerShellConstants.RUNNER_BITNESS;
 
@@ -159,19 +158,27 @@ public class PowerShellService extends BuildServiceAdapter {
   private String generateCommand(@NotNull final PowerShellInfo info) throws RunBuildException {
     final ParametersList parametersList = new ParametersList();
     final Map<String, String> runnerParameters = getRunnerParameters();
-    boolean useErrorDetection = StringUtil.isTrue(getConfigParameters().get(CONFIG_POWERSHELL_USE_ERROR_DETECTION));
-    final File scriptFile = myScriptGenerator.generate(info, runnerParameters, getCheckoutDirectory(), getBuildTempDirectory(), useErrorDetection);
-    if (myScriptGenerator.isWrapping(runnerParameters, useErrorDetection)) {
+    final File scriptFile = myScriptGenerator.generateScript(runnerParameters, getCheckoutDirectory(), getBuildTempDirectory());
+
+    // if  we have script entered in runner params it will be dumped to temp file. This file must be removed after build finishes
+    if (myScriptGenerator.shouldRemoveGeneratedScript(runnerParameters)) {
       myFilesToRemove.add(scriptFile);
     }
-    parametersList.addAll(myCmdProvider.provideCommandLine(info,
-                    runnerParameters,
-                    scriptFile,
-                    useExecutionPolicy(info))
+
+    parametersList.addAll(
+            myCmdProvider.provideCommandLine(info, runnerParameters, scriptFile, useExecutionPolicy(info))
     );
+
     return parametersList.getParametersString();
   }
 
+  /**
+   * PowerShell {@code v1.0} does not support execution policy.
+   * @param info PowerShell to use
+   *
+   * @return {@code true} if version of PowerShell is greater than {@code 1.0} and execution policy
+   * setting is not overridden by internal property {@code teamcity.powershell.set.executionPolicyArg}
+   */
   private boolean useExecutionPolicy(@NotNull final PowerShellInfo info) {
     return isInternalPropertySetExecutionPolicy("set.executionPolicyArg", info.getVersion() != PowerShellVersion.V_1_0);
   }
@@ -182,7 +189,7 @@ public class PowerShellService extends BuildServiceAdapter {
 
     if (getConfigParameters().containsKey(CONFIG_KEEP_GENERATED)) return;
 
-    for (File file : myFilesToRemove) {
+    for (File file: myFilesToRemove) {
       FileUtil.delete(file);
     }
     myFilesToRemove.clear();

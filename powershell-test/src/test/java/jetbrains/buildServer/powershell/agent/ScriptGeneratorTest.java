@@ -18,12 +18,10 @@ package jetbrains.buildServer.powershell.agent;
 
 import jetbrains.buildServer.BaseTestCase;
 import jetbrains.buildServer.RunBuildException;
-import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.powershell.common.PowerShellScriptMode;
 import jetbrains.buildServer.powershell.common.PowerShellVersion;
-import jetbrains.buildServer.util.FileUtil;
 import jetbrains.buildServer.util.TestFor;
 import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -49,8 +47,6 @@ public class ScriptGeneratorTest extends BaseTestCase {
 
   private ScriptGenerator myGenerator;
 
-  private PowerShellInfo myInfo;
-
   private File myTempDir;
 
   private File myCheckoutDir;
@@ -63,7 +59,6 @@ public class ScriptGeneratorTest extends BaseTestCase {
     m = new Mockery() {{
       setImposteriser(ClassImposteriser.INSTANCE);
     }};
-    myInfo = m.mock(PowerShellInfo.class);
     myTempDir = createTempDir();
     myCheckoutDir = createTempDir();
     myGenerator = new ScriptGenerator();
@@ -77,23 +72,6 @@ public class ScriptGeneratorTest extends BaseTestCase {
   }
 
   @Test
-  @TestFor(issues = "TW-21554")
-  public void testLeaveAsIsForCommandMode() throws Exception {
-    final Map<String, String> runnerParams = new HashMap<String, String>();
-    runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, PowerShellVersion.V_1_0.getVersion());
-    runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_CODE, SAMPLE_SCRIPT);
-    runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
-    runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
-
-    final File result = myGenerator.generate(myInfo, runnerParams, myCheckoutDir, myTempDir, false);
-    registerAsTempFile(result);
-    // script created in temp directory
-    assertEquals(myTempDir, result.getParentFile());
-    final String text = FileUtil.readText(result, "UTF-8");
-    assertTrue(text.trim().equals(SAMPLE_SCRIPT.trim()));
-  }
-
-  @Test
   public void testNoEmptyScriptAllowed() throws Exception {
     final Map<String, String> runnerParams = new HashMap<String, String>();
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, PowerShellVersion.V_1_0.getVersion());
@@ -102,58 +80,43 @@ public class ScriptGeneratorTest extends BaseTestCase {
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
 
     try {
-      myGenerator.generate(myInfo, runnerParams, myCheckoutDir, myTempDir, false);
+      myGenerator.generateScript(runnerParams, myCheckoutDir, myTempDir);
       fail("Expected RunBuildException");
     } catch (RunBuildException ignored) {
     }
   }
 
+  /**
+   * Script is taken from runner parameters as plain text and dumped into file.
+   * After build finishes, file should be removed
+   *
+   * @throws Exception if something goes wrong
+   */
   @Test
-  public void testShouldWrapFile() throws Exception {
-    final Map<String, String> runnerParams = new HashMap<String, String>();
-    runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, PowerShellVersion.V_1_0.getVersion());
-    runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
-    runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.FILE.getValue());
-    final File temp = createTempFile(SAMPLE_SCRIPT);
-    final File script = FileUtil.renameFileNameOnly(temp, temp.getName() + ".ps1");
-    registerAsTempFile(script);
-    runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_FILE, script.getCanonicalPath());
-    assertTrue(myGenerator.isWrapping(runnerParams, true));
-    final File result = myGenerator.generate(myInfo, runnerParams, myCheckoutDir, myTempDir, true);
-    registerAsTempFile(result);
-    assertFalse(result.getCanonicalPath().equals(script.getCanonicalPath()));
-  }
-
-  @Test
-  @TestFor(issues = "TW-35069")
-  public void testShouldNotWrapCommand() throws Exception {
-    final Map<String, String> runnerParams = new HashMap<String, String>();
-    runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, PowerShellVersion.V_1_0.getVersion());
-    runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
-    runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.FILE.getValue());
-    final File temp = createTempFile(SAMPLE_SCRIPT);
-    final File script = FileUtil.renameFileNameOnly(temp, temp.getName() + ".ps1");
-    registerAsTempFile(script);
-    runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_FILE, script.getCanonicalPath());
-    assertFalse(myGenerator.isWrapping(runnerParams, true));
-    final File result = myGenerator.generate(myInfo, runnerParams, myCheckoutDir, myTempDir, true);
-    registerAsTempFile(result);
-    assertTrue(result.getCanonicalPath().equals(script.getCanonicalPath()));
-  }
-
-  @Test
-  public void testShouldTurnOffOnProperty() throws Exception {
+  @TestFor(issues = "TW-36704")
+  public void testShouldRemove_CODE() throws Exception {
     final Map<String, String> runnerParams = new HashMap<String, String>();
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, PowerShellVersion.V_1_0.getVersion());
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_CODE, SAMPLE_SCRIPT);
-    runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
+    runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
-    assertFalse(myGenerator.isWrapping(runnerParams, false));
-    final File result = myGenerator.generate(myInfo, runnerParams, myCheckoutDir, myTempDir, false);
-    registerAsTempFile(result);
-    // script created in temp directory
-    assertEquals(myTempDir, result.getParentFile());
-    final String text = FileUtil.readText(result, "UTF-8");
-    assertTrue(text.trim().equals(SAMPLE_SCRIPT.trim()));
+
+    assertTrue(myGenerator.shouldRemoveGeneratedScript(runnerParams));
+  }
+
+  /**
+   * Script is taken from file (from VCS). It should not be deleted after build finishes
+   * @throws Exception if something goes wrong
+   */
+  @Test
+  @TestFor(issues = "TW-36704")
+  public void testShouldRemove_FILE() throws Exception {
+    final Map<String, String> runnerParams = new HashMap<String, String>();
+    runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, PowerShellVersion.V_1_0.getVersion());
+    runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_CODE, SAMPLE_SCRIPT);
+    runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
+    runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.FILE.getValue());
+
+    assertFalse(myGenerator.shouldRemoveGeneratedScript(runnerParams));
   }
 }
