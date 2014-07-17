@@ -33,8 +33,14 @@ import static jetbrains.buildServer.powershell.common.PowerShellVersion.fromStri
  *         03.12.10 14:06
  */
 public class PowerShellInfo {
+
+  @NotNull
   private final PowerShellBitness myBitness;
+
+  @NotNull
   private final File myHome;
+
+  @NotNull
   private final PowerShellVersion myVersion;
 
   public PowerShellInfo(@NotNull final PowerShellBitness bitness,
@@ -80,7 +86,7 @@ public class PowerShellInfo {
     return null;
   }
 
-  public void saveInfo(@NotNull BuildAgentConfiguration config) {
+  public void saveInfo(@NotNull final BuildAgentConfiguration config) {
     config.addConfigurationParameter(myBitness.getVersionKey(), getVersion().getVersion());
     config.addConfigurationParameter(myBitness.getPathKey(), getHome().toString());
   }

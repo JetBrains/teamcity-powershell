@@ -29,32 +29,42 @@ import static jetbrains.buildServer.util.Bitness.BIT32;
 import static jetbrains.buildServer.util.Win32RegistryAccessor.Hive.LOCAL_MACHINE;
 
 /**
- * Powershell detection logic is described at
+ * Class {@code PowerShellRegistry}
+ *
+ * Implements PowerShell detection logic is described at
  * http://blogs.msdn.com/b/powershell/archive/2009/06/25/detection-logic-poweshell-installation.aspx
+ *
  * @author Eugene Petrenko (eugene.petrenko@jetbrains.com)
  *         03.12.10 13:30
  */
 public class PowerShellRegistry {
+
+  @NotNull
   private final Bitness myBitness;
+
+  @NotNull
   private final Win32RegistryAccessor myRegistryAccessor;
 
+  @NotNull
   private final VersionedPowerShell[] myDetectors = {new VersionedPowerShell("3"), new VersionedPowerShell("1")};
 
-  public PowerShellRegistry(@NotNull final Bitness bitness, @NotNull Win32RegistryAccessor registryAccessor) {
+  public PowerShellRegistry(@NotNull final Bitness bitness, @NotNull final Win32RegistryAccessor registryAccessor) {
     myRegistryAccessor = registryAccessor;
     myBitness = bitness;
   }
 
   public boolean isPowerShellInstalled() {
-    for (VersionedPowerShell shell : myDetectors) {
-      if (shell.isPowerShellInstalled()) return true;
+    for (VersionedPowerShell shell: myDetectors) {
+      if (shell.isPowerShellInstalled()) {
+        return true;
+      }
     }
     return false;
   }
 
   @Nullable
   public PowerShellVersion getInstalledVersion() {
-    for (VersionedPowerShell shell : myDetectors) {
+    for (VersionedPowerShell shell: myDetectors) {
       PowerShellVersion version = shell.getInstalledVersion();
       if (version != null) return version;
     }
@@ -65,16 +75,20 @@ public class PowerShellRegistry {
   public File getPowerShellHome() {
     for (VersionedPowerShell shell : myDetectors) {
       File home = shell.getPowerShellHome();
-      if (home != null) return home;
+      if (home != null) {
+        return home;
+      }
     }
     return null;
   }
 
   private class VersionedPowerShell {
+
+    @NotNull
     private final String myVersion;
 
-    private VersionedPowerShell(@NotNull final String myVersion) {
-      this.myVersion = myVersion;
+    private VersionedPowerShell(@NotNull final String version) {
+      myVersion = version;
     }
 
     public boolean isPowerShellInstalled() {

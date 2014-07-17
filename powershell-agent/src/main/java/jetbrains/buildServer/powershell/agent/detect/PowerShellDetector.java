@@ -31,18 +31,22 @@ import java.util.Collection;
  *         03.12.10 14:43
  */
 public class PowerShellDetector {
+
+  @NotNull
   private static final Logger LOG = Logger.getLogger(PowerShellDetector.class);
 
-  private final Win32RegistryAccessor myAccesor;
+  @NotNull
+  private final Win32RegistryAccessor myAccessor;
 
-  public PowerShellDetector(@NotNull final Win32RegistryAccessor accesor) {
-    myAccesor = accesor;
+  public PowerShellDetector(@NotNull final Win32RegistryAccessor accessor) {
+    myAccessor = accessor;
   }
 
+  @NotNull
   public Collection<PowerShellInfo> findPowerShells() {
     Collection<PowerShellInfo> col = new ArrayList<PowerShellInfo>(2);
-    for (PowerShellBitness bitness : PowerShellBitness.values()) {
-      final PowerShellRegistry reg = new PowerShellRegistry(bitness.toBitness(), myAccesor);
+    for (PowerShellBitness bitness: PowerShellBitness.values()) {
+      final PowerShellRegistry reg = new PowerShellRegistry(bitness.toBitness(), myAccessor);
 
       if (!reg.isPowerShellInstalled()) {
         LOG.debug("Powershell for " + bitness + " was not found.");
@@ -51,8 +55,6 @@ public class PowerShellDetector {
 
       final PowerShellVersion ver = reg.getInstalledVersion();
       final File home = reg.getPowerShellHome();
-
-
 
       if (ver == null || home == null) {
         LOG.debug("Found powershell: " + bitness + " " + ver + " " + home);
