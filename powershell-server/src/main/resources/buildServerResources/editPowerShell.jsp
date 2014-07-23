@@ -96,7 +96,7 @@
     <th><label for="${bean.executionModeKey}">Script execution mode:</label></th>
     <td>
         <props:selectProperty name="${bean.executionModeKey}" id="powershell_execution_mode" className="longField" onchange="BS.PowerShell.updateScriptMode()">
-            <props:option value="${bean.executionModeAsFileValue}">Execute .ps1 script with "-File" argument</props:option>
+            <props:option value="${bean.executionModeAsFileValue}">Execute .ps1 from external file</props:option>
             <props:option value="${bean.executionModeStdinValue}" selected="${empty propertiesBean.properties[bean.executionModeKey] or propertiesBean.properties[bean.executionModeKey] eq bean.executionModeStdinValue}">Put script into PowerShell stdin with "-Command -" arguments</props:option>
         </props:selectProperty>
         <span class="smallNote">

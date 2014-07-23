@@ -19,6 +19,7 @@ package jetbrains.buildServer.powershell.agent;
 import com.intellij.openapi.diagnostic.Logger;
 import jetbrains.buildServer.RunBuildException;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
+import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +44,8 @@ public class PowerShellCommandLineProvider {
   public List<String> provideCommandLine(@NotNull final PowerShellInfo info,
                                          @NotNull final Map<String, String> runnerParams,
                                          @NotNull final File scriptFile,
-                                         final boolean useExecutionPolicy) throws RunBuildException {
+                                         final boolean useExecutionPolicy,
+                                         @NotNull final Map<String, String> configParams) throws RunBuildException {
     final List<String> result = new ArrayList<String>();
 
     result.add(info.getExecutablePath());
@@ -62,7 +64,7 @@ public class PowerShellCommandLineProvider {
     if (mod == null) {
       throw new RunBuildException("'" + RUNNER_EXECUTION_MODE + "' runner parameters is not defined");
     }
-    addScriptBody(result, mod, scriptFile, runnerParams);
+    addScriptBody(result, mod, scriptFile, runnerParams, configParams);
     return result;
   }
 
@@ -91,8 +93,8 @@ public class PowerShellCommandLineProvider {
 
   private void addExecutionPolicyPreference(@NotNull final List<String> list) {
     final String cmdArg = "-ExecutionPolicy";
-    for (String arg : list) {
-      if (arg.trim().toLowerCase().contains(cmdArg.toLowerCase())) {
+    for (String arg: list) {
+      if (arg.toLowerCase().contains(cmdArg.toLowerCase())) {
         LOG.info(cmdArg  + " was specified explicitly");
         return;
       }
@@ -104,7 +106,8 @@ public class PowerShellCommandLineProvider {
   private void addScriptBody(@NotNull final List<String> args,
                              @NotNull final PowerShellExecutionMode mod,
                              @NotNull final File scriptFile,
-                             @NotNull final Map<String, String> runnerParams) throws RunBuildException {
+                             @NotNull final Map<String, String> runnerParams,
+                             @NotNull final Map<String, String> configParams) throws RunBuildException {
     switch (mod) {
       case STDIN:
         args.add("-Command");
@@ -116,7 +119,9 @@ public class PowerShellCommandLineProvider {
         if (!scriptFile.getPath().toLowerCase().endsWith(".ps1")) {
           throw new RunBuildException("PowerShell script should have '.ps1' extension");
         }
-        args.add("-File");
+        if (configParams.get(PowerShellConstants.CONFIG_USE_FILE) != null) {
+          args.add("-File");
+        }
         args.add(scriptFile.getPath());
         addCustomArguments(args, runnerParams, RUNNER_SCRIPT_ARGUMENTS);
         break;

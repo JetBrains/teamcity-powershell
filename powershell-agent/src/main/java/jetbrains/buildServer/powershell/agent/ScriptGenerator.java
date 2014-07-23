@@ -52,8 +52,8 @@ public class ScriptGenerator {
    */
   @NotNull
   public File generateScript(@NotNull final Map<String, String> runnerParameters,
-                         @NotNull final File buildCheckoutDir,
-                         @NotNull final File buildTempDir) throws RunBuildException {
+                             @NotNull final File buildCheckoutDir,
+                             @NotNull final File buildTempDir) throws RunBuildException {
     final PowerShellScriptMode scriptMode = PowerShellScriptMode.fromString(runnerParameters.get(RUNNER_SCRIPT_MODE));
     File scriptFile;
     if (PowerShellScriptMode.FILE == scriptMode) {

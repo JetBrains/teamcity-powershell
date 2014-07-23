@@ -166,7 +166,7 @@ public class PowerShellService extends BuildServiceAdapter {
     }
 
     parametersList.addAll(
-            myCmdProvider.provideCommandLine(info, runnerParameters, scriptFile, useExecutionPolicy(info))
+            myCmdProvider.provideCommandLine(info, runnerParameters, scriptFile, useExecutionPolicy(info), getConfigParameters())
     );
 
     return parametersList.getParametersString();
