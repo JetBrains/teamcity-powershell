@@ -122,11 +122,24 @@ public class PowerShellCommandLineProvider {
         if (configParams.get(PowerShellConstants.CONFIG_USE_FILE) != null) {
           args.add("-File");
         }
-        args.add(scriptFile.getPath());
+        args.add(getPSEscapedPath(scriptFile));
         addCustomArguments(args, runnerParams, RUNNER_SCRIPT_ARGUMENTS);
         break;
       default:
         throw new RunBuildException("Unknown ExecutionMode: " + mod);
     }
+  }
+
+  /**
+   * Escapes file path (if it contains spaces) with {@code `}
+   * Handles name of the script as well
+   *
+   * http://blogs.technet.com/b/heyscriptingguy/archive/2012/08/07/powertip-run-a-powershell-script-with-space-in-the-path.aspx
+   *
+   * @param scriptFile file to take path to
+   * @return escaped path to the script
+   */
+  private String getPSEscapedPath(@NotNull final File scriptFile) {
+    return StringUtil.replace(scriptFile.getPath(), " ", "` ");
   }
 }
