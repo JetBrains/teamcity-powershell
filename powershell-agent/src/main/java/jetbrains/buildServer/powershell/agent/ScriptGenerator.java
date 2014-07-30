@@ -19,6 +19,7 @@ package jetbrains.buildServer.powershell.agent;
 import com.intellij.openapi.diagnostic.Logger;
 import jetbrains.buildServer.RunBuildException;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
+import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.powershell.common.PowerShellScriptMode;
 import jetbrains.buildServer.util.FileUtil;
 import org.jetbrains.annotations.NotNull;
@@ -26,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.*;
 import java.util.Map;
 
+import static com.intellij.openapi.util.text.StringUtil.convertLineSeparators;
 import static com.intellij.openapi.util.text.StringUtil.isEmptyOrSpaces;
 import static jetbrains.buildServer.powershell.common.PowerShellConstants.*;
 
@@ -63,8 +65,11 @@ public class ScriptGenerator {
       if (isEmptyOrSpaces(sourceScript)) {
         throw new RunBuildException("Empty build script");
       }
-      //some newlines are necessary to workaround -Command - issues, like TW-19771
-      sourceScript = "  \r\n  \r\n  \r\n" + jetbrains.buildServer.util.StringUtil.convertLineSeparators(sourceScript, "\r\n") + "\r\n  \r\n   \r\n   ";
+      sourceScript = convertLineSeparators(sourceScript, "\r\n");
+      if (PowerShellExecutionMode.STDIN.equals(PowerShellExecutionMode.fromString(runnerParameters.get(RUNNER_EXECUTION_MODE)))) {
+        //some newlines are necessary to workaround -Command - issues, like TW-19771
+        sourceScript = "  \r\n  \r\n  \r\n" + sourceScript + "\r\n  \r\n   \r\n   ";
+      }
       scriptFile = writeToTempFile(buildTempDir, sourceScript);
     }
     return scriptFile;

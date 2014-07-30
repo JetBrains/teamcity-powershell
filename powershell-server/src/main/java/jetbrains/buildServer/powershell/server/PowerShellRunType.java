@@ -121,6 +121,7 @@ public class PowerShellRunType extends RunType {
     Map<String, String> map = new HashMap<String, String>();
     map.put(RUNNER_BITNESS, PowerShellBitness.x86.toString());
     map.put(RUNNER_NO_PROFILE, "checked");
+    map.put(RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.toString());
     return map;
   }
 

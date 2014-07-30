@@ -25,7 +25,7 @@
   <th rowspan="2">Powershell run mode:</th>
   <td>
     <label for="${bean.minVersionKey}">Version: </label>
-    <props:selectProperty name="${bean.minVersionKey}">
+    <props:selectProperty name="${bean.minVersionKey}" id="powershell_minVersion" onchange="BS.PowerShell.updateScriptMode()">
       <props:option value="">Any</props:option>
       <c:forEach var="it" items="${bean.versions}">
         <props:option value="${it.version}"><c:out value="${it.version}"/></props:option>
@@ -93,18 +93,21 @@
 </tr>
 
 <tr>
-    <th><label for="${bean.executionModeKey}">Script execution mode:</label></th>
-    <td>
-        <props:selectProperty name="${bean.executionModeKey}" id="powershell_execution_mode" className="longField" onchange="BS.PowerShell.updateScriptMode()">
-            <props:option value="${bean.executionModeAsFileValue}">Execute .ps1 from external file</props:option>
-            <props:option value="${bean.executionModeStdinValue}" selected="${empty propertiesBean.properties[bean.executionModeKey] or propertiesBean.properties[bean.executionModeKey] eq bean.executionModeStdinValue}">Put script into PowerShell stdin with "-Command -" arguments</props:option>
-        </props:selectProperty>
+  <th><label for="${bean.executionModeKey}">Script execution mode:</label></th>
+  <td>
+    <props:selectProperty name="${bean.executionModeKey}" id="powershell_execution_mode" className="longField" onchange="BS.PowerShell.updateScriptMode()">
+      <props:option value="${bean.executionModeAsFileValue}">Execute .ps1 from external file</props:option>
+      <props:option value="${bean.executionModeStdinValue}" selected="${empty propertiesBean.properties[bean.executionModeKey] or propertiesBean.properties[bean.executionModeKey] eq bean.executionModeStdinValue}">Put script into PowerShell stdin with "-Command -" argument</props:option>
+    </props:selectProperty>
         <span class="smallNote">
             Specify Powershell script execution mode. By default, Powershell may not allow
-            execution of arbitrary .ps1 files. Select 'Put script into powershell stdin' mode to avoid this.
+            execution of arbitrary .ps1 files. TeamCity will try to supply -ExecutionPolicy ByPass argument.
         </span>
-        <span class="error" id="error_${bean.executionModeKey}"></span>
-    </td>
+    <span class="error" id="error_${bean.executionModeKey}"></span>
+    <div class="attentionComment" id="warn_executionMode">
+      Executing scripts from stdin with "-Command -" is unstable and can result in build failures. Consider executing PowerShell script from external file. <bs:help file="PowerShell"/>
+    </div>
+  </td>
 </tr>
 
 <tr id="powershell_scriptArguments">
@@ -135,29 +138,38 @@
 
 <script type="text/javascript">
   BS.PowerShell = {
-     updateScriptType : function() {
-       var val = $('powershell_option').value;
-       if (val == '${bean.scriptModeFileValue}') {
-         BS.Util.hide($('powershell_sourceCode'));
-         BS.Util.show($('powershell_scriptFile'));
-       }
-       if (val == '${bean.scriptModeCodeValue}') {
-         BS.Util.show($('powershell_sourceCode'));
-         BS.Util.hide($('powershell_scriptFile'));
-       }
-       BS.MultilineProperties.updateVisible();
-     },
+    updateScriptType : function() {
+      var val = $('powershell_option').value;
+      if (val == '${bean.scriptModeFileValue}') {
+        BS.Util.hide($('powershell_sourceCode'));
+        BS.Util.show($('powershell_scriptFile'));
+      }
+      if (val == '${bean.scriptModeCodeValue}') {
+        BS.Util.show($('powershell_sourceCode'));
+        BS.Util.hide($('powershell_scriptFile'));
+      }
+      BS.MultilineProperties.updateVisible();
+    },
 
-     updateScriptMode : function() {
-       var val = $('powershell_execution_mode').value;
-       if (val == '${bean.executionModeAsFileValue}') {
-         BS.Util.show($('powershell_scriptArguments'));
-       }
-       if (val == '${bean.executionModeStdinValue}') {
-         BS.Util.hide($('powershell_scriptArguments'));
-       }
-       BS.MultilineProperties.updateVisible();
-     }
+    updateScriptMode : function() {
+      var val = $('powershell_execution_mode').value;
+      var ver  = $('powershell_minVersion').value;
+
+      if (val == '${bean.executionModeAsFileValue}') {
+        BS.Util.show($('powershell_scriptArguments'));
+        BS.Util.hide($('warn_executionMode'));
+      }
+      if (val == '${bean.executionModeStdinValue}') {
+        BS.Util.hide($('powershell_scriptArguments'));
+        if (ver != '1.0') {
+          BS.Util.show($('warn_executionMode'));
+        } else {
+          BS.Util.hide($('warn_executionMode'));
+        }
+      }
+
+      BS.MultilineProperties.updateVisible();
+    }
   };
 
   BS.PowerShell.updateScriptType();
