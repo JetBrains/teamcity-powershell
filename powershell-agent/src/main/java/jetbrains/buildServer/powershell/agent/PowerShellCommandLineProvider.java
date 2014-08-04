@@ -16,6 +16,7 @@
 
 package jetbrains.buildServer.powershell.agent;
 
+import com.intellij.execution.configurations.ParametersList;
 import com.intellij.openapi.diagnostic.Logger;
 import jetbrains.buildServer.RunBuildException;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
@@ -55,7 +56,7 @@ public class PowerShellCommandLineProvider {
     }
     result.add("-NonInteractive");
 
-    addCustomArguments(result, runnerParams, RUNNER_CUSTOM_ARGUMENTS);
+    addCustomArguments(result, runnerParams, RUNNER_CUSTOM_ARGUMENTS, false);
     if (useExecutionPolicy) {
       addExecutionPolicyPreference(result);
     }
@@ -78,15 +79,42 @@ public class PowerShellCommandLineProvider {
     }
   }
 
+  /**
+   * Gets arguments from runner parameter with specified key.
+   * Adds them to given pre-constructed list
+   *
+   * Supports 'escaped' mode: all arguments are passed as one escaped argument.
+   * In escaped mode, inside quotes are escaped with triple quotes.
+   * Escaped mode is needed parameters passing to the script when direct script execution is used
+
+   *
+   * @param args pre-constructed list of arguments
+   * @param runnerParams runner parameters
+   * @param key runner parameter key
+   * @param escape if set to {@code true}, quotes will be escaped with triple quotes, all
+   *               found arguments will be passed to the resulting list as one quoted argument
+   */
   private void addCustomArguments(@NotNull final List<String> args,
                                   @NotNull final Map<String, String> runnerParams,
-                                  @NotNull final String key) {
+                                  @NotNull final String key,
+                                  final boolean escape) {
+    final List<String> result = new ArrayList<String>();
     final String custom = runnerParams.get(key);
     if (!StringUtil.isEmptyOrSpaces(custom)) {
       for (String _line : custom.split("[\\r\\n]+")) {
         String line = _line.trim();
         if (StringUtil.isEmptyOrSpaces(line)) continue;
-        args.addAll(StringUtil.splitHonorQuotes(line));
+        result.addAll(StringUtil.splitHonorQuotes(line));
+      }
+    }
+    if (!result.isEmpty()) {
+      if (escape) {
+        final ParametersList parametersList = new ParametersList();
+        parametersList.addAll(result);
+        final String res = "\"" + parametersList.getParametersString().replace("\"", "\"\"\"") + "\"";
+        args.add(res);
+      } else {
+        args.addAll(result);
       }
     }
   }
@@ -119,11 +147,12 @@ public class PowerShellCommandLineProvider {
         if (!scriptFile.getPath().toLowerCase().endsWith(".ps1")) {
           throw new RunBuildException("PowerShell script should have '.ps1' extension");
         }
-        if (configParams.get(PowerShellConstants.CONFIG_USE_FILE) != null) {
+        final boolean useFile = configParams.get(PowerShellConstants.CONFIG_USE_FILE) != null;
+        if (useFile) {
           args.add("-File");
         }
         args.add(getPSEscapedPath(scriptFile));
-        addCustomArguments(args, runnerParams, RUNNER_SCRIPT_ARGUMENTS);
+        addCustomArguments(args, runnerParams, RUNNER_SCRIPT_ARGUMENTS, !useFile);
         break;
       default:
         throw new RunBuildException("Unknown ExecutionMode: " + mod);

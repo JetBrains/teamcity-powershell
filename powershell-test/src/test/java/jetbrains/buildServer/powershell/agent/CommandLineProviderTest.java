@@ -283,6 +283,81 @@ public class CommandLineProviderTest extends BaseTestCase {
     assertSameElements(result, expected);
   }
 
+  /**
+   * Direct execution of the script results in arguments being handled by cmd itself.
+   * Arguments with quotes must be escaped
+   * Arguments must be passed as a single multi-word argument
+   *
+   * @throws Exception
+   */
+  @Test
+  @TestFor(issues = "TW-35063")
+  public void testMultiWordArgs_Direct() throws Exception {
+    final PowerShellInfo info = m.mock(PowerShellInfo.class);
+    final Map<String, String> runnerParams = new HashMap<String, String>();
+    runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
+    runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "3.0");
+    runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_ARGUMENTS, "arg1\r\n\"arg2.1 arg2.2\"\r\narg3\r\narg4 arg5");
+
+    final Map<String, String> configParams = Collections.emptyMap();
+
+    m.checking(new Expectations() {{
+      allowing(info).getExecutablePath();
+      will(returnValue("executablePath"));
+
+      allowing(info).getVersion();
+      will(returnValue(PowerShellVersion.V_3_0));
+    }});
+    final List<String> expected = new ArrayList<String>() {{
+      add(info.getExecutablePath());
+      add("-Version");
+      add(PowerShellVersion.V_3_0.getVersion());
+      add("-NonInteractive");
+      add(myScriptFile.getPath());
+      add("\" arg1 \"\"\"arg2.1 arg2.2\"\"\" arg3 arg4 arg5\"");
+    }};
+    final List<String> result = myProvider.provideCommandLine(info, runnerParams, myScriptFile, false, configParams);
+    assertSameElements(result, expected);
+  }
+
+  @Test
+  @TestFor(issues = "TW-35063")
+  public void testMultiWordArgs_File() throws Exception {
+    final PowerShellInfo info = m.mock(PowerShellInfo.class);
+    final Map<String, String> runnerParams = new HashMap<String, String>();
+    runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
+    runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "3.0");
+    runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_ARGUMENTS, "arg1\r\n\"arg2.1 arg2.2\"\r\narg3\r\narg4 arg5");
+
+    final Map<String, String> configParams = new HashMap<String, String>() {{
+      put(PowerShellConstants.CONFIG_USE_FILE, "true");
+    }};
+
+    m.checking(new Expectations() {{
+      allowing(info).getExecutablePath();
+      will(returnValue("executablePath"));
+
+      allowing(info).getVersion();
+      will(returnValue(PowerShellVersion.V_3_0));
+    }});
+    final List<String> expected = new ArrayList<String>() {{
+      add(info.getExecutablePath());
+      add("-Version");
+      add(PowerShellVersion.V_3_0.getVersion());
+      add("-NonInteractive");
+      add("-File");
+      add(myScriptFile.getPath());
+      add("arg1");
+      add("\"arg2.1 arg2.2\"");
+      add("arg3");
+      add("arg4");
+      add("arg5");
+    }};
+    final List<String> result = myProvider.provideCommandLine(info, runnerParams, myScriptFile, false, configParams);
+    assertSameElements(result, expected);
+
+  }
+
   @DataProvider(name = "powerShellVersions")
   public Object[][] getVersions() {
     PowerShellVersion[] versions = PowerShellVersion.values();
