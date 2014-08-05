@@ -30,10 +30,12 @@
 <admin:editBuildTypeNavSteps settings="${buildType}"/>
 <%--@elvariable id="buildConfigSteps" type="type="java.util.ArrayList<jetbrains.buildServer.controllers.admin.projects.ConfigurationStep>"--%>
 
+<c:set var="numSteps" value="${fn:length(steps)}"/>
+
 <div>
   <admin:editBuildTypeLink buildTypeId="${buildType.externalId}" step="${buildConfigSteps[2].stepId}">
     <span style="white-space: nowrap">${buildType.extendedFullName}</span>
   </admin:editBuildTypeLink>
-  contains <bs:out value="${fn:length(steps)}"/> PowerShell step<bs:s val="${fn:length(steps)}"/> that use <strong>-Command</strong> mode
-  to execute scripts. Consider using external file mode instead.
+  contains <bs:out value="${numSteps}"/> PowerShell step<bs:s val="${numSteps}"/> that use<bs:s val="${numSteps}"/> <strong>-Command</strong> mode
+  to execute scripts. Consider using external file mode instead.<bs:help file="PowerShell"/>
 </div>

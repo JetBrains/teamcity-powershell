@@ -21,6 +21,7 @@ import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.powershell.common.PowerShellVersion;
 import jetbrains.buildServer.serverSide.SBuildRunnerDescriptor;
 import jetbrains.buildServer.serverSide.SBuildType;
+import jetbrains.buildServer.serverSide.WebLinks;
 import jetbrains.buildServer.serverSide.healthStatus.*;
 import jetbrains.buildServer.web.openapi.PagePlaces;
 import jetbrains.buildServer.web.openapi.PluginDescriptor;
@@ -54,8 +55,9 @@ public class CommandModeHealthReport extends HealthStatusReport {
   private final ItemCategory myCategory;
 
   public CommandModeHealthReport(@NotNull final PluginDescriptor pluginDescriptor,
-                                 @NotNull final PagePlaces pagePlaces) {
-    myCategory = new ItemCategory(CATEGORY_ID, CATEGORY_NAME, ItemSeverity.WARN);
+                                 @NotNull final PagePlaces pagePlaces,
+                                 @NotNull final WebLinks webLinks) {
+    myCategory = new ItemCategory(CATEGORY_ID, CATEGORY_NAME, ItemSeverity.WARN, null, webLinks.getHelp("PowerShell", null));
     final HealthStatusItemPageExtension myPEx = new HealthStatusItemPageExtension(CATEGORY_ID, pagePlaces);
     myPEx.setIncludeUrl(pluginDescriptor.getPluginResourcesPath("commandModeHealthReport.jsp"));
     myPEx.setVisibleOutsideAdminArea(true);
