@@ -49,7 +49,7 @@ public class PowerShellRunnerDiscoverer extends BreadthFirstRunnerDiscoveryExten
         final Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(PowerShellConstants.RUNNER_SCRIPT_FILE, e.getFullName());
         parameters.put(PowerShellConstants.RUNNER_BITNESS, PowerShellBitness.values()[0].getValue());
-        parameters.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
+        parameters.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
         parameters.put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.FILE.getValue());
         runners.add(new DiscoveredObject(PowerShellConstants.RUN_TYPE, parameters));
       }

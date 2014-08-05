@@ -261,7 +261,6 @@ public class PowerShellRunnerDiscovererTest extends BaseTestCase {
     assertNotNull(runners);
     assertEquals(1, runners.size());
     validateRunner(runners.get(0), file2Name);
-
   }
 
   private void validateRunner(DiscoveredObject runner, String scriptFullName) {
@@ -270,7 +269,7 @@ public class PowerShellRunnerDiscovererTest extends BaseTestCase {
     final Map<String, String> params = runner.getParameters();
     assertEquals(params.get(PowerShellConstants.RUNNER_SCRIPT_FILE), scriptFullName);
     assertEquals(params.get(PowerShellConstants.RUNNER_BITNESS), PowerShellBitness.values()[0].getValue());
-    assertEquals(params.get(PowerShellConstants.RUNNER_EXECUTION_MODE), PowerShellExecutionMode.STDIN.getValue());
+    assertEquals(params.get(PowerShellConstants.RUNNER_EXECUTION_MODE), PowerShellExecutionMode.PS1.getValue());
     assertEquals(params.get(PowerShellConstants.RUNNER_SCRIPT_MODE), PowerShellScriptMode.FILE.getValue());
   }
 }
