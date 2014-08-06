@@ -36,6 +36,6 @@
   <admin:editBuildTypeLink buildTypeId="${buildType.externalId}" step="${buildConfigSteps[2].stepId}">
     <span style="white-space: nowrap">${buildType.extendedFullName}</span>
   </admin:editBuildTypeLink>
-  contains <bs:out value="${numSteps}"/> PowerShell step<bs:s val="${numSteps}"/> that use<bs:s val="${numSteps}"/> <strong>-Command</strong> mode
+  contains <bs:out value="${numSteps}"/> PowerShell step<bs:s val="${numSteps}"/> that use<c:if test="${numSteps <= 1}">s</c:if> <strong>-Command</strong> mode
   to execute scripts. Consider using external file mode instead.<bs:help file="PowerShell"/>
 </div>
