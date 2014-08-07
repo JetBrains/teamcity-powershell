@@ -150,8 +150,10 @@ public class PowerShellCommandLineProvider {
         final boolean useFile = configParams.get(PowerShellConstants.CONFIG_USE_FILE) != null;
         if (useFile) {
           args.add("-File");
+          args.add(scriptFile.getPath());
+        } else {
+          args.add(getPSEscapedPath(scriptFile));
         }
-        args.add(getPSEscapedPath(scriptFile));
         addCustomArguments(args, runnerParams, RUNNER_SCRIPT_ARGUMENTS, !useFile);
         break;
       default:
@@ -163,7 +165,6 @@ public class PowerShellCommandLineProvider {
    * Escapes file path (if it contains spaces) with {@code `}
    * Handles name of the script as well
    *
-   * http://blogs.technet.com/b/heyscriptingguy/archive/2012/08/07/powertip-run-a-powershell-script-with-space-in-the-path.aspx
    *
    * @param scriptFile file to take path to
    * @return escaped path to the script

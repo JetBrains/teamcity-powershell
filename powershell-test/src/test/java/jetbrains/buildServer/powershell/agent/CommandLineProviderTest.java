@@ -213,7 +213,44 @@ public class CommandLineProviderTest extends BaseTestCase {
 
   @Test
   @SuppressWarnings({"ResultOfMethodCallIgnored"})
-  public void testEscapeSpacesForFileAndDirect() throws Exception {
+  public void testNotEscapeSpacesForFile() throws Exception {
+    final PowerShellInfo info = m.mock(PowerShellInfo.class);
+    final Map<String, String> runnerParams = new HashMap<String, String>();
+    runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
+    runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "3.0");
+    final String subdirName = "sub dir";
+    final File subDir = new File(myScriptsRootDir, subdirName);
+    subDir.mkdir();
+    final String fileName = "some script.ps1";
+    final File scriptFile = new File(subDir, fileName);
+    scriptFile.createNewFile();
+
+    final Map<String, String> configParams = new HashMap<String, String>() {{
+      put(PowerShellConstants.CONFIG_USE_FILE, "true");
+    }};
+
+    m.checking(new Expectations() {{
+      allowing(info).getExecutablePath();
+      will(returnValue("executablePath"));
+
+      allowing(info).getVersion();
+      will(returnValue(PowerShellVersion.V_3_0));
+    }});
+    final List<String> expected = new ArrayList<String>() {{
+      add(info.getExecutablePath());
+      add("-Version");
+      add(PowerShellVersion.V_3_0.getVersion());
+      add("-NonInteractive");
+      add("-File");
+      add(myScriptFile.getPath());
+    }};
+    final List<String> result = myProvider.provideCommandLine(info, runnerParams, myScriptFile, false, configParams);
+    assertSameElements(result, expected);
+  }
+
+  @Test
+  @SuppressWarnings({"ResultOfMethodCallIgnored"})
+  public void testEscapeSpacesForDirect() throws Exception {
     final PowerShellInfo info = m.mock(PowerShellInfo.class);
     final Map<String, String> runnerParams = new HashMap<String, String>();
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
@@ -355,7 +392,6 @@ public class CommandLineProviderTest extends BaseTestCase {
     }};
     final List<String> result = myProvider.provideCommandLine(info, runnerParams, myScriptFile, false, configParams);
     assertSameElements(result, expected);
-
   }
 
   @DataProvider(name = "powerShellVersions")
