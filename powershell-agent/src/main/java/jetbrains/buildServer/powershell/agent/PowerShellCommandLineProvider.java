@@ -111,7 +111,7 @@ public class PowerShellCommandLineProvider {
       if (escape) {
         final ParametersList parametersList = new ParametersList();
         parametersList.addAll(result);
-        final String res = "\"" + parametersList.getParametersString().replace("\"", "\"\"\"") + "\"";
+        final String res = "\"" + parametersList.getParametersString().replace("\"", "\"\"\"").replace("^", "^^") + "\"";
         args.add(res);
       } else {
         args.addAll(result);
