@@ -6,6 +6,5 @@
 
   <bean class="jetbrains.buildServer.powershell.server.PowerShellRunType"/>
   <bean class="jetbrains.buildServer.powershell.server.PowerShellRunnerDiscoverer"/>
-  <bean class="jetbrains.buildServer.powershell.server.reports.CommandModeHealthReport"/>
 
 </beans>
