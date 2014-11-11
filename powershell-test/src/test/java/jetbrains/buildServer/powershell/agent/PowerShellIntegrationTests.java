@@ -101,7 +101,7 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
   public void should_run_x86() throws Throwable {
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
-    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "echo \"ptr: $([IntPtr]::size)\"");
+    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "Write-Host \"ptr: $([IntPtr]::size)\"");
     setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, PowerShellBitness.x86.getValue());
 
     final SFinishedBuild build = doTest(null);
@@ -115,7 +115,7 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
   public void should_run_x64() throws Throwable {
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
-    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "echo \"ptr: $([IntPtr]::size)\"");
+    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "Write-Host \"ptr: $([IntPtr]::size)\"");
     setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, PowerShellBitness.x64.getValue());
 
     final SFinishedBuild build = doTest(null);

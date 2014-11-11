@@ -18,13 +18,14 @@ package jetbrains.buildServer.powershell.agent;
 
 import com.intellij.execution.configurations.ParametersList;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.SystemInfo;
 import jetbrains.buildServer.RunBuildException;
 import jetbrains.buildServer.agent.BuildProgressLogger;
 import jetbrains.buildServer.agent.runner.*;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
+import jetbrains.buildServer.powershell.agent.system.PowerShellCommands;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
+import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.powershell.common.PowerShellVersion;
 import jetbrains.buildServer.util.FileUtil;
 import jetbrains.buildServer.util.StringUtil;
@@ -35,16 +36,17 @@ import java.io.IOException;
 import java.util.*;
 
 import static jetbrains.buildServer.powershell.common.PowerShellBitness.fromString;
-import static jetbrains.buildServer.powershell.common.PowerShellConstants.CONFIG_KEEP_GENERATED;
-import static jetbrains.buildServer.powershell.common.PowerShellConstants.RUNNER_BITNESS;
+import static jetbrains.buildServer.powershell.common.PowerShellConstants.*;
 
 /**
  * @author Eugene Petrenko (eugene.petrenko@jetbrains.com)
  *         03.12.10 16:47
  */
 public class PowerShellService extends BuildServiceAdapter {
+
   private static final Logger LOG = Logger.getInstance(PowerShellService.class.getName());
 
+  @NotNull
   private final Collection<File> myFilesToRemove = new ArrayList<File>();
 
   @NotNull
@@ -56,12 +58,17 @@ public class PowerShellService extends BuildServiceAdapter {
   @NotNull
   private final ScriptGenerator myScriptGenerator;
 
+  @NotNull
+  private final PowerShellCommands myCommands;
+
   public PowerShellService(@NotNull final PowerShellInfoProvider powerShellInfoProvider,
                            @NotNull final PowerShellCommandLineProvider cmdProvider,
-                           @NotNull final ScriptGenerator scriptGenerator) {
+                           @NotNull final ScriptGenerator scriptGenerator,
+                           @NotNull final PowerShellCommands powerShellCommands) {
     myInfoProvider = powerShellInfoProvider;
     myCmdProvider = cmdProvider;
     myScriptGenerator = scriptGenerator;
+    myCommands = powerShellCommands;
   }
 
   @Override
@@ -98,19 +105,35 @@ public class PowerShellService extends BuildServiceAdapter {
   @Override
   public ProgramCommandLine makeProgramCommandLine() throws RunBuildException {
     final PowerShellInfo info = selectTool();
-
-    final String command = generateCommand(info);
+    final String psExecutable = info.getExecutablePath();
     final String workDir = getWorkingDirectory().getPath();
-
-    getBuild().getBuildLogger().message("Starting: " + command);
+    final PowerShellExecutionMode mode = PowerShellExecutionMode.fromString(getRunnerParameters().get(RUNNER_EXECUTION_MODE));
+    getBuild().getBuildLogger().message("PS Executable: " + psExecutable);
     getBuild().getBuildLogger().message("in directory: " + workDir);
-
-    return new SimpleProgramCommandLine(
-            getActualEnvironmentVariables(info),
-            workDir,
-            selectCmd(info),
-            generateRunScriptArguments(command)
-    );
+    if (PowerShellExecutionMode.STDIN == mode) {
+      // stdin mode: wrapping call to powershell.exe with cmd, powershell.exe goes 1st argument in cmd file
+      final String command = generateCommand(info);
+      final String executable = myCommands.getCMDWrappedCommand(info, getEnvironmentVariables());
+      final List<String> args = new ArrayList<String>();
+      args.addAll(generateRunScriptArguments(command));
+      getBuild().getBuildLogger().message("Executable: " + executable);
+      getBuild().getBuildLogger().message("Arguments: " + Arrays.toString(args.toArray()));
+      return new SimpleProgramCommandLine(
+              getActualEnvironmentVariables(info),
+              workDir,
+              executable,
+              args
+      );
+    } else {
+      final List<String> args = generateArguments(info);
+      getBuild().getBuildLogger().message("Arguments: " + Arrays.toString(args.toArray()));
+      return new SimpleProgramCommandLine(
+              getActualEnvironmentVariables(info),
+              workDir,
+              myCommands.getNativeCommand(info),
+              args
+      );
+    }
   }
 
   @NotNull
@@ -154,24 +177,6 @@ public class PowerShellService extends BuildServiceAdapter {
     return map;
   }
 
-  @NotNull
-  private String generateCommand(@NotNull final PowerShellInfo info) throws RunBuildException {
-    final ParametersList parametersList = new ParametersList();
-    final Map<String, String> runnerParameters = getRunnerParameters();
-    final File scriptFile = myScriptGenerator.generateScript(runnerParameters, getCheckoutDirectory(), getBuildTempDirectory());
-
-    // if  we have script entered in runner params it will be dumped to temp file. This file must be removed after build finishes
-    if (myScriptGenerator.shouldRemoveGeneratedScript(runnerParameters)) {
-      myFilesToRemove.add(scriptFile);
-    }
-
-    parametersList.addAll(
-            myCmdProvider.provideCommandLine(info, runnerParameters, scriptFile, useExecutionPolicy(info), getConfigParameters())
-    );
-
-    return parametersList.getParametersString();
-  }
-
   /**
    * PowerShell {@code v1.0} does not support execution policy.
    * @param info PowerShell to use
@@ -207,26 +212,30 @@ public class PowerShellService extends BuildServiceAdapter {
     throw new RunBuildException("PowerShell " + bit + " was not found");
   }
 
-  @NotNull
-  private String selectCmd(PowerShellInfo info) {
-    final String windir = getEnvironmentVariables().get("windir");
-    if (StringUtil.isEmptyOrSpaces(windir)) {
-      LOG.warn("Failed to find %windir%");
-      return "cmd.exe";
+  private List<String> generateArguments(@NotNull final PowerShellInfo info) throws RunBuildException {
+    final Map<String, String> runnerParameters = getRunnerParameters();
+    final File scriptFile = myScriptGenerator.generateScript(runnerParameters, getCheckoutDirectory(), getBuildTempDirectory());
+    // if  we have script entered in runner params it will be dumped to temp file. This file must be removed after build finishes
+    if (myScriptGenerator.shouldRemoveGeneratedScript(runnerParameters)) {
+      myFilesToRemove.add(scriptFile);
     }
+    return myCmdProvider.provideCommandLine(runnerParameters, scriptFile, useExecutionPolicy(info), getConfigParameters());
+  }
 
-    switch (info.getBitness()) {
-      case x64:
-        if (SystemInfo.is32Bit) {
-          return windir + "\\sysnative\\cmd.exe";
-        }
-        return windir + "\\system32\\cmd.exe";
-      case x86:
-        if (SystemInfo.is64Bit) {
-          return windir + "\\syswow64\\cmd.exe";
-        }
-        return windir + "\\system32\\cmd.exe";
+  @NotNull
+  private String generateCommand(@NotNull final PowerShellInfo info) throws RunBuildException {
+    final ParametersList parametersList = new ParametersList();
+    final Map<String, String> runnerParameters = getRunnerParameters();
+    final File scriptFile = myScriptGenerator.generateScript(runnerParameters, getCheckoutDirectory(), getBuildTempDirectory());
+
+    // if  we have script entered in runner params it will be dumped to temp file. This file must be removed after build finishes
+    if (myScriptGenerator.shouldRemoveGeneratedScript(runnerParameters)) {
+      myFilesToRemove.add(scriptFile);
     }
-    return "cmd.exe";
+    parametersList.add(info.getExecutablePath());
+    parametersList.addAll(
+            myCmdProvider.provideCommandLine(runnerParameters, scriptFile, useExecutionPolicy(info), getConfigParameters())
+    );
+    return parametersList.getParametersString();
   }
 }

@@ -19,7 +19,6 @@ package jetbrains.buildServer.powershell.agent;
 import com.intellij.execution.configurations.ParametersList;
 import com.intellij.openapi.diagnostic.Logger;
 import jetbrains.buildServer.RunBuildException;
-import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.util.StringUtil;
@@ -42,14 +41,16 @@ public class PowerShellCommandLineProvider {
   private static final Logger LOG = Logger.getInstance(PowerShellCommandLineProvider.class.getName());
 
   @NotNull
-  public List<String> provideCommandLine(@NotNull final PowerShellInfo info,
-                                         @NotNull final Map<String, String> runnerParams,
+  public List<String> provideCommandLine(@NotNull final Map<String, String> runnerParams,
                                          @NotNull final File scriptFile,
                                          final boolean useExecutionPolicy,
                                          @NotNull final Map<String, String> configParams) throws RunBuildException {
     final List<String> result = new ArrayList<String>();
+    final PowerShellExecutionMode mod = PowerShellExecutionMode.fromString(runnerParams.get(RUNNER_EXECUTION_MODE));
+    if (mod == null) {
+      throw new RunBuildException("'" + RUNNER_EXECUTION_MODE + "' runner parameters is not defined");
+    }
 
-    result.add(info.getExecutablePath());
     addVersion(result, runnerParams); // version must be the 1st arg after executable path
     if (!StringUtil.isEmptyOrSpaces(runnerParams.get(RUNNER_NO_PROFILE))) {
       result.add("-NoProfile");
@@ -61,10 +62,6 @@ public class PowerShellCommandLineProvider {
       addExecutionPolicyPreference(result);
     }
 
-    PowerShellExecutionMode mod = PowerShellExecutionMode.fromString(runnerParams.get(RUNNER_EXECUTION_MODE));
-    if (mod == null) {
-      throw new RunBuildException("'" + RUNNER_EXECUTION_MODE + "' runner parameters is not defined");
-    }
     addScriptBody(result, mod, scriptFile, runnerParams, configParams);
     return result;
   }
@@ -111,7 +108,7 @@ public class PowerShellCommandLineProvider {
       if (escape) {
         final ParametersList parametersList = new ParametersList();
         parametersList.addAll(result);
-        final String res = "\"" + parametersList.getParametersString().replace("\"", "\"\"\"").replace("^", "^^") + "\"";
+        final String res = "\"" + parametersList.getParametersString().replace("\"", "\"\"\"") + "\"";
         args.add(res);
       } else {
         args.addAll(result);

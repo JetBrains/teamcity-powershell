@@ -20,6 +20,7 @@ import jetbrains.buildServer.agent.AgentBuildRunnerInfo;
 import jetbrains.buildServer.agent.BuildAgentConfiguration;
 import jetbrains.buildServer.agent.runner.CommandLineBuildService;
 import jetbrains.buildServer.agent.runner.CommandLineBuildServiceFactory;
+import jetbrains.buildServer.powershell.agent.system.PowerShellCommands;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,18 +36,22 @@ public class PowerShellServiceFactory implements CommandLineBuildServiceFactory,
 
   @NotNull
   private final ScriptGenerator myGenerator;
+  @NotNull
+  private final PowerShellCommands myCommands;
 
   public PowerShellServiceFactory(@NotNull final PowerShellInfoProvider powerShellInfoProvider,
                                   @NotNull final PowerShellCommandLineProvider cmdProvider,
-                                  @NotNull final ScriptGenerator generator) {
+                                  @NotNull final ScriptGenerator generator,
+                                  @NotNull final PowerShellCommands powerShellCommands) {
     myInfoProvider = powerShellInfoProvider;
     myCmdProvider = cmdProvider;
     myGenerator = generator;
+    myCommands = powerShellCommands;
   }
 
   @NotNull
   public CommandLineBuildService createService() {
-    return new PowerShellService(myInfoProvider, myCmdProvider, myGenerator);
+    return new PowerShellService(myInfoProvider, myCmdProvider, myGenerator, myCommands);
   }
 
   @NotNull

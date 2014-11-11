@@ -90,11 +90,11 @@ public class CommandLineProviderTest extends BaseTestCase {
       will(returnValue(version));
     }});
 
-    final List<String> result = myProvider.provideCommandLine(info, runnerParams, myScriptFile, false, Collections.<String, String>emptyMap());
+    final List<String> result = myProvider.provideCommandLine(runnerParams, myScriptFile, false, Collections.<String, String>emptyMap());
     // powershell.exe -Version $version
-    assertTrue(result.size() >= 3);
-    assertEquals(expectedVersionArg, result.get(1));
-    assertEquals(expectedVersionValue, result.get(2));
+    assertTrue(result.size() >= 2);
+    assertEquals(expectedVersionArg, result.get(0));
+    assertEquals(expectedVersionValue, result.get(1));
   }
 
   @Test(dataProvider = "powerShellVersions")
@@ -119,7 +119,6 @@ public class CommandLineProviderTest extends BaseTestCase {
       will(returnValue(version));
     }});
     final List<String> expected = new ArrayList<String>() {{
-      add(info.getExecutablePath());
       add("-Version");
       add(version.getVersion());
       add("-NonInteractive");
@@ -127,7 +126,7 @@ public class CommandLineProviderTest extends BaseTestCase {
       add(myScriptFile.getPath());
       addAll(Arrays.asList(args.split("\\s+")));
     }};
-    final List<String> result = myProvider.provideCommandLine(info, runnerParams, myScriptFile, false, configParams);
+    final List<String> result = myProvider.provideCommandLine(runnerParams, myScriptFile, false, configParams);
     assertSameElements(result, expected);
   }
 
@@ -144,7 +143,7 @@ public class CommandLineProviderTest extends BaseTestCase {
       never(info).getVersion();
     }});
 
-    final List<String> result = myProvider.provideCommandLine(info, runnerParams, myScriptFile, false, Collections.<String, String>emptyMap());
+    final List<String> result = myProvider.provideCommandLine(runnerParams, myScriptFile, false, Collections.<String, String>emptyMap());
     for (String str: result) {
       if ("-Version".equals(str)) {
         fail("Powershell version should not be supplied if Any is selected in runner parameters");
@@ -170,13 +169,12 @@ public class CommandLineProviderTest extends BaseTestCase {
       will(returnValue(PowerShellVersion.V_3_0));
     }});
     final List<String> expected = new ArrayList<String>() {{
-      add(info.getExecutablePath());
       add("-Version");
       add(PowerShellVersion.V_3_0.getVersion());
       add("-NonInteractive");
       add(myScriptFile.getPath());
     }};
-    final List<String> result = myProvider.provideCommandLine(info, runnerParams, myScriptFile, false, configParams);
+    final List<String> result = myProvider.provideCommandLine(runnerParams, myScriptFile, false, configParams);
     assertSameElements(result, expected);
   }
 
@@ -200,14 +198,13 @@ public class CommandLineProviderTest extends BaseTestCase {
       will(returnValue(PowerShellVersion.V_3_0));
     }});
     final List<String> expected = new ArrayList<String>() {{
-      add(info.getExecutablePath());
       add("-Version");
       add(PowerShellVersion.V_3_0.getVersion());
       add("-NonInteractive");
       add("-File");
       add(myScriptFile.getPath());
     }};
-    final List<String> result = myProvider.provideCommandLine(info, runnerParams, myScriptFile, false, configParams);
+    final List<String> result = myProvider.provideCommandLine(runnerParams, myScriptFile, false, configParams);
     assertSameElements(result, expected);
   }
 
@@ -237,14 +234,13 @@ public class CommandLineProviderTest extends BaseTestCase {
       will(returnValue(PowerShellVersion.V_3_0));
     }});
     final List<String> expected = new ArrayList<String>() {{
-      add(info.getExecutablePath());
       add("-Version");
       add(PowerShellVersion.V_3_0.getVersion());
       add("-NonInteractive");
       add("-File");
       add(myScriptFile.getPath());
     }};
-    final List<String> result = myProvider.provideCommandLine(info, runnerParams, myScriptFile, false, configParams);
+    final List<String> result = myProvider.provideCommandLine(runnerParams, myScriptFile, false, configParams);
     assertSameElements(result, expected);
   }
 
@@ -272,13 +268,12 @@ public class CommandLineProviderTest extends BaseTestCase {
       will(returnValue(PowerShellVersion.V_3_0));
     }});
     final List<String> expected = new ArrayList<String>() {{
-      add(info.getExecutablePath());
       add("-Version");
       add(PowerShellVersion.V_3_0.getVersion());
       add("-NonInteractive");
       add(myScriptFile.getPath().replace(" ", "` "));
     }};
-    final List<String> result = myProvider.provideCommandLine(info, runnerParams, myScriptFile, false, configParams);
+    final List<String> result = myProvider.provideCommandLine(runnerParams, myScriptFile, false, configParams);
     assertSameElements(result, expected);
   }
 
@@ -292,10 +287,6 @@ public class CommandLineProviderTest extends BaseTestCase {
     final String subdirName = "sub dir";
     final File subDir = new File(myScriptsRootDir, subdirName);
     subDir.mkdir();
-    final String fileName = "some script.ps1";
-    final File scriptFile = new File(subDir, fileName);
-    scriptFile.createNewFile();
-
 
     final Map<String, String> configParams = Collections.emptyMap();
 
@@ -307,7 +298,6 @@ public class CommandLineProviderTest extends BaseTestCase {
       will(returnValue(PowerShellVersion.V_3_0));
     }});
     final List<String> expected = new ArrayList<String>() {{
-      add(info.getExecutablePath());
       add("-Version");
       add(PowerShellVersion.V_3_0.getVersion());
       add("-NonInteractive");
@@ -316,7 +306,7 @@ public class CommandLineProviderTest extends BaseTestCase {
       add("<");
       add(myScriptFile.getPath());
     }};
-    final List<String> result = myProvider.provideCommandLine(info, runnerParams, myScriptFile, false, configParams);
+    final List<String> result = myProvider.provideCommandLine(runnerParams, myScriptFile, false, configParams);
     assertSameElements(result, expected);
   }
 
@@ -346,14 +336,13 @@ public class CommandLineProviderTest extends BaseTestCase {
       will(returnValue(PowerShellVersion.V_3_0));
     }});
     final List<String> expected = new ArrayList<String>() {{
-      add(info.getExecutablePath());
       add("-Version");
       add(PowerShellVersion.V_3_0.getVersion());
       add("-NonInteractive");
       add(myScriptFile.getPath());
       add("\" arg1 \"\"\"arg2.1 arg2.2\"\"\" arg3 arg4 arg5\"");
     }};
-    final List<String> result = myProvider.provideCommandLine(info, runnerParams, myScriptFile, false, configParams);
+    final List<String> result = myProvider.provideCommandLine(runnerParams, myScriptFile, false, configParams);
     assertSameElements(result, expected);
   }
 
@@ -378,7 +367,6 @@ public class CommandLineProviderTest extends BaseTestCase {
       will(returnValue(PowerShellVersion.V_3_0));
     }});
     final List<String> expected = new ArrayList<String>() {{
-      add(info.getExecutablePath());
       add("-Version");
       add(PowerShellVersion.V_3_0.getVersion());
       add("-NonInteractive");
@@ -390,7 +378,7 @@ public class CommandLineProviderTest extends BaseTestCase {
       add("arg4");
       add("arg5");
     }};
-    final List<String> result = myProvider.provideCommandLine(info, runnerParams, myScriptFile, false, configParams);
+    final List<String> result = myProvider.provideCommandLine(runnerParams, myScriptFile, false, configParams);
     assertSameElements(result, expected);
   }
 
@@ -420,14 +408,13 @@ public class CommandLineProviderTest extends BaseTestCase {
       will(returnValue(PowerShellVersion.V_3_0));
     }});
     final List<String> expected = new ArrayList<String>() {{
-      add(info.getExecutablePath());
       add("-Version");
       add(PowerShellVersion.V_3_0.getVersion());
       add("-NonInteractive");
       add(myScriptFile.getPath());
-      add("\" -PassToPowerShell ^^MatchTheWholeString$\"");
+      add("\" -PassToPowerShell ^MatchTheWholeString$\"");
     }};
-    final List<String> result = myProvider.provideCommandLine(info, runnerParams, myScriptFile, false, configParams);
+    final List<String> result = myProvider.provideCommandLine(runnerParams, myScriptFile, false, configParams);
     assertSameElements(result, expected);
   }
 
@@ -452,7 +439,6 @@ public class CommandLineProviderTest extends BaseTestCase {
       will(returnValue(PowerShellVersion.V_3_0));
     }});
     final List<String> expected = new ArrayList<String>() {{
-      add(info.getExecutablePath());
       add("-Version");
       add(PowerShellVersion.V_3_0.getVersion());
       add("-NonInteractive");
@@ -461,7 +447,7 @@ public class CommandLineProviderTest extends BaseTestCase {
       add("-PassToPowerShell");
       add("^MatchTheWholeString$");
     }};
-    final List<String> result = myProvider.provideCommandLine(info, runnerParams, myScriptFile, false, configParams);
+    final List<String> result = myProvider.provideCommandLine(runnerParams, myScriptFile, false, configParams);
     assertSameElements(result, expected);
   }
 

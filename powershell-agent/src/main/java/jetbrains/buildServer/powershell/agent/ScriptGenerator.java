@@ -19,7 +19,6 @@ package jetbrains.buildServer.powershell.agent;
 import com.intellij.openapi.diagnostic.Logger;
 import jetbrains.buildServer.RunBuildException;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
-import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.powershell.common.PowerShellScriptMode;
 import jetbrains.buildServer.util.FileUtil;
 import org.jetbrains.annotations.NotNull;
@@ -66,10 +65,10 @@ public class ScriptGenerator {
         throw new RunBuildException("Empty build script");
       }
       sourceScript = convertLineSeparators(sourceScript, "\r\n");
-      if (PowerShellExecutionMode.STDIN.equals(PowerShellExecutionMode.fromString(runnerParameters.get(RUNNER_EXECUTION_MODE)))) {
+      /*if (PowerShellExecutionMode.STDIN.equals(PowerShellExecutionMode.fromString(runnerParameters.get(RUNNER_EXECUTION_MODE)))) {
         //some newlines are necessary to workaround -Command - issues, like TW-19771
         sourceScript = "  \r\n  \r\n  \r\n" + sourceScript + "\r\n  \r\n   \r\n   ";
-      }
+      }*/
       scriptFile = writeToTempFile(buildTempDir, sourceScript);
     }
     return scriptFile;
