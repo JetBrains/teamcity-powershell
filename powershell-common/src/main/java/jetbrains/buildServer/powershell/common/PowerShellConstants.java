@@ -39,12 +39,4 @@ public class PowerShellConstants {
 
   public static final String RUNNER_EXECUTION_MODE = "jetbrains_powershell_execution";
 
-  /**
-   * For compatibility reasons, we allow to use {@code -File} flag
-   * explicitly. By default, script will be referenced directly
-   *
-   * @since 9.0
-   */
-  public static final String CONFIG_USE_FILE = "powershell.use.file";
-
 }

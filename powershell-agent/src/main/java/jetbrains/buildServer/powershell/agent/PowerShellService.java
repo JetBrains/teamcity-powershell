@@ -219,7 +219,7 @@ public class PowerShellService extends BuildServiceAdapter {
     if (myScriptGenerator.shouldRemoveGeneratedScript(runnerParameters)) {
       myFilesToRemove.add(scriptFile);
     }
-    return myCmdProvider.provideCommandLine(runnerParameters, scriptFile, useExecutionPolicy(info), getConfigParameters());
+    return myCmdProvider.provideCommandLine(runnerParameters, scriptFile, useExecutionPolicy(info));
   }
 
   @NotNull
@@ -234,7 +234,7 @@ public class PowerShellService extends BuildServiceAdapter {
     }
     parametersList.add(info.getExecutablePath());
     parametersList.addAll(
-            myCmdProvider.provideCommandLine(runnerParameters, scriptFile, useExecutionPolicy(info), getConfigParameters())
+            myCmdProvider.provideCommandLine(runnerParameters, scriptFile, useExecutionPolicy(info))
     );
     return parametersList.getParametersString();
   }

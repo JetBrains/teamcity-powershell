@@ -16,10 +16,8 @@
 
 package jetbrains.buildServer.powershell.agent;
 
-import com.intellij.execution.configurations.ParametersList;
 import com.intellij.openapi.diagnostic.Logger;
 import jetbrains.buildServer.RunBuildException;
-import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
@@ -43,8 +41,7 @@ public class PowerShellCommandLineProvider {
   @NotNull
   public List<String> provideCommandLine(@NotNull final Map<String, String> runnerParams,
                                          @NotNull final File scriptFile,
-                                         final boolean useExecutionPolicy,
-                                         @NotNull final Map<String, String> configParams) throws RunBuildException {
+                                         final boolean useExecutionPolicy) throws RunBuildException {
     final List<String> result = new ArrayList<String>();
     final PowerShellExecutionMode mod = PowerShellExecutionMode.fromString(runnerParams.get(RUNNER_EXECUTION_MODE));
     if (mod == null) {
@@ -57,12 +54,12 @@ public class PowerShellCommandLineProvider {
     }
     result.add("-NonInteractive");
 
-    addCustomArguments(result, runnerParams, RUNNER_CUSTOM_ARGUMENTS, false);
+    addCustomArguments(result, runnerParams, RUNNER_CUSTOM_ARGUMENTS);
     if (useExecutionPolicy) {
       addExecutionPolicyPreference(result);
     }
 
-    addScriptBody(result, mod, scriptFile, runnerParams, configParams);
+    addScriptBody(result, mod, scriptFile, runnerParams);
     return result;
   }
 
@@ -80,21 +77,13 @@ public class PowerShellCommandLineProvider {
    * Gets arguments from runner parameter with specified key.
    * Adds them to given pre-constructed list
    *
-   * Supports 'escaped' mode: all arguments are passed as one escaped argument.
-   * In escaped mode, inside quotes are escaped with triple quotes.
-   * Escaped mode is needed parameters passing to the script when direct script execution is used
-
-   *
    * @param args pre-constructed list of arguments
    * @param runnerParams runner parameters
    * @param key runner parameter key
-   * @param escape if set to {@code true}, quotes will be escaped with triple quotes, all
-   *               found arguments will be passed to the resulting list as one quoted argument
    */
   private void addCustomArguments(@NotNull final List<String> args,
                                   @NotNull final Map<String, String> runnerParams,
-                                  @NotNull final String key,
-                                  final boolean escape) {
+                                  @NotNull final String key) {
     final List<String> result = new ArrayList<String>();
     final String custom = runnerParams.get(key);
     if (!StringUtil.isEmptyOrSpaces(custom)) {
@@ -104,16 +93,7 @@ public class PowerShellCommandLineProvider {
         result.addAll(StringUtil.splitHonorQuotes(line));
       }
     }
-    if (!result.isEmpty()) {
-      if (escape) {
-        final ParametersList parametersList = new ParametersList();
-        parametersList.addAll(result);
-        final String res = "\"" + parametersList.getParametersString().replace("\"", "\"\"\"") + "\"";
-        args.add(res);
-      } else {
-        args.addAll(result);
-      }
-    }
+    args.addAll(result);
   }
 
   private void addExecutionPolicyPreference(@NotNull final List<String> list) {
@@ -131,8 +111,7 @@ public class PowerShellCommandLineProvider {
   private void addScriptBody(@NotNull final List<String> args,
                              @NotNull final PowerShellExecutionMode mod,
                              @NotNull final File scriptFile,
-                             @NotNull final Map<String, String> runnerParams,
-                             @NotNull final Map<String, String> configParams) throws RunBuildException {
+                             @NotNull final Map<String, String> runnerParams) throws RunBuildException {
     switch (mod) {
       case STDIN:
         args.add("-Command");
@@ -144,29 +123,12 @@ public class PowerShellCommandLineProvider {
         if (!scriptFile.getPath().toLowerCase().endsWith(".ps1")) {
           throw new RunBuildException("PowerShell script should have '.ps1' extension");
         }
-        final boolean useFile = configParams.get(PowerShellConstants.CONFIG_USE_FILE) != null;
-        if (useFile) {
           args.add("-File");
           args.add(scriptFile.getPath());
-        } else {
-          args.add(getPSEscapedPath(scriptFile));
-        }
-        addCustomArguments(args, runnerParams, RUNNER_SCRIPT_ARGUMENTS, !useFile);
+        addCustomArguments(args, runnerParams, RUNNER_SCRIPT_ARGUMENTS);
         break;
       default:
         throw new RunBuildException("Unknown ExecutionMode: " + mod);
     }
-  }
-
-  /**
-   * Escapes file path (if it contains spaces) with {@code `}
-   * Handles name of the script as well
-   *
-   *
-   * @param scriptFile file to take path to
-   * @return escaped path to the script
-   */
-  private String getPSEscapedPath(@NotNull final File scriptFile) {
-    return StringUtil.replace(scriptFile.getPath(), " ", "` ");
   }
 }

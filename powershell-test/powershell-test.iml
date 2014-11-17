@@ -14,11 +14,10 @@
     <orderEntry type="module" module-name="powershell-common" />
     <orderEntry type="module" module-name="powershell-agent" />
     <orderEntry type="module" module-name="powershell-server" />
-    <orderEntry type="library" name="Test-Api" level="project" />
+    <orderEntry type="library" scope="TEST" name="Test-Api" level="project" />
     <orderEntry type="library" name="Idea-OpenApi" level="project" />
     <orderEntry type="library" scope="TEST" name="test-lib" level="project" />
     <orderEntry type="library" scope="TEST" name="Agent-Runtime" level="project" />
     <orderEntry type="library" scope="TEST" name="Server-Runtime" level="project" />
   </component>
 </module>
-

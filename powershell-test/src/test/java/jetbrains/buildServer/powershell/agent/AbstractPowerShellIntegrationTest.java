@@ -17,9 +17,11 @@
 package jetbrains.buildServer.powershell.agent;
 
 import jetbrains.buildServer.RunnerTest2Base;
+import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import org.jetbrains.annotations.NotNull;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 
 /**
  * Base class for powershell integration tests
@@ -46,4 +48,11 @@ public abstract class AbstractPowerShellIntegrationTest extends RunnerTest2Base 
     return "";
   }
 
+  @DataProvider(name = "bitnessProvider")
+  public Object[][] getBitness() {
+    Object[][] result = new Object[2][];
+    result[0] = new Object[] {PowerShellBitness.x86};
+    result[1] = new Object[] {PowerShellBitness.x64};
+    return result;
+  }
 }
