@@ -86,6 +86,9 @@ public class BuildFailureTests extends AbstractPowerShellIntegrationTest {
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "callToSomeNonExistentFunction(param1, param2)");
     setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, bitness.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_LOG_ERR_TO_ERROR, "true");
+
+    getBuildType().setOption(SBuildType.BT_FAIL_ON_ANY_ERROR_MESSAGE, true);
 
     final SFinishedBuild build = doTest(null);
     dumpBuildLogLocally(build);
