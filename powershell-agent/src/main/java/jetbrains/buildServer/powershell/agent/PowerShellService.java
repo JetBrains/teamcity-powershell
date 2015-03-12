@@ -81,7 +81,7 @@ public class PowerShellService extends BuildServiceAdapter {
   public List<ProcessListener> getListeners() {
     final boolean logToError = !StringUtil.isEmptyOrSpaces(getRunnerParameters().get(PowerShellConstants.RUNNER_LOG_ERR_TO_ERROR));
     final BuildProgressLogger logger = getLogger();
-    return Arrays.<ProcessListener>asList(new ProcessListenerAdapter(){
+    return Collections.<ProcessListener>singletonList(new ProcessListenerAdapter() {
       private final org.apache.log4j.Logger OUT_LOG = org.apache.log4j.Logger.getLogger("teamcity.out");
       @Override
       public void onStandardOutput(@NotNull final String text) {
@@ -108,16 +108,18 @@ public class PowerShellService extends BuildServiceAdapter {
     final String psExecutable = info.getExecutablePath();
     final String workDir = getWorkingDirectory().getPath();
     final PowerShellExecutionMode mode = PowerShellExecutionMode.fromString(getRunnerParameters().get(RUNNER_EXECUTION_MODE));
-    getBuild().getBuildLogger().message("PS Executable: " + psExecutable);
-    getBuild().getBuildLogger().message("in directory: " + workDir);
+    final BuildProgressLogger buildLogger = getBuild().getBuildLogger();
+    buildLogger.message("PowerShell Executable: " + psExecutable);
+    buildLogger.message("Working directory: " + workDir);
     if (PowerShellExecutionMode.STDIN == mode) {
       // stdin mode: wrapping call to powershell.exe with cmd, powershell.exe goes 1st argument in cmd file
       final String command = generateCommand(info);
+      buildLogger.message("PowerShell command: " + command);
       final String executable = myCommands.getCMDWrappedCommand(info, getEnvironmentVariables());
       final List<String> args = new ArrayList<String>();
       args.addAll(generateRunScriptArguments(command));
-      getBuild().getBuildLogger().message("Executable: " + executable);
-      getBuild().getBuildLogger().message("Arguments: " + Arrays.toString(args.toArray()));
+      buildLogger.message("Executable wrapper: " + executable);
+      buildLogger.message("Wrapper arguments: " + Arrays.toString(args.toArray()));
       return new SimpleProgramCommandLine(
               getActualEnvironmentVariables(info),
               workDir,
@@ -126,7 +128,7 @@ public class PowerShellService extends BuildServiceAdapter {
       );
     } else {
       final List<String> args = generateArguments(info);
-      getBuild().getBuildLogger().message("Arguments: " + Arrays.toString(args.toArray()));
+      buildLogger.message("PowerShell arguments: " + Arrays.toString(args.toArray()));
       return new SimpleProgramCommandLine(
               getActualEnvironmentVariables(info),
               workDir,
@@ -161,7 +163,8 @@ public class PowerShellService extends BuildServiceAdapter {
   @NotNull
   private Map<String, String> getActualEnvironmentVariables(@NotNull PowerShellInfo info) {
     Map<String, String> map = getEnvironmentVariables();
-    //check internal property
+    // check internal property
+    // supported only by powershell of version > 1 ('==' is therefore used)
     if (!isInternalPropertySetExecutionPolicy("set.executionPolicyEnv", info.getVersion() == PowerShellVersion.V_1_0)) return map;
 
     final String env = "PSExecutionPolicyPreference";
