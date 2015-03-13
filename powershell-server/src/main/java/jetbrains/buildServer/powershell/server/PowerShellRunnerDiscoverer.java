@@ -15,7 +15,7 @@
  */
 package jetbrains.buildServer.powershell.server;
 
-import com.intellij.openapi.util.io.FileUtil;
+import jetbrains.buildServer.util.FileUtil;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
