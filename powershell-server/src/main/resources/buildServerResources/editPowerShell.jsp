@@ -86,9 +86,8 @@
     <props:multilineProperty name="${bean.scriptCodeKey}"
                              linkTitle="Enter Powershell script content"
                              cols="58" rows="10"
-                             expanded="${true}"/>
-    <span class="smallNote">Enter contents of a Powershell script. TeamCity references will be replaced in the code</span>
-    <span class="error" id="error_${bean.scriptCodeKey}"></span>
+                             expanded="${true}"
+                             note="Enter contents of a Powershell script. TeamCity references will be replaced in the code"/>
   </td>
 </tr>
 
@@ -113,9 +112,7 @@
 <tr id="powershell_scriptArguments">
   <th><label for="${bean.scriptArgmentsKey}">Script arguments:</label></th>
   <td>
-    <props:multilineProperty name="${bean.scriptArgmentsKey}" cols="58" linkTitle="Expand" rows="5"/>
-    <span class="smallNote">Enter script arguments</span>
-    <span class="error" id="error_${bean.scriptArgmentsKey}"></span>
+    <props:multilineProperty name="${bean.scriptArgmentsKey}" cols="58" linkTitle="Expand" rows="5" note="Enter script arguments"/>
   </td>
 </tr>
 
