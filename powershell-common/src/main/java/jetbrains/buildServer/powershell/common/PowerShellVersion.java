@@ -15,12 +15,15 @@
  */
 package jetbrains.buildServer.powershell.common;
 
+import com.intellij.openapi.util.text.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Eugene Petrenko (eugene.petrenko@jetbrains.com)
@@ -31,9 +34,23 @@ public enum PowerShellVersion {
   V_2_0("2.0", 2),
   V_3_0("3.0", 3),
   V_4_0("4.0", 4),
-  ;
+  V_5_0("5.0", 5);
+
+  /**
+   * Regexp to match powershell version declaration.
+   * Matches version format {@code Major.Minor.Build.Revision}
+   * {@code Build} and {@code Revision} parts are optional (since Powershell v5)
+   */
+  private static final Pattern VERSION_PATTERN = Pattern.compile("(\\d\\.\\d)(\\.\\d+)?(\\.\\d+)?");
+
+  /**
+   * Suffix to extend short version with.
+   * Matches optional {@code Build} and {@code Revision} parts
+   */
+  private static final String VERSION_EXTENSION_SUFFIX = "(.\\d+)?(.\\d+)?";
 
   private final String myVersion;
+
   private final int myOrder;
 
   PowerShellVersion(final String version, int order) {
@@ -48,32 +65,36 @@ public enum PowerShellVersion {
 
   @NotNull
   public String getVersionRegex() {
-    return myVersion.replace(".", "\\.");
+    return myVersion.replace(".", "\\.") + VERSION_EXTENSION_SUFFIX;
   }
 
   @Nullable
   public static PowerShellVersion fromString(@Nullable String version) {
-    if (version == null) return null;
-
-    version = version.trim();
-    if (version.length() == 0) return null;
-
-    for (PowerShellVersion ver : values()) {
-      if (ver.getVersion().equals(version)) {
-        return ver;
+    PowerShellVersion result = null;
+    if (!StringUtil.isEmptyOrSpaces(version)) {
+      version = version.trim();
+      final Matcher m = VERSION_PATTERN.matcher(version);
+      if (m.matches()) {
+        String shortVersion = m.group(1);
+        for (PowerShellVersion ver : values()) {
+          if (ver.getVersion().equals(shortVersion)) {
+            result = ver;
+            break;
+          }
+        }
       }
     }
-    return null;
+    return result;
   }
 
   @NotNull
   public static Collection<PowerShellVersion> getThisOrNewer(@NotNull final PowerShellVersion version) {
     final List<PowerShellVersion> result = new ArrayList<PowerShellVersion>();
-
-    for (PowerShellVersion v : values()) {
-      if (v.myOrder >= version.myOrder) result.add(v);
+    for (PowerShellVersion v: values()) {
+      if (v.myOrder >= version.myOrder) {
+        result.add(v);
+      }
     }
-
     return result;
   }
 }
