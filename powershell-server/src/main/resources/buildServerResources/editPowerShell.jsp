@@ -47,7 +47,7 @@
 </tr>
 
 <tr class="advancedSetting">
-  <th><label for="${bean.errorToErrorKey}">Error Output:</label></th>
+  <th><label for="${bean.errorToErrorKey}">Format stderr output as:</label></th>
   <td>
     <props:selectProperty name="${bean.errorToErrorKey}">
       <props:option value="">warning</props:option>
