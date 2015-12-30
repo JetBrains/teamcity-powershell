@@ -26,8 +26,6 @@ if (version == null) version = "snapshot-" + new Date().format("yyyyMMdd"+"'z'"+
 
 allprojects {
   apply plugin: 'java'
-  sourceCompatibility = '1.5'
-  targetCompatibility = '1.5'
 }
 
 subprojects {
@@ -49,9 +47,16 @@ subprojects {
       teamCityDir = tmp;
     }
 
-
     if (!new File(teamCityDir).isDirectory()) {
       throw new StopExecutionException("Failed to find TeamCity home at ${teamCityDir}");
+    }
+
+    if (System.getProperty("jdk.home.1.6") == null) {
+      throw new StopExecutionException("Please specify path to the JDK 6 using -Djdk.home.1.6 property");
+    }
+
+    if (!new File(System.getProperty("jdk.home.1.6")).isDirectory()) {
+      throw new StopExecutionException("Failed to find jdk 1.6 at ${System.getProperty("jdk.home.1.6")}");
     }
 
     teamCityLib = fileTree(teamCityDir + "/webapps/ROOT/WEB-INF/lib").matching {
@@ -105,6 +110,12 @@ task debug << {
 
 
 project(':powershell-common') {
+  sourceCompatibility = '1.6'
+  targetCompatibility = '1.6'
+
+  compileJava.options.fork = true
+  compileJava.options.forkOptions.executable = System.getProperty("jdk.home.1.6") + "/bin/javac";
+
   dependencies {
     compile commonApi
     compile annotationsJar
@@ -112,6 +123,12 @@ project(':powershell-common') {
 }
 
 project (':powershell-agent') {
+  sourceCompatibility = '1.6'
+  targetCompatibility = '1.6'
+
+  compileJava.options.fork = true
+  compileJava.options.forkOptions.executable = System.getProperty("jdk.home.1.6") + "/bin/javac";
+
   dependencies {
     compile project(':powershell-common')
     compile agentApi
@@ -120,6 +137,9 @@ project (':powershell-agent') {
 
 
 project (':powershell-server') {
+  sourceCompatibility = '1.8'
+  targetCompatibility = '1.8'
+
   dependencies {
     compile project(':powershell-common')    
     compile serverApi
@@ -127,6 +147,9 @@ project (':powershell-server') {
 }
 
 project (':powershell-test') {
+  sourceCompatibility = '1.8'
+  targetCompatibility = '1.8'
+
   dependencies {
      compile project(':powershell-common')
      compile project(':powershell-agent')     
