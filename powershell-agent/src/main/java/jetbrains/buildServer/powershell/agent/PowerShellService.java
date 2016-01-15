@@ -194,13 +194,12 @@ public class PowerShellService extends BuildServiceAdapter {
   @Override
   public void afterProcessFinished() throws RunBuildException {
     super.afterProcessFinished();
-
-    if (getConfigParameters().containsKey(CONFIG_KEEP_GENERATED)) return;
-
-    for (File file: myFilesToRemove) {
-      FileUtil.delete(file);
+    if (!shouldKeepGeneratedFiles()) {
+      for (File file: myFilesToRemove) {
+        FileUtil.delete(file);
+      }
+      myFilesToRemove.clear();
     }
-    myFilesToRemove.clear();
   }
 
   private PowerShellInfo selectTool() throws RunBuildException {
@@ -240,5 +239,9 @@ public class PowerShellService extends BuildServiceAdapter {
             myCmdProvider.provideCommandLine(runnerParameters, scriptFile, useExecutionPolicy(info))
     );
     return parametersList.getParametersString();
+  }
+
+  private boolean shouldKeepGeneratedFiles() {
+    return getConfigParameters().containsKey(CONFIG_KEEP_GENERATED) || getConfigParameters().containsKey("teamcity.dont.delete.temp.files");
   }
 }

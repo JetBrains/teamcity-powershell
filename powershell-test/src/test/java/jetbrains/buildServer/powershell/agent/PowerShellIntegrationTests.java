@@ -23,9 +23,11 @@ import jetbrains.buildServer.serverSide.SFinishedBuild;
 import jetbrains.buildServer.util.FileUtil;
 import jetbrains.buildServer.util.TestFor;
 import junit.framework.Assert;
+import org.jetbrains.annotations.NotNull;
 import org.testng.annotations.Test;
 
 import java.io.File;
+import java.io.FilenameFilter;
 
 /**
  * Created 18.06.13 12:59
@@ -96,7 +98,6 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
     Assert.assertTrue(getBuildLog(build).contains("works"));
   }
 
-
   @Test
   public void should_run_x86() throws Throwable {
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
@@ -125,4 +126,43 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
     Assert.assertTrue(getBuildLog(build).contains("ptr: 8 NO"));
   }
 
+  @Test
+  @TestFor(issues = "TW-39841")
+  public void testShouldKeepGeneratedFiles_PowershellSpecific() throws Throwable {
+    setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "echo works");
+    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, PowerShellBitness.x86.getValue());
+    setBuildConfigurationParameter(PowerShellConstants.CONFIG_KEEP_GENERATED, "");
+    final SFinishedBuild build = doTest(null);
+    assertEquals(1, getTempFiles().length);
+    dumpBuildLogLocally(build);
+    Assert.assertTrue(build.getBuildStatus().isSuccessful());
+    Assert.assertTrue(getBuildLog(build).contains("works"));
+  }
+
+  @Test
+  @TestFor(issues = "TW-39841")
+  public void testShouldKeepGeneratedFiles_Global() throws Throwable {
+    setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "echo works");
+    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, PowerShellBitness.x86.getValue());
+    setBuildConfigurationParameter("teamcity.dont.delete.temp.files", "");
+    final SFinishedBuild build = doTest(null);
+    assertEquals(1, getTempFiles().length);
+    dumpBuildLogLocally(build);
+    Assert.assertTrue(build.getBuildStatus().isSuccessful());
+    Assert.assertTrue(getBuildLog(build).contains("works"));
+  }
+
+  @NotNull
+  private File[] getTempFiles() {
+    File tempDir = new File(getCurrentTempDir(), "buildTmp");
+    return FileUtil.listFiles(tempDir, new FilenameFilter() {
+      public boolean accept(File dir, String name) {
+        return name.startsWith("powershell") && name.endsWith("ps1");
+      }
+    });
+  }
 }

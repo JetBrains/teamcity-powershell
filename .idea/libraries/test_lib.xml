@@ -1,7 +1,6 @@
 <component name="libraryTable">
   <library name="test-lib">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/powershell-test/lib/testng/testng-5.14.1.jar!/" />
       <root url="jar://$PROJECT_DIR$/powershell-test/lib/jmock-1.2/jmock-core-1.2.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/powershell-test/lib/jmock-1.2/jmock-cglib-1.2.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/powershell-test/lib/jmock/objenesis-1.0.jar!/" />
@@ -10,6 +9,7 @@
       <root url="jar://$PROJECT_DIR$/powershell-test/lib/jmock/hamcrest-library-1.1.jar!/" />
       <root url="jar://$PROJECT_DIR$/powershell-test/lib/jmock/hamcrest-core-1.1.jar!/" />
       <root url="jar://$PROJECT_DIR$/powershell-test/lib/jmock/cglib-nodep-2.1_3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/powershell-test/lib/testng/testng-6.8.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
