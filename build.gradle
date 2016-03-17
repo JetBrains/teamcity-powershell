@@ -91,6 +91,7 @@ subprojects {
 
     commonApi = fileTree(teamCityDir + "/devPackage").matching {
       include 'common-api.jar'
+      include 'serviceMessages.jar'
     }
 
     testApi = fileTree(teamCityDir + "/devPackage/tests").matching {
