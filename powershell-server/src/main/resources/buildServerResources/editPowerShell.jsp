@@ -71,7 +71,7 @@
 </tr>
 
 <tr id="powershell_scriptFile">
-  <th><label for="${bean.scriptFileKey}">Script file:</label></th>
+  <th><label for="${bean.scriptFileKey}">Script file: <l:star/></label></th>
   <td>
     <props:textProperty name="${bean.scriptFileKey}" className="longField"/>
     <bs:vcsTree fieldId="${bean.scriptFileKey}"/>
@@ -81,7 +81,7 @@
 </tr>
 
 <tr id="powershell_sourceCode">
-  <th><label for="${bean.scriptCodeKey}">Script source:</label></th>
+  <th><label for="${bean.scriptCodeKey}">Script source: <l:star/></label></th>
   <td>
     <props:multilineProperty name="${bean.scriptCodeKey}"
                              linkTitle="Enter Powershell script content"
