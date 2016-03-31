@@ -22,7 +22,7 @@
 <jsp:useBean id="propertiesBean" scope="request" type="jetbrains.buildServer.controllers.BasePropertiesBean"/>
 
 <tr>
-  <th rowspan="2">Powershell run mode:</th>
+  <th rowspan="2">PowerShell run mode:</th>
   <td>
     <label for="${bean.minVersionKey}">Version: </label>
     <props:selectProperty name="${bean.minVersionKey}" id="powershell_minVersion" onchange="BS.PowerShell.updateScriptMode()">
@@ -75,7 +75,7 @@
   <td>
     <props:textProperty name="${bean.scriptFileKey}" className="longField"/>
     <bs:vcsTree fieldId="${bean.scriptFileKey}"/>
-    <span class="smallNote">Path to the Powershell script, relative to the checkout directory</span>
+    <span class="smallNote">Path to the PowerShell script, relative to the checkout directory</span>
     <span class="error" id="error_${bean.scriptFileKey}"></span>
   </td>
 </tr>
@@ -84,10 +84,10 @@
   <th><label for="${bean.scriptCodeKey}">Script source: <l:star/></label></th>
   <td>
     <props:multilineProperty name="${bean.scriptCodeKey}"
-                             linkTitle="Enter Powershell script content"
+                             linkTitle="Enter PowerShell script content"
                              cols="58" rows="10"
                              expanded="${true}"
-                             note="Enter contents of a Powershell script. TeamCity references will be replaced in the code"/>
+                             note="Enter contents of a PowerShell script. TeamCity references will be replaced in the code"/>
   </td>
 </tr>
 
@@ -99,7 +99,7 @@
       <props:option value="${bean.executionModeStdinValue}" selected="${empty propertiesBean.properties[bean.executionModeKey] or propertiesBean.properties[bean.executionModeKey] eq bean.executionModeStdinValue}">Put script into PowerShell stdin with "-Command -" argument</props:option>
     </props:selectProperty>
         <span class="smallNote">
-            Specify Powershell script execution mode. By default, Powershell may not allow
+            Specify PowerShell script execution mode. By default, PowerShell may not allow
             execution of arbitrary .ps1 files. TeamCity will try to supply -ExecutionPolicy ByPass argument.
         </span>
     <span class="error" id="error_${bean.executionModeKey}"></span>

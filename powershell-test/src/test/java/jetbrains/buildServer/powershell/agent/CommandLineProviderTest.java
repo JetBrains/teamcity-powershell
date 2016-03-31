@@ -142,7 +142,7 @@ public class CommandLineProviderTest extends BaseTestCase {
     final List<String> result = myProvider.provideCommandLine(runnerParams, myScriptFile, false);
     for (String str: result) {
       if ("-Version".equals(str)) {
-        fail("Powershell version should not be supplied if Any is selected in runner parameters");
+        fail("PowerShell version should not be supplied if Any is selected in runner parameters");
       }
     }
   }

@@ -56,13 +56,13 @@ public class PowerShellRunType extends RunType {
   @NotNull
   @Override
   public String getDisplayName() {
-    return "Powershell";
+    return "PowerShell";
   }
 
   @NotNull
   @Override
   public String getDescription() {
-    return "Powershell runner";
+    return "PowerShell runner";
   }
 
   @Override
@@ -128,7 +128,7 @@ public class PowerShellRunType extends RunType {
   @NotNull
   @Override
   public String describeParameters(@NotNull final Map<String, String> parameters) {
-    final StringBuilder sb = new StringBuilder("Powershell ");
+    final StringBuilder sb = new StringBuilder("PowerShell ");
 
     final PowerShellVersion minVersion = getMinimalVersion(parameters);
     if (minVersion != null) {

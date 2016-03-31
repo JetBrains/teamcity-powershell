@@ -24,7 +24,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 
 /**
- * Base class for powershell integration tests
+ * Base class for PowerShell integration tests
  *
  * @author Oleg Rybak (oleg.rybak@jetbrains.com)
  */

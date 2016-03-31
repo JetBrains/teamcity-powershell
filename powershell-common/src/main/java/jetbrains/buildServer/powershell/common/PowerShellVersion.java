@@ -37,9 +37,9 @@ public enum PowerShellVersion {
   V_5_0("5.0", 5);
 
   /**
-   * Regexp to match powershell version declaration.
+   * Regexp to match PowerShell version declaration.
    * Matches version format {@code Major.Minor.Build.Revision}
-   * {@code Build} and {@code Revision} parts are optional (since Powershell v5)
+   * {@code Build} and {@code Revision} parts are optional (since PowerShell v5)
    */
   private static final Pattern VERSION_PATTERN = Pattern.compile("(\\d\\.\\d)(\\.\\d+)?(\\.\\d+)?");
 
