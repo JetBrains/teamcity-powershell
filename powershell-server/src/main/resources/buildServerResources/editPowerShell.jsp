@@ -103,7 +103,7 @@
             execution of arbitrary .ps1 files. TeamCity will try to supply -ExecutionPolicy ByPass argument.
         </span>
     <span class="error" id="error_${bean.executionModeKey}"></span>
-    <div class="attentionComment" id="warn_executionMode">
+    <div class="icon_before icon16 attentionComment" id="warn_executionMode">
       Executing scripts from stdin with "-Command -" is unstable and can result in build failures. Consider executing PowerShell script from external file. <bs:help file="PowerShell"/>
     </div>
   </td>
