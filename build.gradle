@@ -180,6 +180,14 @@ task initDistrDestinations(dependsOn: [':powershell-common:build',
         filter(ReplaceTokens, tokens:[Plugin_Version: version ])
       }
     }
+
+    def kotlinDsl = new File(pluginDist, 'kotlin-dsl')
+    copy {
+      into kotlinDsl
+      from (projectDir) {
+        include 'Powershell.xml'
+      }
+    }
 }
 
 task zipAgent(type: Zip, dependsOn: ['initDistrDestinations',
