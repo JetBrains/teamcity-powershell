@@ -34,7 +34,8 @@ public enum PowerShellVersion {
   V_2_0("2.0", 2),
   V_3_0("3.0", 3),
   V_4_0("4.0", 4),
-  V_5_0("5.0", 5);
+  V_5_0("5.0", 5),
+  V_5_1("5.1", 6);
 
   /**
    * Regexp to match PowerShell version declaration.
