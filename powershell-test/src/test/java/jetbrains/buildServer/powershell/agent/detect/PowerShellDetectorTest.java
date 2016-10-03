@@ -105,6 +105,7 @@ public class PowerShellDetectorTest extends BaseTestCase {
   }
 
   @Test
+  @SuppressWarnings("Duplicates")
   public void test_readPowerShellHome() throws IOException {
     final File hom = createTempDir();
     m.checking(new Expectations(){{
@@ -140,6 +141,7 @@ public class PowerShellDetectorTest extends BaseTestCase {
   }
 
   @Test
+  @SuppressWarnings("Duplicates")
   public void test_readPowerShellHome_notExists() throws IOException {
     final File hom = new File("zzz");
     m.checking(new Expectations(){{
@@ -216,6 +218,18 @@ public class PowerShellDetectorTest extends BaseTestCase {
 
     final PowerShellVersion ver = new PowerShellRegistry(BIT32, acc).getInstalledVersion();
     assertEquals(ver, PowerShellVersion.V_5_0);
+  }
+
+  @Test
+  @TestFor(issues = "TW-46689")
+  public void testDetectPowerShell_5_1() throws Exception {
+    m.checking(new Expectations(){{
+      allowing(acc).readRegistryText(LOCAL_MACHINE, BIT32, "SOFTWARE\\Microsoft\\PowerShell\\3\\PowerShellEngine", "PowerShellVersion"); will(returnValue("5.1.14393.0"));
+      allowing(acc).readRegistryText(LOCAL_MACHINE, BIT32, "SOFTWARE\\Microsoft\\PowerShell\\1\\PowerShellEngine", "PowerShellVersion"); will(returnValue("2.0"));
+    }});
+
+    final PowerShellVersion ver = new PowerShellRegistry(BIT32, acc).getInstalledVersion();
+    assertEquals(ver, PowerShellVersion.V_5_1);
   }
 
   @Test
