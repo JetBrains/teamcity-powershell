@@ -35,6 +35,7 @@ public class BuildFailureTests extends AbstractPowerShellIntegrationTest {
 
   @Test(dataProvider = "bitnessProvider")
   public void should_fail_on_uncaught_exception_stdin(@NotNull final PowerShellBitness bitness) throws Throwable {
+    setRunnerParameter(PowerShellConstants.RUNNER_MIN_VERSION, "2.0");
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "throw \"You shall not pass!\"");
@@ -82,6 +83,7 @@ public class BuildFailureTests extends AbstractPowerShellIntegrationTest {
 
   @Test(dataProvider = "bitnessProvider")
   public void should_fail_syntax_error_cmd(@NotNull final PowerShellBitness bitness) throws Throwable {
+    setRunnerParameter(PowerShellConstants.RUNNER_MIN_VERSION, "2.0");
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "callToSomeNonExistentFunction(param1, param2)");
@@ -97,6 +99,7 @@ public class BuildFailureTests extends AbstractPowerShellIntegrationTest {
 
   @Test(dataProvider = "bitnessProvider")
   public void should_fail_on_error_output_cmd(@NotNull final PowerShellBitness bitness) throws Throwable {
+    setRunnerParameter(PowerShellConstants.RUNNER_MIN_VERSION, "2.0");
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "$res = \"Epic fail\" \nWrite-Error $res");
@@ -124,6 +127,7 @@ public class BuildFailureTests extends AbstractPowerShellIntegrationTest {
 
   @Test(dataProvider = "bitnessProvider")
   public void should_pass_explicit_exit_code_cmd(@NotNull final PowerShellBitness bitness) throws Throwable {
+    setRunnerParameter(PowerShellConstants.RUNNER_MIN_VERSION, "2.0");
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "$res = \"Test is running\"\nWrite-Output $res\nexit(123)");
@@ -137,7 +141,7 @@ public class BuildFailureTests extends AbstractPowerShellIntegrationTest {
 
   @Test(dataProvider = "bitnessProvider")
   public void should_pass_explicit_exit_code_file(@NotNull final PowerShellBitness bitness) throws Throwable {
-    setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "$res = \"Test is running\"\nWrite-Output $res\nexit(123)");
     setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, bitness.getValue());
