@@ -39,6 +39,7 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
   @Test
   @TestFor(issues = "TW-29803")
   public void should_run_simple_command_code_stdin() throws Throwable {
+    setRunnerParameter(PowerShellConstants.RUNNER_MIN_VERSION, "2.0");
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "echo works");
@@ -54,6 +55,7 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
   @TestFor(issues = "TW-29803")
   public void should_run_simple_command_file_stdin() throws Throwable {
     final File code = createTempFile("echo works");
+    setRunnerParameter(PowerShellConstants.RUNNER_MIN_VERSION, "2.0");
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.FILE.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_FILE, code.getPath());
@@ -100,9 +102,9 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
 
   @Test
   public void should_run_x86() throws Throwable {
-    setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
-    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "Write-Host \"ptr: $([IntPtr]::size)\"");
+    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "Write-Host \"ptr: $([IntPtr]::size)\"\r\n");
     setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, PowerShellBitness.x86.getValue());
 
     final SFinishedBuild build = doTest(null);
@@ -114,7 +116,7 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
 
   @Test
   public void should_run_x64() throws Throwable {
-    setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "Write-Host \"ptr: $([IntPtr]::size)\"");
     setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, PowerShellBitness.x64.getValue());
@@ -129,7 +131,7 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
   @Test
   @TestFor(issues = "TW-39841")
   public void testShouldKeepGeneratedFiles_PowershellSpecific() throws Throwable {
-    setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "echo works");
     setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, PowerShellBitness.x86.getValue());
@@ -144,9 +146,9 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
   @Test
   @TestFor(issues = "TW-39841")
   public void testShouldKeepGeneratedFiles_Global() throws Throwable {
-    setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
-    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "echo works");
+    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "echo works\r\n");
     setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, PowerShellBitness.x86.getValue());
     setBuildConfigurationParameter("teamcity.dont.delete.temp.files", "");
     final SFinishedBuild build = doTest(null);
