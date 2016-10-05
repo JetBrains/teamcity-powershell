@@ -174,19 +174,13 @@ public class PowerShellRunType extends RunType {
   public List<Requirement> getRunnerSpecificRequirements(@NotNull final Map<String, String> runParameters) {
     final PowerShellVersion minVersion = getMinimalVersion(runParameters);
     final PowerShellBitness bit = getBitness(runParameters);
-
-    if (bit == null) return Collections.emptyList();
-
-    if (minVersion == null) {
-      return Collections.singletonList(new Requirement(bit.getVersionKey(), null, RequirementType.EXISTS));
+    if (bit != null) {
+      if (minVersion == null) {
+        return Collections.singletonList(new Requirement(bit.getVersionKey(), null, RequirementType.EXISTS));
+      } else {
+        return Collections.singletonList(new Requirement(bit.getVersionKey(), minVersion.getVersion(), RequirementType.VER_NO_LESS_THAN));
+      }
     }
-
-    final StringBuilder sb = new StringBuilder();
-    for (PowerShellVersion version : PowerShellVersion.getThisOrNewer(minVersion)) {
-      if (sb.length() > 0) sb.append("|");
-      sb.append(version.getVersionRegex());
-    }
-
-    return Collections.singletonList(new Requirement(bit.getVersionKey(), sb.toString(), RequirementType.MATCHES));
+    return Collections.emptyList();
   }
 }
