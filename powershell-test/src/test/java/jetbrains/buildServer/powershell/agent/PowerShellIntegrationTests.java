@@ -184,7 +184,7 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
         reader.close();
       }
     }
-    final String fileContents = FileUtil.readText(getTempFiles()[0]);
+    final String fileContents = FileUtil.readText(getTempFiles()[0], FILES_ENCODING);
     assertTrue("Non-ASCII symbols were not written to generated script", fileContents.contains("\u00f8\u00e5\u00e6"));
     dumpBuildLogLocally(build);
     Assert.assertTrue(build.getBuildStatus().isSuccessful());
