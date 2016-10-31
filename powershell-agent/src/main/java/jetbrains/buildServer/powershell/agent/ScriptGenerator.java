@@ -38,6 +38,7 @@ import static jetbrains.buildServer.powershell.common.PowerShellConstants.*;
 public class ScriptGenerator {
 
   private static final Logger LOG = Logger.getInstance(ScriptGenerator.class.getName());
+  private static final char BOM = '\ufeff';
 
   /**
    * Gets script source file either from parameter by dumping it to temp file
@@ -52,7 +53,7 @@ public class ScriptGenerator {
    * @throws RunBuildException if value if {@code RUNNER_SCRIPT_CODE} param is empty, or file handling error occurred
    */
   @NotNull
-  public File generateScript(@NotNull final Map<String, String> runnerParameters,
+  File generateScript(@NotNull final Map<String, String> runnerParameters,
                              @NotNull final File buildCheckoutDir,
                              @NotNull final File buildTempDir) throws RunBuildException {
     final PowerShellScriptMode scriptMode = PowerShellScriptMode.fromString(runnerParameters.get(RUNNER_SCRIPT_MODE));
@@ -74,7 +75,7 @@ public class ScriptGenerator {
     return scriptFile;
   }
 
-  public boolean shouldRemoveGeneratedScript(@NotNull final Map<String, String> runnerParameters) {
+  boolean shouldRemoveGeneratedScript(@NotNull final Map<String, String> runnerParameters) {
     return PowerShellScriptMode.CODE == PowerShellScriptMode.fromString(runnerParameters.get(PowerShellConstants.RUNNER_SCRIPT_MODE));
   }
 
@@ -86,10 +87,11 @@ public class ScriptGenerator {
       file = FileUtil.createTempFile(buildTempDir, "powershell", ".ps1", true);
       OutputStreamWriter w = new OutputStreamWriter(new FileOutputStream(file), "utf-8");
       handle = w;
+      w.write(BOM);
       w.write(text);
       return file;
     } catch (IOException e) {
-      LOG.error("Error occured while processing file for powershell script", e);
+      LOG.error("Error occurred while processing file for powershell script", e);
       throw new RunBuildException("Failed to generate temporary resulting powershell script due to exception", e);
     } finally {
       FileUtil.close(handle);

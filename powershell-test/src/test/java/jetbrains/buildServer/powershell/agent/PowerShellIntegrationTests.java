@@ -27,6 +27,9 @@ import org.jetbrains.annotations.NotNull;
 import org.testng.annotations.Test;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  * Created 18.06.13 12:59
@@ -155,6 +158,36 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
     dumpBuildLogLocally(build);
     Assert.assertTrue(build.getBuildStatus().isSuccessful());
     Assert.assertTrue(getBuildLog(build).contains("works"));
+  }
+
+  @Test
+  @TestFor(issues = "TW-44082")
+  public void testShouldWriteBOMinExternalFileMode() throws Throwable {
+    setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, PowerShellBitness.x86.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "$var = \"Value is \u00f8\u00e5\u00e6\"\r\n Write-Output $var\r\n");
+    setBuildConfigurationParameter(PowerShellConstants.CONFIG_KEEP_GENERATED, "");
+    final SFinishedBuild build = doTest(null);
+    assertEquals(1, getTempFiles().length);
+    final File generatedScript = getTempFiles()[0];
+    InputStreamReader reader = null;
+    try {
+       reader = new InputStreamReader(new FileInputStream(generatedScript), FILES_ENCODING);
+       char[] buf = new char[1];
+       assertEquals(1, reader.read(buf));
+       assertEquals("BOM is not written to external file", '\ufeff', buf[0]);
+    } catch (IOException e) {
+      fail(e.getMessage());
+    } finally {
+      if (reader != null) {
+        reader.close();
+      }
+    }
+    final String fileContents = FileUtil.readText(getTempFiles()[0]);
+    assertTrue("Non-ASCII symbols were not written to generated script", fileContents.contains("\u00f8\u00e5\u00e6"));
+    dumpBuildLogLocally(build);
+    Assert.assertTrue(build.getBuildStatus().isSuccessful());
   }
 
   @NotNull
