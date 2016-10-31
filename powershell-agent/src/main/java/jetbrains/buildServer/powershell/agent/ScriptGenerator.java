@@ -19,6 +19,7 @@ package jetbrains.buildServer.powershell.agent;
 import com.intellij.openapi.diagnostic.Logger;
 import jetbrains.buildServer.RunBuildException;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
+import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.powershell.common.PowerShellScriptMode;
 import jetbrains.buildServer.util.FileUtil;
 import org.jetbrains.annotations.NotNull;
@@ -38,6 +39,7 @@ import static jetbrains.buildServer.powershell.common.PowerShellConstants.*;
 public class ScriptGenerator {
 
   private static final Logger LOG = Logger.getInstance(ScriptGenerator.class.getName());
+  private static final char BOM = '\ufeff';
 
   /**
    * Gets script source file either from parameter by dumping it to temp file
@@ -52,9 +54,9 @@ public class ScriptGenerator {
    * @throws RunBuildException if value if {@code RUNNER_SCRIPT_CODE} param is empty, or file handling error occurred
    */
   @NotNull
-  public File generateScript(@NotNull final Map<String, String> runnerParameters,
-                             @NotNull final File buildCheckoutDir,
-                             @NotNull final File buildTempDir) throws RunBuildException {
+  File generateScript(@NotNull final Map<String, String> runnerParameters,
+                      @NotNull final File buildCheckoutDir,
+                      @NotNull final File buildTempDir) throws RunBuildException {
     final PowerShellScriptMode scriptMode = PowerShellScriptMode.fromString(runnerParameters.get(RUNNER_SCRIPT_MODE));
     File scriptFile;
     if (PowerShellScriptMode.FILE == scriptMode) {
@@ -69,27 +71,32 @@ public class ScriptGenerator {
         //some newlines are necessary to workaround -Command - issues, like TW-19771
         sourceScript = "  \r\n  \r\n  \r\n" + sourceScript + "\r\n  \r\n   \r\n   ";
       }*/
-      scriptFile = writeToTempFile(buildTempDir, sourceScript);
+      scriptFile = writeToTempFile(buildTempDir, sourceScript, runnerParameters);
     }
     return scriptFile;
   }
 
-  public boolean shouldRemoveGeneratedScript(@NotNull final Map<String, String> runnerParameters) {
+  boolean shouldRemoveGeneratedScript(@NotNull final Map<String, String> runnerParameters) {
     return PowerShellScriptMode.CODE == PowerShellScriptMode.fromString(runnerParameters.get(PowerShellConstants.RUNNER_SCRIPT_MODE));
   }
 
   @NotNull
-  private File writeToTempFile(@NotNull final File buildTempDir, @NotNull final String text) throws RunBuildException {
+  private File writeToTempFile(@NotNull final File buildTempDir,
+                               @NotNull final String text,
+                               @NotNull final  Map<String, String> runnerParameters) throws RunBuildException {
     Closeable handle = null;
     File file;
     try {
       file = FileUtil.createTempFile(buildTempDir, "powershell", ".ps1", true);
       OutputStreamWriter w = new OutputStreamWriter(new FileOutputStream(file), "utf-8");
       handle = w;
+      if (PowerShellExecutionMode.PS1 == PowerShellExecutionMode.fromString(runnerParameters.get(RUNNER_EXECUTION_MODE))) {
+        w.write(BOM);
+      }
       w.write(text);
       return file;
     } catch (IOException e) {
-      LOG.error("Error occured while processing file for powershell script", e);
+      LOG.error("Error occurred while processing file for powershell script", e);
       throw new RunBuildException("Failed to generate temporary resulting powershell script due to exception", e);
     } finally {
       FileUtil.close(handle);
