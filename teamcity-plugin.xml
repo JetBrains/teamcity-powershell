@@ -6,7 +6,7 @@
     <display-name>PowerShell Runner</display-name>
     <version>@Plugin_Version@</version>
     <vendor>
-      <name>JetBrains s.r.o.</name>
+      <name>JetBrains, s.r.o.</name>
       <url>http://www.jetbrains.com/teamcity</url>
     </vendor>
   </info>
