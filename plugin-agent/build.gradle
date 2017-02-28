@@ -6,5 +6,8 @@ dependencies {
 }
 
 teamcity {
+	agent {
+        descriptor = file('teamcity-plugin.xml')
+    }
     version = teamCityVersion
 }

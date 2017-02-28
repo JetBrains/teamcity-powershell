@@ -14,7 +14,6 @@ ext {
   } else {
 	teamCityDir = "$serversDir/TeamCity-${teamCityVersion}"
   }
-  println "teamcity dir is ${teamCityDir}"
 }
 
 dependencies {
@@ -23,7 +22,7 @@ dependencies {
     compile project(':powershell-server')
 	
 	testCompile 'org.assertj:assertj-core:2.2.0'
-	testCompile 'org.jetbrains.teamcity:tests-support:10.0.4'
+	testCompile "org.jetbrains.teamcity:tests-support:$teamCityVersion"
 	
 	if (file("$teamCityDir").exists()) {
         testCompile files("$teamCityDir/devPackage/tests/tests-integration.jar")
