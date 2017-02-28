@@ -7,12 +7,4 @@ dependencies {
 
 teamcity {
     version = teamCityVersion
-
-    agent {
-        descriptor {
-            pluginDeployment {
-                useSeparateClassloader = true
-            }
-        }
-    }
 }
