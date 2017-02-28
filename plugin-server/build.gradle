@@ -19,7 +19,7 @@ teamcity {
     version = teamCityVersion
 
     server {
-        descriptor {
+		descriptor {
             name = 'powershell-runner'
             displayName = 'PowerShell Runner'
             version = project.version
@@ -29,23 +29,23 @@ teamcity {
             useSeparateClassloader = true
         }
 
-        files {
-        	into('kotlin-dsl') {
-            from(rootProject.projectDir) {
-              include 'Powershell.xml'
-            }
+      files {
+     	into('kotlin-dsl') {
+          from(rootProject.projectDir) {
+            include 'Powershell.xml'
           }
-        }
-    }    
-
-    environments {
- 	  teamcityDev {
-        downloadsDir = file(teamcityDownloadsDir) 
-        version = teamCityVersion
-        homeDir = file(teamCityDir)
-        dataDir = file(teamCityDataDir)
-        javaHome = file(teamCityJavaHome)
+         }
       }
+    
+      environments {
+        teamcityDev {
+          downloadsDir = file(teamcityDownloadsDir) 
+          version = teamCityVersion
+          homeDir = file(teamCityDir)
+          dataDir = file(teamCityDataDir)
+          javaHome = file(teamCityJavaHome)
+        } 
+      }  
     }
 }
 
