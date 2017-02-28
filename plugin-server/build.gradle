@@ -1,0 +1,52 @@
+apply plugin: 'com.github.rodm.teamcity-server'
+
+dependencies {
+    agent project(path: ':plugin-agent', configuration: 'plugin')
+    server project(':powershell-common')
+    server project(':powershell-server')
+}
+
+ext {
+    teamcityDownloadsDir = "$rootDir/downloads"
+    serversDir = "$rootDir/servers"
+    teamCityDir = hasProperty('TeamCityDir') ? property('TeamCityDir') : "$serversDir/TeamCity-${teamCityVersion}"
+    teamCityDataDir = hasProperty('TeamCityDataDir') ? property('TeamCityDataDir') : "$rootDir/teamcity/data/" + teamCityVersion
+    teamCityJavaHome = System.properties['java.home']
+    javaVersion = hasProperty('plugin.java.version') ? property('plugin.java.version') : '1.8'
+}
+
+teamcity {
+    version = teamCityVersion
+
+    server {
+        descriptor {
+            name = 'powershell-runner'
+            displayName = 'PowerShell Runner'
+            version = project.version
+            vendorName = 'JetBrains, s.r.o.'
+            vendorUrl = 'http://www.jetbrains.com/'
+            description = 'Support for running PowerShell scripts'
+            useSeparateClassloader = true
+        }
+
+        files {
+        	into('kotlin-dsl') {
+            from(rootProject.projectDir) {
+              include 'Powershell.xml'
+            }
+          }
+        }
+    }    
+
+    environments {
+ 	  teamcityDev {
+        downloadsDir = file(teamcityDownloadsDir) 
+        version = teamCityVersion
+        homeDir = file(teamCityDir)
+        dataDir = file(teamCityDataDir)
+        javaHome = file(teamCityJavaHome)
+      }
+    }
+}
+
+project.tasks.getByName('serverPlugin').version = ''

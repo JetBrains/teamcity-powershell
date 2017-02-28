@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="powershell-common">
-    <output-path>$PROJECT_DIR$/out/artifacts/powershell_common</output-path>
-    <root id="archive" name="powershell-common.jar">
-      <element id="module-output" name="powershell-common" />
-    </root>
-  </artifact>
-</component>

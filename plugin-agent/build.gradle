@@ -1,0 +1,18 @@
+apply plugin: 'com.github.rodm.teamcity-agent'
+
+dependencies {
+    agent project(':powershell-agent')
+    agent project(':powershell-common')
+}
+
+teamcity {
+    version = teamCityVersion
+
+    agent {
+        descriptor {
+            pluginDeployment {
+                useSeparateClassloader = true
+            }
+        }
+    }
+}

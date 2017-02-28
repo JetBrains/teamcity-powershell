@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="powershell-agent">
-    <output-path>$PROJECT_DIR$/out/artifacts/powershell_agent</output-path>
-    <root id="archive" name="powershell-agent.jar">
-      <element id="module-output" name="powershell-agent" />
-    </root>
-  </artifact>
-</component>

@@ -1,0 +1,17 @@
+apply plugin: 'java'
+apply plugin: 'com.github.rodm.teamcity-agent'
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+tasks.withType(JavaCompile) {
+  options.encoding = 'UTF-8'
+}
+
+dependencies {
+    compile project(':powershell-common')
+}
+
+teamcity {
+    version = teamCityVersion
+}

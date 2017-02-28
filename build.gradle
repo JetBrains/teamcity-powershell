@@ -1,216 +1,34 @@
-/*
- * Copyright 2000-2014 JetBrains s.r.o.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "com.github.rodm:gradle-teamcity-plugin:0.11"
+  }
+}
 
-import org.apache.tools.ant.filters.*;
-
-def TCPathVar = "path.variable.teamcitydistribution"
-def TCPathVarServer = "teamcity.path.variable.teamcitydistribution"
-
-def version = System.getProperties()["build.number"];
-if (version == null) version = project.getProperties()["build.number"];
-if (version == null) version = System.getenv("BUILD_NUMBER");
-if (version == null) version = "snapshot-" + new Date().format("yyyyMMdd"+"'z'"+"hhmmss"); 
-
-allprojects {
-  apply plugin: 'java'
+ext {                                                                                          
+    teamCityVersion = property('TeamCityVersion')   
+  	buildVersion = System.getenv("BUILD_NUMBER")
+	if (buildVersion == null || buildVersion.length() == 0) {
+		buildVersion = 'SNAPSHOT-' + new Date().format('yyyyMMddHHmm')
+	}
 }
 
 subprojects {
-  ext {
-    def teamCityDir = "";
-    [TCPathVar, TCPathVarServer].each {
-      if (project.hasProperty(it)) {
-        teamCityDir = project.getProperties()[it];
-      }
-    }
+  group = 'jetbrains.buildServer.powershell'
+  version = buildVersion
 
-    def tmp = System.getProperty(TCPathVarServer);
-    if (tmp != null) {
-      teamCityDir = tmp;
-    }
-
-    tmp = System.getenv(TCPathVarServer);
-    if (tmp != null) {
-      teamCityDir = tmp;
-    }
-
-    if (!new File(teamCityDir).isDirectory()) {
-      throw new StopExecutionException("Failed to find TeamCity home at ${teamCityDir}");
-    }
-
-    if (System.getProperty("jdk.home.1.6") == null) {
-      throw new StopExecutionException("Please specify path to the JDK 6 using -Djdk.home.1.6 property");
-    }
-
-    if (!new File(System.getProperty("jdk.home.1.6")).isDirectory()) {
-      throw new StopExecutionException("Failed to find jdk 1.6 at ${System.getProperty("jdk.home.1.6")}");
-    }
-
-    teamCityLib = fileTree(teamCityDir + "/webapps/ROOT/WEB-INF/lib").matching {
-      include 'annotations.jar'
-      include 'openapi.jar'
-      include 'util.jar'
-    }
-
-    teamCityServerRuntime = fileTree(teamCityDir + "/webapps/ROOT/WEB-INF/lib").matching {
-      include '*.jar'
-    }
-
-    teamCityAgentRuntime = fileTree(teamCityDir + "/buildAgent/lib").matching {
-      include '*.jar'
-    }
-
-    annotationsJar = fileTree(teamCityDir + "/webapps/ROOT/WEB-INF/lib").matching {
-      include 'annotations.jar'
-    }
-
-    log4j = fileTree(teamCityDir + "/webapps/ROOT/WEB-INF/lib").matching {
-      include 'log4j*.jar'
-    }
-
-    agentApi = fileTree(teamCityDir + "/devPackage").matching {
-      include 'agent-api.jar'
-    }
-
-    serverApi = fileTree(teamCityDir + "/devPackage").matching {
-      include 'server-api.jar'
-    }
-
-    commonApi = fileTree(teamCityDir + "/devPackage").matching {
-      include 'common-api.jar'
-      include 'serviceMessages.jar'
-    }
-
-    testApi = fileTree(teamCityDir + "/devPackage/tests").matching {
-      include '*.jar'
-    }
+  repositories {
+    maven { url "http://download.jetbrains.com/teamcity-repository" }    
+    mavenCentral()
+    mavenLocal()
   }
-  dependencies {
-    compile annotationsJar
-    compile log4j
-    compile teamCityLib
-  }
-}
-
-task debug << {
-  [annotationsJar, commonApi, log4j, testApi].each { println it; println "${it.empty}"}
-}
-
-
-project(':powershell-common') {
-  sourceCompatibility = '1.6'
-  targetCompatibility = '1.6'
-
-  compileJava.options.fork = true
-  compileJava.options.forkOptions.executable = System.getProperty("jdk.home.1.6") + "/bin/javac";
-
-  dependencies {
-    compile commonApi
-    compile annotationsJar
-  }
-}
-
-project (':powershell-agent') {
-  sourceCompatibility = '1.6'
-  targetCompatibility = '1.6'
-
-  compileJava.options.fork = true
-  compileJava.options.forkOptions.executable = System.getProperty("jdk.home.1.6") + "/bin/javac";
-
-  dependencies {
-    compile project(':powershell-common')
-    compile agentApi
-  }
-}
-
-
-project (':powershell-server') {
-  sourceCompatibility = '1.8'
-  targetCompatibility = '1.8'
-
-  dependencies {
-    compile project(':powershell-common')    
-    compile serverApi
-  }
-}
-
-project (':powershell-test') {
-  sourceCompatibility = '1.8'
-  targetCompatibility = '1.8'
-
-  dependencies {
-     compile project(':powershell-common')
-     compile project(':powershell-agent')     
-     compile project(':powershell-server')
-  }                                             
-}
-
-
-def pluginDist = new File(distsDir, 'powershell')
-
-task initDistrDestinations(dependsOn: [':powershell-common:build',
-                                       ':powershell-agent:build',
-                                       ':powershell-server:build']) << {
-    def pluginServer = new File(pluginDist, 'server')
-    pluginServer.mkdirs()
-
-    copy {
-      from project(':powershell-server').libsDir
-      from project(':powershell-common').libsDir
-      into pluginServer
-    }
-
-    copy {
-      into pluginDist
-      from (projectDir) {
-        include 'teamcity-plugin.xml'
-        filter(ReplaceTokens, tokens:[Plugin_Version: version ])
-      }
-    }
-
-    def kotlinDsl = new File(pluginDist, 'kotlin-dsl')
-    copy {
-      into kotlinDsl
-      from (projectDir) {
-        include 'Powershell.xml'
-      }
-    }
-}
-
-task zipAgent(type: Zip, dependsOn: ['initDistrDestinations',
-                                     ':powershell-agent:build']) {
-
-  from(project(':powershell-common').libsDir ){ into('powershell-agent') }
-  from(project(':powershell-agent').libsDir ) { into('powershell-agent') }
-  archiveName ='powershell-agent.zip'
-  destinationDir = new File(pluginDist, 'agent')
-}
-
-task zipPlugin(type: Zip, dependsOn: ['initDistrDestinations',
-                                      'zipAgent']) {
-  from pluginDist
-  archiveName='powershell.zip'
-}
-
-task dist(dependsOn: ['zipPlugin']) << {
-    println "##teamcity[publishArtifacts '${zipPlugin.archivePath}']"
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.3'
+  gradleVersion = '3.1'
 }
-
 
