@@ -19,7 +19,6 @@ package jetbrains.buildServer.powershell.agent.detect;
 import jetbrains.buildServer.BaseTestCase;
 import jetbrains.buildServer.agent.BuildAgentConfiguration;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
-import jetbrains.buildServer.powershell.common.PowerShellVersion;
 import org.hamcrest.Description;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -37,15 +36,15 @@ import java.util.Map;
  * @author Eugene Petrenko (eugene.petrenko@jetbrains.com)
  *         03.12.10 23:24
  */
-public class PowerShellInfoTest extends BaseTestCase{
+public class PowerShellInfoTest extends BaseTestCase {
   @Test
   public void testSaveLoad() throws IOException {
-    PowerShellInfo info = new PowerShellInfo(PowerShellBitness.x64, createTempDir(), PowerShellVersion.V_1_0);
+    PowerShellInfo info = new PowerShellInfo(PowerShellBitness.x64, createTempDir(), "1.0");
 
     final Mockery m = new Mockery();
     final BuildAgentConfiguration conf = m.mock(BuildAgentConfiguration.class);
 
-    final Map<String, String> confParams = new HashMap<String, String>();
+    final Map<String, String> confParams = new HashMap<>();
     m.checking(new Expectations(){{
       allowing(conf).getConfigurationParameters(); will(returnValue(Collections.unmodifiableMap(confParams)));
       allowing(conf).addConfigurationParameter(with(any(String.class)), with(any(String.class)));

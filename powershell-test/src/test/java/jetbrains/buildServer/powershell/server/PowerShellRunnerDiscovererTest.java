@@ -83,8 +83,9 @@ public class PowerShellRunnerDiscovererTest extends BaseTestCase {
     final Element file2 = m.mock(Element.class, "file2");
     final Element dir2 = m.mock(Element.class, "dir2");
 
-    final List<Element> topLevel = new ArrayList<Element>(Arrays.asList(file1, dir1));
-    final List<Element> bottomLevel = new ArrayList<Element>(Arrays.asList(file2, dir2));
+    final List<Element> topLevel = new ArrayList<>(Arrays.asList(file1, dir1));
+    final List<Element> bottomLevel;
+    bottomLevel = new ArrayList<>(Arrays.asList(file2, dir2));
 
     m.checking(new Expectations() {{
       oneOf(myBrowser).getRoot();
@@ -128,8 +129,8 @@ public class PowerShellRunnerDiscovererTest extends BaseTestCase {
     final Element file2 = m.mock(Element.class, "file2.ps1");
     final Element dir2 = m.mock(Element.class, "dir2");
 
-    final List<Element> topLevel = new ArrayList<Element>(Arrays.asList(file1, dir1));
-    final List<Element> bottomLevel = new ArrayList<Element>(Arrays.asList(file2, dir2));
+    final List<Element> topLevel = new ArrayList<>(Arrays.asList(file1, dir1));
+    final List<Element> bottomLevel = new ArrayList<>(Arrays.asList(file2, dir2));
     final String fullName = "dir1/fil2.ps1";
 
     m.checking(new Expectations() {{
@@ -179,7 +180,7 @@ public class PowerShellRunnerDiscovererTest extends BaseTestCase {
   public void testDiscover_Shallow() {
     final Element file1 = m.mock(Element.class, "file1.ps1");
     final Element dir1 = m.mock(Element.class, "dir1");
-    final List<Element> topLevel = new ArrayList<Element>(Arrays.asList(file1, dir1));
+    final List<Element> topLevel = new ArrayList<>(Arrays.asList(file1, dir1));
     final String fullName = "file1.ps1";
 
     m.checking(new Expectations() {{
@@ -248,7 +249,7 @@ public class PowerShellRunnerDiscovererTest extends BaseTestCase {
       will(returnValue(file2Name));
 
       atLeast(1).of(myBuildTypeSettings).getBuildRunners();
-      will(returnValue(Arrays.asList(definedRunner)));
+      will(returnValue(Collections.singletonList(definedRunner)));
 
       oneOf(definedRunner).getType();
       will(returnValue(PowerShellConstants.RUN_TYPE));

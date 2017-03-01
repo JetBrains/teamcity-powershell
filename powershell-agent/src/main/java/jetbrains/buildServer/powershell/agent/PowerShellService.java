@@ -26,7 +26,6 @@ import jetbrains.buildServer.powershell.agent.system.PowerShellCommands;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
-import jetbrains.buildServer.powershell.common.PowerShellVersion;
 import jetbrains.buildServer.util.FileUtil;
 import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
@@ -165,7 +164,7 @@ public class PowerShellService extends BuildServiceAdapter {
     Map<String, String> map = getEnvironmentVariables();
     // check internal property
     // supported only by powershell of version > 1 ('==' is therefore used)
-    if (!isInternalPropertySetExecutionPolicy("set.executionPolicyEnv", info.getVersion() == PowerShellVersion.V_1_0)) return map;
+    if (!isInternalPropertySetExecutionPolicy("set.executionPolicyEnv", info.getVersion().equals("1.0"))) return map;
 
     final String env = "PSExecutionPolicyPreference";
 
@@ -188,7 +187,7 @@ public class PowerShellService extends BuildServiceAdapter {
    * setting is not overridden by internal property {@code teamcity.powershell.set.executionPolicyArg}
    */
   private boolean useExecutionPolicy(@NotNull final PowerShellInfo info) {
-    return isInternalPropertySetExecutionPolicy("set.executionPolicyArg", info.getVersion() != PowerShellVersion.V_1_0);
+    return isInternalPropertySetExecutionPolicy("set.executionPolicyArg", !info.getVersion().equals("1.0"));
   }
 
   @Override

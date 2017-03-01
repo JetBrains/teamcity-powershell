@@ -43,10 +43,10 @@ public class PowerShellRunnerDiscoverer extends BreadthFirstRunnerDiscoveryExten
   @NotNull
   @Override
   protected List<DiscoveredObject> discoverRunnersInDirectory(@NotNull final Element dir, @NotNull final List<Element> filesAndDirs) {
-    final List<DiscoveredObject> runners = new ArrayList<DiscoveredObject>();
+    final List<DiscoveredObject> runners = new ArrayList<>();
     for (Element e: filesAndDirs) {
       if (e.isLeaf() && PS_EXT.equals(FileUtil.getExtension(e.getName()))) {
-        final Map<String, String> parameters = new HashMap<String, String>();
+        final Map<String, String> parameters = new HashMap<>();
         parameters.put(PowerShellConstants.RUNNER_SCRIPT_FILE, e.getFullName());
         parameters.put(PowerShellConstants.RUNNER_BITNESS, PowerShellBitness.values()[0].getValue());
         parameters.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
@@ -80,7 +80,7 @@ public class PowerShellRunnerDiscoverer extends BreadthFirstRunnerDiscoveryExten
   }
 
   private Set<String> getAlreadyUsedFiles(@NotNull final BuildTypeSettings settings) {
-    final Set<String> result = new HashSet<String>();
+    final Set<String> result = new HashSet<>();
     for (BuildRunnerDescriptor runner: settings.getBuildRunners()) {
       if (PowerShellConstants.RUN_TYPE.equals(runner.getType())) {
         final Map<String, String> params = runner.getParameters();

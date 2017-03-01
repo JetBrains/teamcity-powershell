@@ -21,7 +21,6 @@ import jetbrains.buildServer.RunBuildException;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.powershell.common.PowerShellScriptMode;
-import jetbrains.buildServer.powershell.common.PowerShellVersion;
 import jetbrains.buildServer.util.TestFor;
 import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -73,8 +72,8 @@ public class ScriptGeneratorTest extends BaseTestCase {
 
   @Test
   public void testNoEmptyScriptAllowed() throws Exception {
-    final Map<String, String> runnerParams = new HashMap<String, String>();
-    runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, PowerShellVersion.V_1_0.getVersion());
+    final Map<String, String> runnerParams = new HashMap<>();
+    runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "1.0");
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_CODE, "");
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
@@ -95,8 +94,8 @@ public class ScriptGeneratorTest extends BaseTestCase {
   @Test
   @TestFor(issues = "TW-36704")
   public void testShouldRemove_CODE() throws Exception {
-    final Map<String, String> runnerParams = new HashMap<String, String>();
-    runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, PowerShellVersion.V_1_0.getVersion());
+    final Map<String, String> runnerParams = new HashMap<>();
+    runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "1.0");
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_CODE, SAMPLE_SCRIPT);
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
@@ -111,8 +110,8 @@ public class ScriptGeneratorTest extends BaseTestCase {
   @Test
   @TestFor(issues = "TW-36704")
   public void testShouldRemove_FILE() throws Exception {
-    final Map<String, String> runnerParams = new HashMap<String, String>();
-    runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, PowerShellVersion.V_1_0.getVersion());
+    final Map<String, String> runnerParams = new HashMap<>();
+    runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "1.0");
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_CODE, SAMPLE_SCRIPT);
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.FILE.getValue());

@@ -16,7 +16,6 @@
 
 package jetbrains.buildServer.powershell.agent.detect;
 
-import jetbrains.buildServer.powershell.common.PowerShellVersion;
 import jetbrains.buildServer.util.Bitness;
 import jetbrains.buildServer.util.FileUtil;
 import jetbrains.buildServer.util.Win32RegistryAccessor;
@@ -63,9 +62,9 @@ public class PowerShellRegistry {
   }
 
   @Nullable
-  public PowerShellVersion getInstalledVersion() {
+  public String getInstalledVersion() {
     for (VersionedPowerShell shell: myDetectors) {
-      PowerShellVersion version = shell.getInstalledVersion();
+      String version = shell.getInstalledVersion();
       if (version != null) return version;
     }
     return null;
@@ -102,14 +101,12 @@ public class PowerShellRegistry {
     }
 
     @Nullable
-    public PowerShellVersion getInstalledVersion() {
-      final String ver = myRegistryAccessor.readRegistryText(
+    public String getInstalledVersion() {
+      return myRegistryAccessor.readRegistryText(
               LOCAL_MACHINE,
               myBitness,
               "SOFTWARE\\Microsoft\\PowerShell\\" + myVersion + "\\PowerShellEngine",
               "PowerShellVersion");
-
-      return PowerShellVersion.fromString(ver);
     }
 
     @Nullable

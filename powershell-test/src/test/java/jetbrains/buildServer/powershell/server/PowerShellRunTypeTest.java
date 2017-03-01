@@ -80,13 +80,13 @@ public class PowerShellRunTypeTest extends BaseTestCase {
 
   @DataProvider(name = "versionProvider")
   public Object[][] getVersion() {
-    final PowerShellVersion[] versions = PowerShellVersion.values();
+    String[] versions = {"1.0", "2.0", "3.0", "4.0", "5.0", "5.1", "6.0"};
     final PowerShellBitness[] bits = PowerShellBitness.values();
     final Object[][] result = new Object[versions.length * bits.length + 2][];
     int k = 0;
     for (PowerShellBitness bit: bits) {
-      for (PowerShellVersion version: versions) {
-        result[k++] = new Object[]{bit, version.getVersion()};
+      for (String version: versions) {
+        result[k++] = new Object[]{bit, version};
       }
       result[k++] = new Object[]{bit, null};
     }

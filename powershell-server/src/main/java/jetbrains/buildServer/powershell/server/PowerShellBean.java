@@ -99,11 +99,6 @@ public class PowerShellBean {
   }
 
   @NotNull
-  public Collection<PowerShellVersion> getVersions() {
-    return Arrays.asList(PowerShellVersion.values());
-  }
-
-  @NotNull
   public String getNoProfileKey() {
     return PowerShellConstants.RUNNER_NO_PROFILE;
   }

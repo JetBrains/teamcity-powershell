@@ -17,7 +17,6 @@
 package jetbrains.buildServer.powershell.agent.detect;
 
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
-import jetbrains.buildServer.powershell.common.PowerShellVersion;
 import jetbrains.buildServer.util.Win32RegistryAccessor;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -53,7 +52,7 @@ public class PowerShellDetector {
         continue;
       }
 
-      final PowerShellVersion ver = reg.getInstalledVersion();
+      final String ver = reg.getInstalledVersion();
       final File home = reg.getPowerShellHome();
 
       if (ver == null || home == null) {

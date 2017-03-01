@@ -22,8 +22,8 @@ import jetbrains.buildServer.powershell.common.PowerShellScriptMode;
 import jetbrains.buildServer.serverSide.SFinishedBuild;
 import jetbrains.buildServer.util.FileUtil;
 import jetbrains.buildServer.util.TestFor;
-import junit.framework.Assert;
 import org.jetbrains.annotations.NotNull;
+import org.junit.Assert;
 import org.testng.annotations.Test;
 
 import java.io.File;

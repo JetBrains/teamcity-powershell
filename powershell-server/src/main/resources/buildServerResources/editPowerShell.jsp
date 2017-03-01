@@ -25,12 +25,7 @@
   <th rowspan="2">PowerShell run mode:</th>
   <td>
     <label for="${bean.minVersionKey}">Version: </label>
-    <props:selectProperty name="${bean.minVersionKey}" id="powershell_minVersion" onchange="BS.PowerShell.updateScriptMode()">
-      <props:option value="">Any</props:option>
-      <c:forEach var="it" items="${bean.versions}">
-        <props:option value="${it.version}"><c:out value="${it.version}"/></props:option>
-      </c:forEach>
-    </props:selectProperty>
+    <props:textProperty name="${bean.minVersionKey}" className="longField" onkeyup="BS.PowerShell.updateScriptMode()"/>
   </td>
 </tr>
 
@@ -150,7 +145,7 @@
 
     updateScriptMode : function() {
       var val = $('powershell_execution_mode').value;
-      var ver  = $('powershell_minVersion').value;
+      var ver  = $('${bean.minVersionKey}').value;
 
       if (val == '${bean.executionModeAsFileValue}') {
         BS.Util.show($('powershell_scriptArguments'));

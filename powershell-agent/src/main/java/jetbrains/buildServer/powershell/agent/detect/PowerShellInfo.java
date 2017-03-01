@@ -18,15 +18,12 @@ package jetbrains.buildServer.powershell.agent.detect;
 
 import jetbrains.buildServer.agent.BuildAgentConfiguration;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
-import jetbrains.buildServer.powershell.common.PowerShellVersion;
 import jetbrains.buildServer.util.FileUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.Map;
-
-import static jetbrains.buildServer.powershell.common.PowerShellVersion.fromString;
 
 /**
  * @author Eugene Petrenko (eugene.petrenko@jetbrains.com)
@@ -41,11 +38,11 @@ public class PowerShellInfo {
   private final File myHome;
 
   @NotNull
-  private final PowerShellVersion myVersion;
+  private final String myVersion;
 
   public PowerShellInfo(@NotNull final PowerShellBitness bitness,
                         @NotNull final File home,
-                        @NotNull final PowerShellVersion version) {
+                        @NotNull final String version) {
     myBitness = bitness;
     myHome = home;
     myVersion = version;
@@ -62,13 +59,13 @@ public class PowerShellInfo {
   }
 
   @NotNull
-  public PowerShellVersion getVersion() {
+  public String getVersion() {
     return myVersion;
   }
 
   @Override
   public String toString() {
-    return "PowerShell v" + myVersion.getVersion() + " " + myBitness + "(" + getHome() + ")";
+    return "PowerShell v" + myVersion + " " + myBitness + "(" + getHome() + ")";
   }
 
   @Nullable
@@ -77,7 +74,7 @@ public class PowerShellInfo {
     if (bitness == null) return null;
 
     final Map<String, String> ps = config.getConfigurationParameters();
-    final PowerShellVersion ver = fromString(ps.get(bitness.getVersionKey()));
+    final String ver = ps.get(bitness.getVersionKey());
     final String path = ps.get(bitness.getPathKey());
 
     if (path != null && ver != null) {
@@ -87,7 +84,7 @@ public class PowerShellInfo {
   }
 
   public void saveInfo(@NotNull final BuildAgentConfiguration config) {
-    config.addConfigurationParameter(myBitness.getVersionKey(), getVersion().getVersion());
+    config.addConfigurationParameter(myBitness.getVersionKey(), getVersion());
     config.addConfigurationParameter(myBitness.getPathKey(), getHome().toString());
   }
 

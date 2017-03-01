@@ -69,7 +69,7 @@ public class PowerShellRunType extends RunType {
   public PropertiesProcessor getRunnerPropertiesProcessor() {
     return new PropertiesProcessor() {
       public Collection<InvalidProperty> process(final Map<String, String> properties) {
-        Collection<InvalidProperty> col = new ArrayList<InvalidProperty>();
+        Collection<InvalidProperty> col = new ArrayList<>();
 
         final PowerShellBitness bit = getBitness(properties);
         if (bit == null) {
@@ -118,7 +118,7 @@ public class PowerShellRunType extends RunType {
 
   @Override
   public Map<String, String> getDefaultRunnerProperties() {
-    Map<String, String> map = new HashMap<String, String>();
+    Map<String, String> map = new HashMap<>();
     map.put(RUNNER_BITNESS, PowerShellBitness.x86.toString());
     map.put(RUNNER_NO_PROFILE, "checked");
     map.put(RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.toString());
@@ -130,9 +130,9 @@ public class PowerShellRunType extends RunType {
   public String describeParameters(@NotNull final Map<String, String> parameters) {
     final StringBuilder sb = new StringBuilder("PowerShell ");
 
-    final PowerShellVersion minVersion = getMinimalVersion(parameters);
+    final String minVersion = getMinimalVersion(parameters);
     if (minVersion != null) {
-      sb.append(minVersion.getVersion()).append(" ");
+      sb.append(minVersion).append(" ");
     }
 
     final PowerShellBitness bit = getBitness(parameters);
@@ -165,20 +165,20 @@ public class PowerShellRunType extends RunType {
   }
 
   @Nullable
-  private PowerShellVersion getMinimalVersion(@NotNull final Map<String, String> parameters) {
-    return PowerShellVersion.fromString(parameters.get(RUNNER_MIN_VERSION));
+  private String getMinimalVersion(@NotNull final Map<String, String> parameters) {
+    return parameters.get(RUNNER_MIN_VERSION);
   }
 
   @NotNull
   @Override
   public List<Requirement> getRunnerSpecificRequirements(@NotNull final Map<String, String> runParameters) {
-    final PowerShellVersion minVersion = getMinimalVersion(runParameters);
+    final String minVersion = getMinimalVersion(runParameters);
     final PowerShellBitness bit = getBitness(runParameters);
     if (bit != null) {
       if (minVersion == null) {
         return Collections.singletonList(new Requirement(bit.getVersionKey(), null, RequirementType.EXISTS));
       } else {
-        return Collections.singletonList(new Requirement(bit.getVersionKey(), minVersion.getVersion(), RequirementType.VER_NO_LESS_THAN));
+        return Collections.singletonList(new Requirement(bit.getVersionKey(), minVersion, RequirementType.VER_NO_LESS_THAN));
       }
     }
     return Collections.emptyList();

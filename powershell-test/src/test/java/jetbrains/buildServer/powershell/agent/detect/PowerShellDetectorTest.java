@@ -16,7 +16,6 @@
 package jetbrains.buildServer.powershell.agent.detect;
 
 import jetbrains.buildServer.BaseTestCase;
-import jetbrains.buildServer.powershell.common.PowerShellVersion;
 import jetbrains.buildServer.util.TestFor;
 import jetbrains.buildServer.util.Win32RegistryAccessor;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +26,6 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.regex.Pattern;
 
 import static jetbrains.buildServer.util.Bitness.BIT32;
 import static jetbrains.buildServer.util.Win32RegistryAccessor.Hive.LOCAL_MACHINE;
@@ -56,8 +54,8 @@ public class PowerShellDetectorTest extends BaseTestCase {
       allowing(acc).readRegistryText(LOCAL_MACHINE, BIT32, "SOFTWARE\\Microsoft\\PowerShell\\3\\PowerShellEngine", "PowerShellVersion"); will(returnValue(null));
       allowing(acc).readRegistryText(LOCAL_MACHINE, BIT32, "SOFTWARE\\Microsoft\\PowerShell\\1\\PowerShellEngine", "PowerShellVersion"); will(returnValue("1.0"));
     }});
-    final PowerShellVersion ver = new PowerShellRegistry(BIT32, acc).getInstalledVersion();
-    assertEquals(ver, PowerShellVersion.V_1_0);
+    final String ver = new PowerShellRegistry(BIT32, acc).getInstalledVersion();
+    assertEquals("1.0", ver);
   }
 
   @Test
@@ -67,8 +65,8 @@ public class PowerShellDetectorTest extends BaseTestCase {
       allowing(acc).readRegistryText(LOCAL_MACHINE, BIT32, "SOFTWARE\\Microsoft\\PowerShell\\1\\PowerShellEngine", "PowerShellVersion"); will(returnValue("2.0"));
     }});
 
-    final PowerShellVersion ver = new PowerShellRegistry(BIT32, acc).getInstalledVersion();
-    assertEquals(ver, PowerShellVersion.V_2_0);
+    final String ver = new PowerShellRegistry(BIT32, acc).getInstalledVersion();
+    assertEquals( "2.0", ver);
   }
 
   @Test
@@ -78,8 +76,8 @@ public class PowerShellDetectorTest extends BaseTestCase {
       allowing(acc).readRegistryText(LOCAL_MACHINE, BIT32, "SOFTWARE\\Microsoft\\PowerShell\\1\\PowerShellEngine", "PowerShellVersion"); will(returnValue("2.0"));
     }});
 
-    final PowerShellVersion ver = new PowerShellRegistry(BIT32, acc).getInstalledVersion();
-    assertEquals(ver, PowerShellVersion.V_3_0);
+    final String ver = new PowerShellRegistry(BIT32, acc).getInstalledVersion();
+    assertEquals("3.0", ver);
   }
 
   @Test
@@ -89,8 +87,8 @@ public class PowerShellDetectorTest extends BaseTestCase {
       allowing(acc).readRegistryText(LOCAL_MACHINE, BIT32, "SOFTWARE\\Microsoft\\PowerShell\\1\\PowerShellEngine", "PowerShellVersion"); will(returnValue("2.0"));
     }});
 
-    final PowerShellVersion ver = new PowerShellRegistry(BIT32, acc).getInstalledVersion();
-    assertEquals(ver, PowerShellVersion.V_4_0);
+    final String ver = new PowerShellRegistry(BIT32, acc).getInstalledVersion();
+    assertEquals( "4.0", ver);
   }
 
   @Test
@@ -100,7 +98,7 @@ public class PowerShellDetectorTest extends BaseTestCase {
       allowing(acc).readRegistryText(LOCAL_MACHINE, BIT32, "SOFTWARE\\Microsoft\\PowerShell\\1\\PowerShellEngine", "PowerShellVersion"); will(returnValue(null));
     }});
 
-    final PowerShellVersion ver = new PowerShellRegistry(BIT32, acc).getInstalledVersion();
+    final String ver = new PowerShellRegistry(BIT32, acc).getInstalledVersion();
     assertNull(ver);
   }
 
@@ -216,8 +214,8 @@ public class PowerShellDetectorTest extends BaseTestCase {
       allowing(acc).readRegistryText(LOCAL_MACHINE, BIT32, "SOFTWARE\\Microsoft\\PowerShell\\1\\PowerShellEngine", "PowerShellVersion"); will(returnValue("2.0"));
     }});
 
-    final PowerShellVersion ver = new PowerShellRegistry(BIT32, acc).getInstalledVersion();
-    assertEquals(ver, PowerShellVersion.V_5_0);
+    final String ver = new PowerShellRegistry(BIT32, acc).getInstalledVersion();
+    assertEquals( "5.0", ver);
   }
 
   @Test
@@ -228,8 +226,8 @@ public class PowerShellDetectorTest extends BaseTestCase {
       allowing(acc).readRegistryText(LOCAL_MACHINE, BIT32, "SOFTWARE\\Microsoft\\PowerShell\\1\\PowerShellEngine", "PowerShellVersion"); will(returnValue("2.0"));
     }});
 
-    final PowerShellVersion ver = new PowerShellRegistry(BIT32, acc).getInstalledVersion();
-    assertEquals(ver, PowerShellVersion.V_5_1);
+    final String ver = new PowerShellRegistry(BIT32, acc).getInstalledVersion();
+    assertEquals("5.1.14393.0", ver);
   }
 
   @Test
@@ -240,30 +238,7 @@ public class PowerShellDetectorTest extends BaseTestCase {
       allowing(acc).readRegistryText(LOCAL_MACHINE, BIT32, "SOFTWARE\\Microsoft\\PowerShell\\1\\PowerShellEngine", "PowerShellVersion"); will(returnValue("2.0"));
     }});
 
-    final PowerShellVersion ver = new PowerShellRegistry(BIT32, acc).getInstalledVersion();
-    assertEquals(ver, PowerShellVersion.V_5_0);
+    final String ver = new PowerShellRegistry(BIT32, acc).getInstalledVersion();
+    assertEquals("5.0.10105", ver);
   }
-
-  @Test
-  @TestFor(issues = "TW-41000")
-  public void testAgentRequirements_ExtendedVersionRegexp() throws Exception {
-    for (PowerShellVersion v: PowerShellVersion.values()) {
-      final Pattern p = Pattern.compile(v.getVersionRegex());
-      for (String str: getVersions(v)) {
-        assertTrue(p.matcher(str).matches());
-        assertEquals(v, PowerShellVersion.fromString(str));
-      }
-    }
-  }
-
-  @NotNull
-  private String[] getVersions(PowerShellVersion v) {
-    return new String[] {
-            v.getVersion(),
-            v.getVersion() + ".100",
-            v.getVersion() + ".100.1000"
-    };
-  }
-
-
 }
