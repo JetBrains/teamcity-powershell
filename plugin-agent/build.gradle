@@ -11,3 +11,5 @@ teamcity {
     }
     version = teamCityVersion
 }
+
+project.tasks.getByName('agentPlugin').version = ''
