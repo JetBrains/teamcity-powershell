@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jetbrains.buildServer.powershell.agent.detect;
+package jetbrains.buildServer.powershell.agent.detect.registry;
 
 import jetbrains.buildServer.BaseTestCase;
 import jetbrains.buildServer.util.TestFor;
 import jetbrains.buildServer.util.Win32RegistryAccessor;
-import org.jetbrains.annotations.NotNull;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.testng.annotations.BeforeMethod;
@@ -34,7 +33,7 @@ import static jetbrains.buildServer.util.Win32RegistryAccessor.Hive.LOCAL_MACHIN
  * @author Eugene Petrenko (eugene.petrenko@jetbrains.com)
  *         03.12.10 14:57
  */
-public class PowerShellDetectorTest extends BaseTestCase {
+public class RegistryPowerShellDetectorTest extends BaseTestCase {
 
   private Mockery m;
 

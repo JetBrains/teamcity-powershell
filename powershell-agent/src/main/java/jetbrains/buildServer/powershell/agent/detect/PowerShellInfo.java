@@ -16,6 +16,7 @@
 
 package jetbrains.buildServer.powershell.agent.detect;
 
+import com.intellij.openapi.util.SystemInfo;
 import jetbrains.buildServer.agent.BuildAgentConfiguration;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.util.FileUtil;
@@ -54,7 +55,7 @@ public class PowerShellInfo {
   }
 
   @NotNull
-  public File getHome() {
+  File getHome() {
     return myHome;
   }
 
@@ -84,12 +85,12 @@ public class PowerShellInfo {
   }
 
   public void saveInfo(@NotNull final BuildAgentConfiguration config) {
-    config.addConfigurationParameter(myBitness.getVersionKey(), getVersion());
-    config.addConfigurationParameter(myBitness.getPathKey(), getHome().toString());
+    config.addConfigurationParameter(myBitness.getVersionKey(), myVersion);
+    config.addConfigurationParameter(myBitness.getPathKey(), myHome.toString());
   }
 
   @NotNull
   public String getExecutablePath() {
-    return FileUtil.getCanonicalFile(new File(getHome(), "powershell.exe")).getPath();
+    return FileUtil.getCanonicalFile(new File(myHome, "powershell" + (SystemInfo.isWindows ? ".exe" : ""))).getPath();
   }
 }

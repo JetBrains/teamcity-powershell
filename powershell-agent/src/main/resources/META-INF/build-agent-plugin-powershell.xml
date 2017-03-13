@@ -6,10 +6,13 @@
 
   <bean class="jetbrains.buildServer.powershell.agent.PowerShellInfoProvider"/>
   <bean class="jetbrains.buildServer.powershell.agent.PowerShellCommandLineProvider"/>
-  <bean class="jetbrains.buildServer.powershell.agent.detect.PowerShellDetector"/>
-  <bean class="jetbrains.buildServer.powershell.agent.PowerShellServiceFactory"/>
   <bean class="jetbrains.buildServer.powershell.agent.ScriptGenerator"/>
   <bean class="jetbrains.buildServer.powershell.agent.system.SystemBitness"/>
   <bean class="jetbrains.buildServer.powershell.agent.system.PowerShellCommands"/>
+  <bean class="jetbrains.buildServer.powershell.agent.PowerShellServiceFactory"/>
+
+  <bean class="jetbrains.buildServer.powershell.agent.detect.registry.RegistryPowerShellDetector"/>
+  <bean class="jetbrains.buildServer.powershell.agent.detect.cmd.DetectionRunner"/>
+  <bean class="jetbrains.buildServer.powershell.agent.detect.cmd.CommandLinePowerShellDetector"/>
 
 </beans>

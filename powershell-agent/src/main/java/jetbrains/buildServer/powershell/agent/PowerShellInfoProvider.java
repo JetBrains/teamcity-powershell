@@ -28,30 +28,34 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Eugene Petrenko (eugene.petrenko@jetbrains.com)
  *         03.12.10 16:24
  */
 public class PowerShellInfoProvider {
+
   private final BuildAgentConfiguration myConfig;
 
   public PowerShellInfoProvider(@NotNull final BuildAgentConfiguration config,
                                 @NotNull final EventDispatcher<AgentLifeCycleListener> events,
-                                @NotNull final PowerShellDetector detector) {
+                                @NotNull final List<PowerShellDetector> detectors) {
     myConfig = config;
     events.addListener(new AgentLifeCycleAdapter(){
       @Override
       public void beforeAgentConfigurationLoaded(@NotNull final BuildAgent agent) {
-        registerDetectedPowerShells(detector);
+        registerDetectedPowerShells(detectors);
         events.removeListener(this);
       }
     });
   }
 
-  private void registerDetectedPowerShells(@NotNull final PowerShellDetector detector) {
-    for (PowerShellInfo info : detector.findPowerShells()) {
-      info.saveInfo(myConfig);
+  private void registerDetectedPowerShells(@NotNull final List<PowerShellDetector> detectors) {
+    for (PowerShellDetector detector: detectors) {
+      for (PowerShellInfo info: detector.findPowerShells()) {
+        info.saveInfo(myConfig);
+      }
     }
   }
 

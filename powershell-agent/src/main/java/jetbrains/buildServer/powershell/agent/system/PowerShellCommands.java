@@ -47,8 +47,8 @@ public class PowerShellCommands {
   }
 
   /**
-   * Patches path to powershell executable path to force it to go into 64bit mode if
-   * Windows is 64bit, Java process is 32 bit, powershell x64 is required
+   * Patches path to PowerShell executable path to force it to go into 64bit mode if
+   * Windows is 64bit, Java process is 32 bit, PowerShell x64 is required
    *
    * @link http://www.samlogic.net/articles/sysnative-folder-64-bit-windows.htm
    *
@@ -69,10 +69,9 @@ public class PowerShellCommands {
    * Gets path to {@code cmd.exe} wrapper for powershell process.
    * Wrapper implicitly causes child process to inherit its bitness.
    *
-   *
    * @param info powershell info
    * @param env environment variables
-   * @return path to {@code cmd.exe7}
+   * @return path to {@code cmd.exe}
    */
   public String getCMDWrappedCommand(@NotNull final PowerShellInfo info, @NotNull final Map<String, String> env) {
     final String windir = env.get("windir");
@@ -93,5 +92,9 @@ public class PowerShellCommands {
         return windir + "\\System32\\cmd.exe";
     }
     return "cmd.exe";
+  }
+
+  public String getShWrappedCommand() {
+    return "/bin/bash";
   }
 }

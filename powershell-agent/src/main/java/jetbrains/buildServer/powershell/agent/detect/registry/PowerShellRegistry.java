@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package jetbrains.buildServer.powershell.agent.detect;
+package jetbrains.buildServer.powershell.agent.detect.registry;
 
 import jetbrains.buildServer.util.Bitness;
 import jetbrains.buildServer.util.FileUtil;
@@ -36,7 +36,7 @@ import static jetbrains.buildServer.util.Win32RegistryAccessor.Hive.LOCAL_MACHIN
  * @author Eugene Petrenko (eugene.petrenko@jetbrains.com)
  *         03.12.10 13:30
  */
-public class PowerShellRegistry {
+class PowerShellRegistry {
 
   @NotNull
   private final Bitness myBitness;
@@ -47,12 +47,12 @@ public class PowerShellRegistry {
   @NotNull
   private final VersionedPowerShell[] myDetectors = {new VersionedPowerShell("3"), new VersionedPowerShell("1")};
 
-  public PowerShellRegistry(@NotNull final Bitness bitness, @NotNull final Win32RegistryAccessor registryAccessor) {
+  PowerShellRegistry(@NotNull final Bitness bitness, @NotNull final Win32RegistryAccessor registryAccessor) {
     myRegistryAccessor = registryAccessor;
     myBitness = bitness;
   }
 
-  public boolean isPowerShellInstalled() {
+  boolean isPowerShellInstalled() {
     for (VersionedPowerShell shell: myDetectors) {
       if (shell.isPowerShellInstalled()) {
         return true;
@@ -62,7 +62,7 @@ public class PowerShellRegistry {
   }
 
   @Nullable
-  public String getInstalledVersion() {
+  String getInstalledVersion() {
     for (VersionedPowerShell shell: myDetectors) {
       String version = shell.getInstalledVersion();
       if (version != null) return version;
@@ -71,7 +71,7 @@ public class PowerShellRegistry {
   }
 
   @Nullable
-  public File getPowerShellHome() {
+  File getPowerShellHome() {
     for (VersionedPowerShell shell : myDetectors) {
       File home = shell.getPowerShellHome();
       if (home != null) {
@@ -90,7 +90,7 @@ public class PowerShellRegistry {
       myVersion = version;
     }
 
-    public boolean isPowerShellInstalled() {
+    boolean isPowerShellInstalled() {
       final String val = myRegistryAccessor.readRegistryText(
               LOCAL_MACHINE,
               BIT32,
@@ -101,7 +101,7 @@ public class PowerShellRegistry {
     }
 
     @Nullable
-    public String getInstalledVersion() {
+    String getInstalledVersion() {
       return myRegistryAccessor.readRegistryText(
               LOCAL_MACHINE,
               myBitness,
@@ -110,7 +110,7 @@ public class PowerShellRegistry {
     }
 
     @Nullable
-    public File getPowerShellHome() {
+    File getPowerShellHome() {
       final String home = myRegistryAccessor.readRegistryText(
               LOCAL_MACHINE,
               myBitness,

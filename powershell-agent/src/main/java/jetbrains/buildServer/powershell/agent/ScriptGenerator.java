@@ -54,7 +54,7 @@ public class ScriptGenerator {
    * @throws RunBuildException if value if {@code RUNNER_SCRIPT_CODE} param is empty, or file handling error occurred
    */
   @NotNull
-  File generateScript(@NotNull final Map<String, String> runnerParameters,
+  public File generateScript(@NotNull final Map<String, String> runnerParameters,
                       @NotNull final File buildCheckoutDir,
                       @NotNull final File buildTempDir) throws RunBuildException {
     final PowerShellScriptMode scriptMode = PowerShellScriptMode.fromString(runnerParameters.get(RUNNER_SCRIPT_MODE));
@@ -76,7 +76,7 @@ public class ScriptGenerator {
     return scriptFile;
   }
 
-  boolean shouldRemoveGeneratedScript(@NotNull final Map<String, String> runnerParameters) {
+  public static boolean shouldRemoveGeneratedScript(@NotNull final Map<String, String> runnerParameters) {
     return PowerShellScriptMode.CODE == PowerShellScriptMode.fromString(runnerParameters.get(PowerShellConstants.RUNNER_SCRIPT_MODE));
   }
 
@@ -96,8 +96,8 @@ public class ScriptGenerator {
       w.write(text);
       return file;
     } catch (IOException e) {
-      LOG.error("Error occurred while processing file for powershell script", e);
-      throw new RunBuildException("Failed to generate temporary resulting powershell script due to exception", e);
+      LOG.error("Error occurred while processing file for PowerShell script", e);
+      throw new RunBuildException("Failed to generate temporary resulting PowerShell script due to exception", e);
     } finally {
       FileUtil.close(handle);
     }

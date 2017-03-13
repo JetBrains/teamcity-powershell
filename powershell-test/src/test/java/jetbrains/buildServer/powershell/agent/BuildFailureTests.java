@@ -22,7 +22,7 @@ import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.powershell.common.PowerShellScriptMode;
 import jetbrains.buildServer.serverSide.SBuildType;
 import jetbrains.buildServer.serverSide.SFinishedBuild;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.jetbrains.annotations.NotNull;
 import org.testng.annotations.Test;
 

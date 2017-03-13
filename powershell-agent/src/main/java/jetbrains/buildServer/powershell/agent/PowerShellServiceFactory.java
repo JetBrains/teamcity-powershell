@@ -16,10 +16,13 @@
 package jetbrains.buildServer.powershell.agent;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.util.SystemInfo;
 import jetbrains.buildServer.agent.AgentBuildRunnerInfo;
 import jetbrains.buildServer.agent.BuildAgentConfiguration;
 import jetbrains.buildServer.agent.runner.CommandLineBuildService;
 import jetbrains.buildServer.agent.runner.CommandLineBuildServiceFactory;
+import jetbrains.buildServer.powershell.agent.service.PowerShellServiceUnix;
+import jetbrains.buildServer.powershell.agent.service.PowerShellServiceWindows;
 import jetbrains.buildServer.powershell.agent.system.PowerShellCommands;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import org.jetbrains.annotations.NotNull;
@@ -36,6 +39,7 @@ public class PowerShellServiceFactory implements CommandLineBuildServiceFactory,
 
   @NotNull
   private final ScriptGenerator myGenerator;
+  
   @NotNull
   private final PowerShellCommands myCommands;
 
@@ -51,7 +55,12 @@ public class PowerShellServiceFactory implements CommandLineBuildServiceFactory,
 
   @NotNull
   public CommandLineBuildService createService() {
-    return new PowerShellService(myInfoProvider, myCmdProvider, myGenerator, myCommands);
+    // here windows / *nix selection
+    if (SystemInfo.isWindows) {
+      return new PowerShellServiceWindows(myInfoProvider, myGenerator, myCmdProvider, myCommands);
+    } else {
+      return new PowerShellServiceUnix(myInfoProvider, myGenerator, myCmdProvider, myCommands);
+    }
   }
 
   @NotNull
@@ -67,7 +76,7 @@ public class PowerShellServiceFactory implements CommandLineBuildServiceFactory,
   public boolean canRun(@NotNull final BuildAgentConfiguration agentConfiguration) {
     final boolean isEmpty = myInfoProvider.getPowerShells().isEmpty();
     if (isEmpty) {
-      LOG.info("Powershell runner is disabled: Powershell was not found.");
+      LOG.info("PowerShell runner is disabled: PowerShell was not found.");
       return false;
     }
     return true;

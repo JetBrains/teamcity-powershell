@@ -22,6 +22,8 @@ package jetbrains.buildServer.powershell.common;
  */
 public class PowerShellConstants {
 
+  public static final String PLUGIN_NAME = "powershell-runner";
+
   public static final String RUN_TYPE = "jetbrains_powershell";
 
   public static final String CONFIG_KEEP_GENERATED = "powershell.keep.generated";

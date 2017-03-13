@@ -25,6 +25,7 @@ import com.intellij.openapi.util.SystemInfo;
  * @author Oleg Rybak (oleg.rybak@jetbrains.com)
  */
 public class SystemBitness {
+  
   public boolean is32bit() {
     return SystemInfo.is32Bit;
   }

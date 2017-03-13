@@ -45,7 +45,7 @@ public class PowerShellCommandLineProvider {
     final List<String> result = new ArrayList<String>();
     final PowerShellExecutionMode mod = PowerShellExecutionMode.fromString(runnerParams.get(RUNNER_EXECUTION_MODE));
     if (mod == null) {
-      throw new RunBuildException("'" + RUNNER_EXECUTION_MODE + "' runner parameters is not defined");
+      throw new RunBuildException("'" + RUNNER_EXECUTION_MODE + "' runner parameter is not defined");
     }
 
     addVersion(result, runnerParams); // version must be the 1st arg after executable path
