@@ -93,8 +93,4 @@ public class PowerShellCommands {
     }
     return "cmd.exe";
   }
-
-  public String getShWrappedCommand() {
-    return "/bin/bash";
-  }
 }

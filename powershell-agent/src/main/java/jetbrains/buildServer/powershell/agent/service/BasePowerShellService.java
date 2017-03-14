@@ -1,6 +1,7 @@
 package jetbrains.buildServer.powershell.agent.service;
 
 import com.intellij.execution.configurations.ParametersList;
+import com.intellij.openapi.diagnostic.Logger;
 import jetbrains.buildServer.RunBuildException;
 import jetbrains.buildServer.agent.BuildProgressLogger;
 import jetbrains.buildServer.agent.runner.*;
@@ -28,6 +29,8 @@ import static jetbrains.buildServer.powershell.common.PowerShellConstants.*;
  * @author Oleg Rybak (oleg.rybak@jetbrains.com)
  */
 public abstract class BasePowerShellService extends BuildServiceAdapter {
+
+  static final Logger LOG = Logger.getInstance(BasePowerShellService.class.getName());
 
   @NotNull
   private PowerShellInfoProvider myInfoProvider;
@@ -64,9 +67,8 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
     final BuildProgressLogger buildLogger = getBuild().getBuildLogger();
     buildLogger.message("PowerShell Executable: " + psExecutable);
     buildLogger.message("Working directory: " + workDir);
-    final List<String> args = new ArrayList<String>();
     if (PowerShellExecutionMode.STDIN == mode) {
-      return getStdInCommandLine(info, getEnv(info), workDir, generateCommand(info), args);
+      return getStdInCommandLine(info, getEnv(info), workDir, generateCommand(info));
     } else if (PowerShellExecutionMode.PS1 == mode) {
       return getFileCommandLine(info, getEnv(info), workDir, generateArguments(info));
     } else {
@@ -121,8 +123,7 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
   protected abstract SimpleProgramCommandLine getStdInCommandLine(@NotNull final PowerShellInfo info,
                                                                   @NotNull final Map<String, String> env,
                                                                   @NotNull final String workDir,
-                                                                  @NotNull final String command,
-                                                                  @NotNull final List<String> args) throws RunBuildException;
+                                                                  @NotNull final String command) throws RunBuildException;
 
   protected abstract SimpleProgramCommandLine getFileCommandLine(@NotNull final PowerShellInfo info,
                                                                  @NotNull final Map<String, String> env,
