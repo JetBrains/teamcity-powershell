@@ -1,0 +1,21 @@
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+tasks.withType(JavaCompile) {
+  options.encoding = 'UTF-8'
+}
+
+dependencies {
+    compile project(':powershell-common')
+    compile project(':powershell-agent')     
+    compile project(':powershell-server')
+	
+	testCompile 'org.assertj:assertj-core:2.2.0'
+	testCompile "org.jetbrains.teamcity:tests-support:$teamCityVersion"	
+}
+
+test {
+    useTestNG()
+}

@@ -78,7 +78,7 @@ public class CommandLineProviderTest extends BaseTestCase {
     final String expectedVersionArg = "-Version";
     final String expectedVersionValue = version;
     final PowerShellInfo info = m.mock(PowerShellInfo.class);
-    final Map<String, String> runnerParams = new HashMap<>();
+    final Map<String, String> runnerParams = new HashMap<String, String>();
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, version);
 
     m.checking(new Expectations() {{
@@ -100,7 +100,7 @@ public class CommandLineProviderTest extends BaseTestCase {
   @TestFor(issues = "TW-34557")
   public void testScriptArgumentsProvided(@NotNull final String version) throws Exception {
     final PowerShellInfo info = m.mock(PowerShellInfo.class);
-    final Map<String, String> runnerParams = new HashMap<>();
+    final Map<String, String> runnerParams = new HashMap<String, String>();
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     final String args = "arg1 arg2 arg3";
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_ARGUMENTS, args);
@@ -129,7 +129,7 @@ public class CommandLineProviderTest extends BaseTestCase {
   @TestFor(issues = "TW-34557")
   public void testUseDefaultPowershellIfVersionAny() throws Exception {
     final PowerShellInfo info = m.mock(PowerShellInfo.class);
-    final Map<String, String> runnerParams = new HashMap<>();
+    final Map<String, String> runnerParams = new HashMap<String, String>();
 
     m.checking(new Expectations() {{
       allowing(info).getExecutablePath();
@@ -150,7 +150,7 @@ public class CommandLineProviderTest extends BaseTestCase {
   @TestFor(issues = "TW-34410")
   public void testFromFile() throws Exception {
     final PowerShellInfo info = m.mock(PowerShellInfo.class);
-    final Map<String, String> runnerParams = new HashMap<>();
+    final Map<String, String> runnerParams = new HashMap<String, String>();
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "3.0");
 
@@ -176,7 +176,7 @@ public class CommandLineProviderTest extends BaseTestCase {
   @SuppressWarnings({"ResultOfMethodCallIgnored"})
   public void testNotEscapeSpacesForFile() throws Exception {
     final PowerShellInfo info = m.mock(PowerShellInfo.class);
-    final Map<String, String> runnerParams = new HashMap<>();
+    final Map<String, String> runnerParams = new HashMap<String, String>();
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "3.0");
     final String subdirName = "sub dir";
@@ -208,7 +208,7 @@ public class CommandLineProviderTest extends BaseTestCase {
   @SuppressWarnings({"ResultOfMethodCallIgnored"})
   public void testLeavePathAsIsForCommand() throws Exception {
     final PowerShellInfo info = m.mock(PowerShellInfo.class);
-    final Map<String, String> runnerParams = new HashMap<>();
+    final Map<String, String> runnerParams = new HashMap<String, String>();
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "3.0");
     final String subdirName = "sub dir";
@@ -239,7 +239,7 @@ public class CommandLineProviderTest extends BaseTestCase {
   @TestFor(issues = "TW-35063")
   public void testMultiWordArgs_File() throws Exception {
     final PowerShellInfo info = m.mock(PowerShellInfo.class);
-    final Map<String, String> runnerParams = new HashMap<>();
+    final Map<String, String> runnerParams = new HashMap<String, String>();
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "3.0");
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_ARGUMENTS, "arg1\r\n\"arg2.1 arg2.2\"\r\narg3\r\narg4 arg5");
@@ -271,7 +271,7 @@ public class CommandLineProviderTest extends BaseTestCase {
   @TestFor(issues = "TW-37730")
   public void testEscapeCmdChar_File() throws Exception {
     final PowerShellInfo info = m.mock(PowerShellInfo.class);
-    final Map<String, String> runnerParams = new HashMap<>();
+    final Map<String, String> runnerParams = new HashMap<String, String>();
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "3.0");
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_ARGUMENTS, "-PassToPowerShell\n^MatchTheWholeString$");

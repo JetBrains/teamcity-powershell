@@ -26,10 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.testng.annotations.Test;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 /**
  * Created 18.06.13 12:59
@@ -193,6 +190,11 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
   @NotNull
   private File[] getTempFiles() {
     File tempDir = new File(getCurrentTempDir(), "buildTmp");
-    return FileUtil.listFiles(tempDir, (dir, name) -> name.startsWith("powershell") && name.endsWith("ps1"));
+    return FileUtil.listFiles(tempDir, new FilenameFilter() {
+      @Override
+      public boolean accept(File dir, String name) {
+        return name.startsWith("powershell") && name.endsWith("ps1");
+      }
+    });
   }
 }

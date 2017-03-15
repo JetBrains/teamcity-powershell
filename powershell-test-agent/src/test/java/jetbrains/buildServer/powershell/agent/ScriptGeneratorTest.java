@@ -72,7 +72,7 @@ public class ScriptGeneratorTest extends BaseTestCase {
 
   @Test
   public void testNoEmptyScriptAllowed() throws Exception {
-    final Map<String, String> runnerParams = new HashMap<>();
+    final Map<String, String> runnerParams = new HashMap<String, String>();
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "1.0");
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_CODE, "");
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
@@ -94,13 +94,13 @@ public class ScriptGeneratorTest extends BaseTestCase {
   @Test
   @TestFor(issues = "TW-36704")
   public void testShouldRemove_CODE() throws Exception {
-    final Map<String, String> runnerParams = new HashMap<>();
+    final Map<String, String> runnerParams = new HashMap<String, String>();
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "1.0");
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_CODE, SAMPLE_SCRIPT);
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
 
-    assertTrue(myGenerator.shouldRemoveGeneratedScript(runnerParams));
+    assertTrue(ScriptGenerator.shouldRemoveGeneratedScript(runnerParams));
   }
 
   /**
@@ -110,12 +110,12 @@ public class ScriptGeneratorTest extends BaseTestCase {
   @Test
   @TestFor(issues = "TW-36704")
   public void testShouldRemove_FILE() throws Exception {
-    final Map<String, String> runnerParams = new HashMap<>();
+    final Map<String, String> runnerParams = new HashMap<String, String>();
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "1.0");
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_CODE, SAMPLE_SCRIPT);
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.FILE.getValue());
 
-    assertFalse(myGenerator.shouldRemoveGeneratedScript(runnerParams));
+    assertFalse(ScriptGenerator.shouldRemoveGeneratedScript(runnerParams));
   }
 }

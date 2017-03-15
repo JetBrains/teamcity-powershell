@@ -44,7 +44,7 @@ public class PowerShellInfoTest extends BaseTestCase {
     final Mockery m = new Mockery();
     final BuildAgentConfiguration conf = m.mock(BuildAgentConfiguration.class);
 
-    final Map<String, String> confParams = new HashMap<>();
+    final Map<String, String> confParams = new HashMap<String, String>();
     m.checking(new Expectations(){{
       allowing(conf).getConfigurationParameters(); will(returnValue(Collections.unmodifiableMap(confParams)));
       allowing(conf).addConfigurationParameter(with(any(String.class)), with(any(String.class)));
