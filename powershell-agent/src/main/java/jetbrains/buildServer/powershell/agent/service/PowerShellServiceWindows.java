@@ -58,6 +58,7 @@ public class PowerShellServiceWindows extends BasePowerShellService {
     final BuildProgressLogger buildLogger = getBuild().getBuildLogger();
     buildLogger.message("Executable wrapper: " + executable);
     buildLogger.message("Wrapper arguments: " + Arrays.toString(args.toArray()));
+    buildLogger.message("Command: " + command);
     return new SimpleProgramCommandLine(env, workDir, executable, args);
   }
 
@@ -66,7 +67,6 @@ public class PowerShellServiceWindows extends BasePowerShellService {
                                                         @NotNull final Map<String, String> env,
                                                         @NotNull final String workDir,
                                                         @NotNull final List<String> args) throws RunBuildException {
-    getBuild().getBuildLogger().message("PowerShell arguments: " + Arrays.toString(args.toArray()));
     return new SimpleProgramCommandLine(env, workDir, myCommands.getNativeCommand(info), args);
   }
 

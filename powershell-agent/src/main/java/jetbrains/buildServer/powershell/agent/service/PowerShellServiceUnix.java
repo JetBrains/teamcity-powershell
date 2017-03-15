@@ -4,6 +4,7 @@ import com.intellij.execution.configurations.GeneralCommandLine;
 import jetbrains.buildServer.ExecResult;
 import jetbrains.buildServer.RunBuildException;
 import jetbrains.buildServer.SimpleCommandLineProcessRunner;
+import jetbrains.buildServer.agent.BuildProgressLogger;
 import jetbrains.buildServer.agent.runner.SimpleProgramCommandLine;
 import jetbrains.buildServer.powershell.agent.PowerShellCommandLineProvider;
 import jetbrains.buildServer.powershell.agent.PowerShellInfoProvider;
@@ -39,6 +40,9 @@ public class PowerShellServiceUnix extends BasePowerShellService {
                                                          @NotNull final String workDir,
                                                          @NotNull final String command) throws RunBuildException {
     final File scriptFile = generateNixScriptFile(command);
+    final BuildProgressLogger buildLogger = getBuild().getBuildLogger();
+    buildLogger.message("Wrapper script: " + scriptFile);
+    buildLogger.message("Command: " + command);
     enableExecution(scriptFile);
     return new SimpleProgramCommandLine(env, workDir, scriptFile.getAbsolutePath(), Collections.<String>emptyList());
   }

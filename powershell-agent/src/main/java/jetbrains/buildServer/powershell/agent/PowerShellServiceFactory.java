@@ -55,7 +55,6 @@ public class PowerShellServiceFactory implements CommandLineBuildServiceFactory,
 
   @NotNull
   public CommandLineBuildService createService() {
-    // here windows / *nix selection
     if (SystemInfo.isWindows) {
       return new PowerShellServiceWindows(myInfoProvider, myGenerator, myCmdProvider, myCommands);
     } else {

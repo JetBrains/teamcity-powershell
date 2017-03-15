@@ -81,15 +81,12 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
     final ParametersList parametersList = new ParametersList();
     final Map<String, String> runnerParameters = getRunnerParameters();
     final File scriptFile = myScriptGenerator.generateScript(runnerParameters, getCheckoutDirectory(), getBuildTempDirectory());
-
     // if  we have script entered in runner params it will be dumped to temp file. This file must be removed after build finishes
     if (ScriptGenerator.shouldRemoveGeneratedScript(runnerParameters)) {
       myFilesToRemove.add(scriptFile);
     }
     parametersList.add(info.getExecutablePath());
-    parametersList.addAll(
-        myCmdProvider.provideCommandLine(runnerParameters, scriptFile, useExecutionPolicy(info))
-    );
+    parametersList.addAll(myCmdProvider.provideCommandLine(runnerParameters, scriptFile, useExecutionPolicy(info)));
     return parametersList.getParametersString();
   }
 
@@ -111,7 +108,6 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
         return info;
       }
     }
-
     throw new RunBuildException("PowerShell " + bit + " was not found");
   }
 
