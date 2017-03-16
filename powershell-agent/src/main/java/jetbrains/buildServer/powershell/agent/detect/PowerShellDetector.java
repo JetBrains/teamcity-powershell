@@ -1,8 +1,9 @@
 package jetbrains.buildServer.powershell.agent.detect;
 
+import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,6 +13,6 @@ import java.util.Collection;
 public interface PowerShellDetector {
 
   @NotNull
-  Collection<PowerShellInfo> findPowerShells();
+  Map<PowerShellBitness, PowerShellInfo> findPowerShells(@NotNull final DetectionContext detectionContext);
   
 }

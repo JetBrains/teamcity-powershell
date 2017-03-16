@@ -20,15 +20,14 @@ import jetbrains.buildServer.agent.AgentLifeCycleAdapter;
 import jetbrains.buildServer.agent.AgentLifeCycleListener;
 import jetbrains.buildServer.agent.BuildAgent;
 import jetbrains.buildServer.agent.BuildAgentConfiguration;
+import jetbrains.buildServer.powershell.agent.detect.DetectionContext;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellDetector;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.util.EventDispatcher;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Eugene Petrenko (eugene.petrenko@jetbrains.com)
@@ -43,22 +42,29 @@ public class PowerShellInfoProvider {
                                 @NotNull final List<PowerShellDetector> detectors) {
     myConfig = config;
     events.addListener(new AgentLifeCycleAdapter(){
+
       @Override
-      public void beforeAgentConfigurationLoaded(@NotNull final BuildAgent agent) {
-        registerDetectedPowerShells(detectors);
-        events.removeListener(this);
+      public void afterAgentConfigurationLoaded(@NotNull BuildAgent agent) {
+        registerDetectedPowerShells(detectors, new DetectionContext(agent.getConfiguration()));
       }
     });
   }
 
-  private void registerDetectedPowerShells(@NotNull final List<PowerShellDetector> detectors) {
+  private void registerDetectedPowerShells(@NotNull final List<PowerShellDetector> detectors,
+                                           @NotNull final DetectionContext detectionContext) {
+    Map<PowerShellBitness, PowerShellInfo> detected = new HashMap<PowerShellBitness, PowerShellInfo>();
     for (PowerShellDetector detector: detectors) {
-      for (PowerShellInfo info: detector.findPowerShells()) {
-        info.saveInfo(myConfig);
+      for (Map.Entry<PowerShellBitness, PowerShellInfo> e: detector.findPowerShells(detectionContext).entrySet()) {
+        if (detected.get(e.getKey()) == null) {
+          detected.put(e.getKey(), e.getValue());
+        }
       }
     }
+    for (PowerShellInfo info: detected.values()) {
+      info.saveInfo(myConfig);
+    }
   }
-
+  
   @NotNull
   public Collection<PowerShellInfo> getPowerShells() {
     Collection<PowerShellInfo> infos = new ArrayList<PowerShellInfo>(2);

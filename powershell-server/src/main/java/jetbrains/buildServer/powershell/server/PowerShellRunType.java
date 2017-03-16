@@ -67,42 +67,40 @@ public class PowerShellRunType extends RunType {
 
   @Override
   public PropertiesProcessor getRunnerPropertiesProcessor() {
-    return new PropertiesProcessor() {
-      public Collection<InvalidProperty> process(final Map<String, String> properties) {
-        Collection<InvalidProperty> col = new ArrayList<>();
+    return properties -> {
+      Collection<InvalidProperty> col = new ArrayList<>();
 
-        final PowerShellBitness bit = getBitness(properties);
-        if (bit == null) {
-          col.add(new InvalidProperty(RUNNER_BITNESS, "Bitness is not defined"));
-        }
-
-        final PowerShellExecutionMode exe = PowerShellExecutionMode.fromString(properties.get(RUNNER_EXECUTION_MODE));
-        if (exe == null) {
-          col.add(new InvalidProperty(RUNNER_EXECUTION_MODE, "Execution mode must be specified"));
-        }
-
-        final PowerShellScriptMode mod = getScriptMode(properties);
-        if (mod == null) {
-          col.add(new InvalidProperty(RUNNER_SCRIPT_MODE, "Script mode is not defined"));
-        } else {
-          switch (mod) {
-            case FILE:
-              final String script = properties.get(RUNNER_SCRIPT_FILE);
-              if (StringUtil.isEmptyOrSpaces(script)) {
-                col.add(new InvalidProperty(RUNNER_SCRIPT_FILE, "Script file is not defined"));
-              } else if (mod == PowerShellScriptMode.FILE && !ReferencesResolverUtil.containsReference(script) && !script.toLowerCase().endsWith(".ps1")) {
-                col.add(new InvalidProperty(RUNNER_SCRIPT_FILE, "PowerShell requires script files to have .ps1 extension"));
-              }
-              break;
-            case CODE:
-              if (StringUtil.isEmptyOrSpaces(properties.get(RUNNER_SCRIPT_CODE))) {
-                col.add(new InvalidProperty(RUNNER_SCRIPT_CODE, "Code should not be empty"));
-              }
-              break;
-          }
-        }
-        return col;
+      final PowerShellBitness bit = getBitness(properties);
+      if (bit == null) {
+        col.add(new InvalidProperty(RUNNER_BITNESS, "Bitness is not defined"));
       }
+
+      final PowerShellExecutionMode exe = PowerShellExecutionMode.fromString(properties.get(RUNNER_EXECUTION_MODE));
+      if (exe == null) {
+        col.add(new InvalidProperty(RUNNER_EXECUTION_MODE, "Execution mode must be specified"));
+      }
+
+      final PowerShellScriptMode mod = getScriptMode(properties);
+      if (mod == null) {
+        col.add(new InvalidProperty(RUNNER_SCRIPT_MODE, "Script mode is not defined"));
+      } else {
+        switch (mod) {
+          case FILE:
+            final String script = properties.get(RUNNER_SCRIPT_FILE);
+            if (StringUtil.isEmptyOrSpaces(script)) {
+              col.add(new InvalidProperty(RUNNER_SCRIPT_FILE, "Script file is not defined"));
+            } else if (!ReferencesResolverUtil.containsReference(script) && !script.toLowerCase().endsWith(".ps1")) {
+              col.add(new InvalidProperty(RUNNER_SCRIPT_FILE, "PowerShell requires script files to have .ps1 extension"));
+            }
+            break;
+          case CODE:
+            if (StringUtil.isEmptyOrSpaces(properties.get(RUNNER_SCRIPT_CODE))) {
+              col.add(new InvalidProperty(RUNNER_SCRIPT_CODE, "Code should not be empty"));
+            }
+            break;
+        }
+      }
+      return col;
     };
   }
 

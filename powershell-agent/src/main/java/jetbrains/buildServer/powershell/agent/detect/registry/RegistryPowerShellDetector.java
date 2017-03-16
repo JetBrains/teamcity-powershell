@@ -17,6 +17,7 @@
 package jetbrains.buildServer.powershell.agent.detect.registry;
 
 import com.intellij.openapi.util.SystemInfo;
+import jetbrains.buildServer.powershell.agent.detect.DetectionContext;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellDetector;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
@@ -25,9 +26,7 @@ import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
 /**
  * @author Eugene Petrenko (eugene.petrenko@jetbrains.com)
@@ -47,13 +46,13 @@ public class RegistryPowerShellDetector implements PowerShellDetector {
 
   @Override
   @NotNull
-  public Collection<PowerShellInfo> findPowerShells() {
+  public Map<PowerShellBitness, PowerShellInfo> findPowerShells(@NotNull final DetectionContext detectionContext) {
     LOG.info("Detecting PowerShell using RegistryPowerShellDetector");
     if (!SystemInfo.isWindows) {
       LOG.info("RegistryPowerShellDetector is only available on Windows");
-      return Collections.emptyList();
+      return Collections.emptyMap();
     }
-    Collection<PowerShellInfo> col = new ArrayList<PowerShellInfo>(2);
+    final Map<PowerShellBitness, PowerShellInfo> result = new HashMap<PowerShellBitness, PowerShellInfo>(2);
     for (PowerShellBitness bitness: PowerShellBitness.values()) {
       final PowerShellRegistry reg = new PowerShellRegistry(bitness.toBitness(), myAccessor);
 
@@ -72,8 +71,8 @@ public class RegistryPowerShellDetector implements PowerShellDetector {
 
       final PowerShellInfo info = new PowerShellInfo(bitness, home, ver);
       LOG.info("Found: " + info);
-      col.add(info);
+      result.put(info.getBitness(), info);
     }
-    return col;
+    return result;
   }
 }

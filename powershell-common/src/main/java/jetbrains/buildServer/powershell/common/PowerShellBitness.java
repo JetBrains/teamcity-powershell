@@ -67,4 +67,13 @@ public enum PowerShellBitness {
       default: throw new IllegalArgumentException("Bitness: " + this);
     }
   }
+
+  @Override
+  public String toString() {
+    switch (this) {
+      case x64: return "64 bit";
+      case x86: return "32 bit";
+      default: return this.name();
+    }
+  }
 }

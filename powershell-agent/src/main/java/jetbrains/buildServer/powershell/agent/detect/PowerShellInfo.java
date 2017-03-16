@@ -55,7 +55,7 @@ public class PowerShellInfo {
   }
 
   @NotNull
-  File getHome() {
+  public File getHome() {
     return myHome;
   }
 
