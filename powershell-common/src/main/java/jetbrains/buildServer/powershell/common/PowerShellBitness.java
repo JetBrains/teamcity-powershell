@@ -25,23 +25,32 @@ import org.jetbrains.annotations.Nullable;
  *         03.12.10 16:50
  */
 public enum PowerShellBitness {
-  x86,
-  x64
-  ;
+  x86 ("x86", "32 bit", Bitness.BIT32),
+  x64 ("x64", "64 bit", Bitness.BIT64);
+
+  private final String myValue;
+  private final String myDisplayName;
+  private final Bitness myBitness;
+
+  PowerShellBitness(String value, String displayName, Bitness bitness) {
+    myValue = value;
+    myDisplayName = displayName;
+    myBitness = bitness;
+  }
 
   @NotNull
   public String getVersionKey() {
-    return "powershell_" + this;
+    return "powershell_" + myValue;
   }
 
   @NotNull
   public String getValue() {
-    return this.toString();
+    return myValue;
   }
 
   @NotNull
   public String getDescription() {
-    return getValue();
+    return myDisplayName;
   }
 
   @NotNull
@@ -52,7 +61,7 @@ public enum PowerShellBitness {
   @Nullable
   public static PowerShellBitness fromString(@Nullable String bit) {
     for (PowerShellBitness b : values()) {
-      if (b.toString().equals(bit)) {
+      if (b.getValue().equals(bit)) {
         return b;
       }
     }
@@ -61,19 +70,11 @@ public enum PowerShellBitness {
 
   @NotNull
   public Bitness toBitness() {
-    switch (this) {
-      case x64: return Bitness.BIT64;
-      case x86: return Bitness.BIT32;
-      default: throw new IllegalArgumentException("Bitness: " + this);
-    }
+    return myBitness;
   }
 
   @Override
   public String toString() {
-    switch (this) {
-      case x64: return "64 bit";
-      case x86: return "32 bit";
-      default: return this.name();
-    }
+    return myDisplayName;
   }
 }
