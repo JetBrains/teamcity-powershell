@@ -1,7 +1,10 @@
 package jetbrains.buildServer.powershell.server;
 
 import jetbrains.buildServer.BaseTestCase;
-import jetbrains.buildServer.powershell.common.*;
+import jetbrains.buildServer.powershell.common.PowerShellBitness;
+import jetbrains.buildServer.powershell.common.PowerShellConstants;
+import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
+import jetbrains.buildServer.powershell.common.PowerShellScriptMode;
 import jetbrains.buildServer.requirements.Requirement;
 import jetbrains.buildServer.requirements.RequirementType;
 import jetbrains.buildServer.serverSide.RunTypeRegistry;
@@ -50,12 +53,7 @@ public class PowerShellRunTypeTest extends BaseTestCase {
   @Test(dataProvider = "versionProvider")
   @TestFor(issues = "TW-33570")
   public void shouldProviderSemanticVersionRestriction(@NotNull final PowerShellBitness bitness, @Nullable final String version) {
-    final Map<String, String> parameters = CollectionsUtil.asMap(
-            PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue(),
-            PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue(),
-            PowerShellConstants.RUNNER_SCRIPT_CODE, "echo works",
-            PowerShellConstants.RUNNER_BITNESS, bitness.getValue()
-    );
+    final Map<String, String> parameters = createDummyParameters(bitness);
     if (version != null) {
       parameters.put(PowerShellConstants.RUNNER_MIN_VERSION, version);
     }
@@ -69,6 +67,25 @@ public class PowerShellRunTypeTest extends BaseTestCase {
       assertEquals(RequirementType.VER_NO_LESS_THAN, req.getType());
       assertEquals(version, req.getPropertyValue());
     }
+  }
+
+  @Test(dataProvider = "bitnessProvider")
+  public void shouldUseInternalValueAsPArtOfRequirement(@NotNull final PowerShellBitness bit) {
+    final Collection<Requirement> requirements = runType.getRunnerSpecificRequirements(createDummyParameters(bit));
+    assertEquals(1, requirements.size());
+    final Requirement req = requirements.iterator().next();
+    final String versionKey = bit.getVersionKey();
+    assertEquals(versionKey, req.getPropertyName());
+    assertEquals("powershell_" + bit.getValue(), versionKey);
+  }
+
+  private Map<String, String> createDummyParameters(@NotNull final PowerShellBitness bit) {
+    return CollectionsUtil.asMap(
+        PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue(),
+        PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue(),
+        PowerShellConstants.RUNNER_SCRIPT_CODE, "echo works",
+        PowerShellConstants.RUNNER_BITNESS, bit.getValue()
+    );
   }
 
   @Override
@@ -89,6 +106,17 @@ public class PowerShellRunTypeTest extends BaseTestCase {
         result[k++] = new Object[]{bit, version};
       }
       result[k++] = new Object[]{bit, null};
+    }
+    return result;
+  }
+
+  @DataProvider(name = "bitnessProvider")
+  public Object[][] getBitness() {
+    final PowerShellBitness[] bits = PowerShellBitness.values();
+    Object[][] result = new Object[bits.length][];
+    int k = 0;
+    for (PowerShellBitness bit: bits) {
+      result[k++] = new Object[] {bit};
     }
     return result;
   }
