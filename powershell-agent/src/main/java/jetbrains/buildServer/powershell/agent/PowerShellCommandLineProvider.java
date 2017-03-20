@@ -123,8 +123,8 @@ public class PowerShellCommandLineProvider {
         if (!scriptFile.getPath().toLowerCase().endsWith(".ps1")) {
           throw new RunBuildException("PowerShell script should have '.ps1' extension");
         }
-          args.add("-File");
-          args.add(scriptFile.getPath());
+        args.add("-File");
+        args.add(scriptFile.getPath());
         addCustomArguments(args, runnerParams, RUNNER_SCRIPT_ARGUMENTS);
         break;
       default:

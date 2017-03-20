@@ -12,10 +12,12 @@ import jetbrains.buildServer.powershell.agent.ScriptGenerator;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.agent.system.PowerShellCommands;
 import jetbrains.buildServer.util.FileUtil;
+import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -39,12 +41,7 @@ public class PowerShellServiceUnix extends BasePowerShellService {
                                                          @NotNull final Map<String, String> env,
                                                          @NotNull final String workDir,
                                                          @NotNull final String command) throws RunBuildException {
-    final File scriptFile = generateNixScriptFile(command);
-    final BuildProgressLogger buildLogger = getBuild().getBuildLogger();
-    buildLogger.message("Wrapper script: " + scriptFile);
-    buildLogger.message("Command: " + command);
-    enableExecution(scriptFile);
-    return new SimpleProgramCommandLine(env, workDir, scriptFile.getAbsolutePath(), Collections.<String>emptyList());
+    return executeWithWrapper(env, workDir, command);
   }
 
   @Override
@@ -52,7 +49,21 @@ public class PowerShellServiceUnix extends BasePowerShellService {
                                                         @NotNull final Map<String, String> env,
                                                         @NotNull final String workDir,
                                                         @NotNull final List<String> args) throws RunBuildException {
-    return new SimpleProgramCommandLine(env, workDir, info.getExecutablePath(), args);
+    final List<String> argsList = new ArrayList<String>();
+    argsList.add(info.getExecutablePath());
+    argsList.addAll(args);
+    return executeWithWrapper(env, workDir, StringUtil.join(argsList, " "));
+  }
+
+  private SimpleProgramCommandLine executeWithWrapper(@NotNull final Map<String, String> env,
+                                                      @NotNull final String workDir,
+                                                      @NotNull final String argsList) throws RunBuildException {
+    final File scriptFile = generateNixScriptFile(argsList);
+    final BuildProgressLogger buildLogger = getBuild().getBuildLogger();
+    buildLogger.message("Wrapper script: " + scriptFile);
+    buildLogger.message("Command: " + argsList);
+    enableExecution(scriptFile);
+    return new SimpleProgramCommandLine(env, workDir, scriptFile.getAbsolutePath(), Collections.<String>emptyList());
   }
 
   @Override
