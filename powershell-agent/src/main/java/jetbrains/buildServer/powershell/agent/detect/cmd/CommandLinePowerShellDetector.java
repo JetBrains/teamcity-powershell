@@ -79,9 +79,8 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
             File executableLocation = new File(e.getValue(), EXECUTABLE);
             PowerShellInfo info = doDetect(executableLocation, scriptPath);
             if (info != null) {
-              // if we are to substitute PowerShell installation explicitly, ignoring the bits of detected one
-              if (info.getBitness() != e.getKey()) {
-                LOG.warn("Expected " + e.getKey() + " PowerShell at [" + info.getHome() + ", got [" + info.getBitness() + "]");
+              if (info.getBitness() != e.getKey()) { // if we are to substitute PowerShell installation explicitly, ignoring the bits of detected one
+                LOG.warn("Using configured bitness (" + e.getKey() + ") for PowerShell at [" + info.getHome() + "] instead of detected one (" + info.getBitness() + ")");
               }
               register(result, new PowerShellInfo(e.getKey(), info.getHome(), info.getVersion()));
             }
@@ -113,7 +112,7 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
     }
   }
   private void register(@NotNull final Map<PowerShellBitness, PowerShellInfo> detected, @NotNull final PowerShellInfo info) {
-    LOG.info("Registering " + info.getBitness() + "PowerShell at:" + info.getExecutablePath());
+    LOG.info("Registering " + info.getBitness() + " PowerShell at:" + info.getExecutablePath());
     detected.put(info.getBitness(), info);
   }
 
