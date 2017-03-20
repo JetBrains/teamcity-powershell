@@ -34,15 +34,15 @@ public class DetectionRunner {
     return execResult.getStdoutLines();
   }
 
-  private static ProcessOutput runProcess(@NotNull final GeneralCommandLine cl) throws com.intellij.execution.ExecutionException {
+  private static ProcessOutput runProcess(@NotNull final GeneralCommandLine cl) throws ExecutionException {
     final CapturingProcessHandler handler = new CapturingProcessHandler(cl.createProcess(), Charset.forName("UTF-8"));
-    final ProcessOutput result = handler.runProcess(5000);
+    final ProcessOutput result = handler.runProcess(20000);
     if (result.isTimeout()) {
-      throw new com.intellij.execution.ExecutionException("Process execution of [" + cl.getCommandLineString() + "] has timed out");
+      throw new ExecutionException("Process execution of [" + cl.getCommandLineString() + "] has timed out");
     }
     final String errorOutput = result.getStderr();
     if (!StringUtil.isEmptyOrSpaces(errorOutput)) {
-      throw new com.intellij.execution.ExecutionException(errorOutput);
+      throw new ExecutionException(errorOutput);
     }
     return result;
   }
