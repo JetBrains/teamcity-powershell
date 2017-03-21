@@ -3,7 +3,10 @@
   <class name="PowerShellStep"/>
   <function name="powerShell"/>
   <params>
-    <param name="jetbrains_powershell_minVersion" dslName="minVersion" type="Version" />
+    <param name="jetbrains_powershell_minVersion" dslName="minVersion" type="Version">
+      <deprecated>This property allows to specify a limited number of versions, please use minRequiredVersion instead.</deprecated>
+    </param>
+    <param name="jetbrains_powershell_minVersion" dslName="minRequiredVersion" />
     <param name="jetbrains_powershell_bitness" dslName="platform" type="Platform" />
     <param name="jetbrains_powershell_errorToError" dslName="formatStderrAsError" type="boolean" trueValue="true" falseValue="" />
     <param name="teamcity.build.workingDir" dslName="workingDir" />
