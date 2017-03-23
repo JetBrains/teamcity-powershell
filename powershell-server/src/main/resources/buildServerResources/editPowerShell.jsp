@@ -21,7 +21,7 @@
 <jsp:useBean id="bean" class="jetbrains.buildServer.powershell.server.PowerShellBean"/>
 <jsp:useBean id="propertiesBean" scope="request" type="jetbrains.buildServer.controllers.BasePropertiesBean"/>
 
-<tr>
+<tr class="advancedSetting">
   <th rowspan="2">PowerShell run mode:</th>
   <td>
     <label for="${bean.minVersionKey}">Version: </label>
@@ -29,7 +29,7 @@
   </td>
 </tr>
 
-<tr>
+<tr class="advancedSetting">
   <td>
     <label for="${bean.bitnessKey}">Bitness: </label>
     <props:selectProperty name="${bean.bitnessKey}">
