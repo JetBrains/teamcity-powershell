@@ -27,7 +27,7 @@
   <strong>
     <c:set var="type" value="${propertiesBean.properties[bean.bitnessKey]}"/>
     <c:forEach var="val" items="${bean.bitnessValues}">
-      <c:if test="${type eq val.value}"><c:out value="${val.description}"/></c:if>
+      <c:if test="${type eq val.value}"><c:out value="${val.key}"/></c:if>
     </c:forEach>
   </strong>
 </div>

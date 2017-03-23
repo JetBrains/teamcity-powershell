@@ -72,9 +72,8 @@ public class PowerShellServiceFactory implements CommandLineBuildServiceFactory,
     return PowerShellConstants.RUN_TYPE;
   }
 
-  public boolean canRun(@NotNull final BuildAgentConfiguration agentConfiguration) {
-    final boolean isEmpty = myInfoProvider.getPowerShells().isEmpty();
-    if (isEmpty) {
+  public boolean canRun(@NotNull final BuildAgentConfiguration agentConfiguration) {     
+    if (!myInfoProvider.anyPowerShellDetected()) {
       LOG.info("PowerShell runner is disabled: PowerShell was not found.");
       return false;
     }

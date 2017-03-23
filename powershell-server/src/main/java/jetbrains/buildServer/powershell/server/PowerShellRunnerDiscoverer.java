@@ -15,8 +15,6 @@
  */
 package jetbrains.buildServer.powershell.server;
 
-import jetbrains.buildServer.util.FileUtil;
-import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.powershell.common.PowerShellScriptMode;
@@ -24,6 +22,7 @@ import jetbrains.buildServer.serverSide.BuildRunnerDescriptor;
 import jetbrains.buildServer.serverSide.BuildTypeSettings;
 import jetbrains.buildServer.serverSide.discovery.BreadthFirstRunnerDiscoveryExtension;
 import jetbrains.buildServer.serverSide.discovery.DiscoveredObject;
+import jetbrains.buildServer.util.FileUtil;
 import jetbrains.buildServer.util.browser.Browser;
 import jetbrains.buildServer.util.browser.Element;
 import org.jetbrains.annotations.NotNull;
@@ -48,7 +47,6 @@ public class PowerShellRunnerDiscoverer extends BreadthFirstRunnerDiscoveryExten
       if (e.isLeaf() && PS_EXT.equals(FileUtil.getExtension(e.getName()))) {
         final Map<String, String> parameters = new HashMap<>();
         parameters.put(PowerShellConstants.RUNNER_SCRIPT_FILE, e.getFullName());
-        parameters.put(PowerShellConstants.RUNNER_BITNESS, PowerShellBitness.values()[0].getValue());
         parameters.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
         parameters.put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.FILE.getValue());
         runners.add(new DiscoveredObject(PowerShellConstants.RUN_TYPE, parameters));
@@ -69,13 +67,7 @@ public class PowerShellRunnerDiscoverer extends BreadthFirstRunnerDiscoveryExten
     if (alreadyUsedFiles.isEmpty()) {
       return discovered;
     }
-    final Iterator<DiscoveredObject> it = discovered.iterator();
-    while (it.hasNext()) {
-      DiscoveredObject o = it.next();
-      if (alreadyUsedFiles.contains(o.getParameters().get(PowerShellConstants.RUNNER_SCRIPT_FILE))) {
-        it.remove();
-      }
-    }
+    discovered.removeIf(o -> alreadyUsedFiles.contains(o.getParameters().get(PowerShellConstants.RUNNER_SCRIPT_FILE)));
     return discovered;
   }
 

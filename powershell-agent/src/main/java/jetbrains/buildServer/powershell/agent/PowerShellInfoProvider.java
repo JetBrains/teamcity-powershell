@@ -24,8 +24,12 @@ import jetbrains.buildServer.powershell.agent.detect.DetectionContext;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellDetector;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
+import jetbrains.buildServer.util.CollectionsUtil;
 import jetbrains.buildServer.util.EventDispatcher;
+import jetbrains.buildServer.util.VersionComparatorUtil;
+import jetbrains.buildServer.util.filters.Filter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -64,9 +68,47 @@ public class PowerShellInfoProvider {
       info.saveInfo(myConfig);
     }
   }
+
+  boolean anyPowerShellDetected() {
+    return !getPowerShells().isEmpty();
+  }
   
+  @Nullable
+  public PowerShellInfo selectTool(@Nullable final PowerShellBitness bit, @Nullable final String version) {
+    Map<PowerShellBitness, PowerShellInfo> available = getPowerShellsMap();
+    PowerShellInfo result;
+    if (bit == null) {
+      if (version != null) {
+        available = CollectionsUtil.filterMapByValues(available, new Filter<PowerShellInfo>() {
+          @Override
+          public boolean accept(@NotNull PowerShellInfo data) {
+            return VersionComparatorUtil.compare(data.getVersion(), version) >= 0;
+          }
+        });
+      }
+      result = available.get(PowerShellBitness.x64);
+      if (result != null) {
+        return result;
+      }
+      return available.get(PowerShellBitness.x86);
+    } else {
+      return available.get(bit);
+    }
+  }
+
+  private Map<PowerShellBitness, PowerShellInfo> getPowerShellsMap() {
+    final Map<PowerShellBitness, PowerShellInfo> result = new HashMap<PowerShellBitness, PowerShellInfo>(2);
+    for (PowerShellBitness bit: PowerShellBitness.values()) {
+      final PowerShellInfo info = PowerShellInfo.loadInfo(myConfig, bit);
+      if (info != null) {
+        result.put(bit, info);
+      }
+    }
+    return result;
+  }
+
   @NotNull
-  public Collection<PowerShellInfo> getPowerShells() {
+  private Collection<PowerShellInfo> getPowerShells() {
     Collection<PowerShellInfo> infos = new ArrayList<PowerShellInfo>(2);
     for (PowerShellBitness bit : PowerShellBitness.values()) {
       final PowerShellInfo i = PowerShellInfo.loadInfo(myConfig, bit);

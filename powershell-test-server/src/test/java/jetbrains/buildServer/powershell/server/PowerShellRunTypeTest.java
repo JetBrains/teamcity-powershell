@@ -50,7 +50,7 @@ public class PowerShellRunTypeTest extends BaseTestCase {
 
   }
 
-  @Test(dataProvider = "versionProvider")
+  @Test(dataProvider = "bitnessAndVersionProvider")
   @TestFor(issues = "TW-33570")
   public void shouldProviderSemanticVersionRestriction(@NotNull final PowerShellBitness bitness, @Nullable final String version) {
     final Map<String, String> parameters = createDummyParameters(bitness);
@@ -79,13 +79,43 @@ public class PowerShellRunTypeTest extends BaseTestCase {
     assertEquals("powershell_" + bit.getValue(), versionKey);
   }
 
-  private Map<String, String> createDummyParameters(@NotNull final PowerShellBitness bit) {
-    return CollectionsUtil.asMap(
+  // do we need migration here? what is chosen by default? is the default setting even stored?
+
+  @Test
+  @TestFor(issues = "TW-44808")
+  public void testGenerateAnyBitnessRequirement_NoMinVersion() throws Exception {
+    final Map<String, String> input = createDummyParameters(null);
+    final Collection<Requirement> requirements = runType.getRunnerSpecificRequirements(input);
+    assertEquals(1, requirements.size());
+    final Requirement r = requirements.iterator().next();
+    assertEquals("Exists=>(powershell_x86|powershell_x64)", r.getPropertyName());
+    assertNull(r.getPropertyValue());
+    assertEquals(RequirementType.EXISTS, r.getType());
+  }
+
+  @Test(dataProvider = "versionProvider")
+  @TestFor(issues = "TW-44808")
+  public void testGenerateAnyBitnessRequirement_WithMinVersion(@NotNull final String version) throws Exception {
+    final Map<String, String> input = createDummyParameters(null);
+    input.put(PowerShellConstants.RUNNER_MIN_VERSION, version);
+    final Collection<Requirement> requirements = runType.getRunnerSpecificRequirements(input);
+    assertEquals(1, requirements.size());
+    final Requirement r = requirements.iterator().next();
+    assertEquals("Exists=>(powershell_x86|powershell_x64)", r.getPropertyName());
+    assertEquals(version, r.getPropertyValue());
+    assertEquals(RequirementType.VER_NO_LESS_THAN, r.getType());
+  }
+  
+  private Map<String, String> createDummyParameters(@Nullable final PowerShellBitness bit) {
+    final Map<String, String> result = CollectionsUtil.asMap(
         PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue(),
         PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue(),
-        PowerShellConstants.RUNNER_SCRIPT_CODE, "echo works",
-        PowerShellConstants.RUNNER_BITNESS, bit.getValue()
+        PowerShellConstants.RUNNER_SCRIPT_CODE, "echo works"
     );
+    if (bit != null) {
+      result.put(PowerShellConstants.RUNNER_BITNESS, bit.getValue());
+    }
+    return result;
   }
 
   @Override
@@ -95,9 +125,9 @@ public class PowerShellRunTypeTest extends BaseTestCase {
     m.assertIsSatisfied();
   }
 
-  @DataProvider(name = "versionProvider")
-  public Object[][] getVersion() {
-    String[] versions = {"1.0", "2.0", "3.0", "4.0", "5.0", "5.1", "6.0"};
+  @DataProvider(name = "bitnessAndVersionProvider")
+  public Object[][] getBitnessAndVersion() {
+    String[] versions = sampleVersions();
     final PowerShellBitness[] bits = PowerShellBitness.values();
     final Object[][] result = new Object[versions.length * bits.length + 2][];
     int k = 0;
@@ -106,6 +136,17 @@ public class PowerShellRunTypeTest extends BaseTestCase {
         result[k++] = new Object[]{bit, version};
       }
       result[k++] = new Object[]{bit, null};
+    }
+    return result;
+  }
+
+  @DataProvider(name = "versionProvider")
+  public Object[][] getVersion() {
+    String[] versions = sampleVersions();
+    final Object[][] result = new Object[versions.length][1];
+    int k = 0;
+    for (String ver: versions) {
+      result[k++] = new Object[] {ver};
     }
     return result;
   }
@@ -119,5 +160,9 @@ public class PowerShellRunTypeTest extends BaseTestCase {
       result[k++] = new Object[] {bit};
     }
     return result;
+  }
+
+  private String[] sampleVersions() {
+    return new String[] {"1.0", "2.0", "3.0", "4.0", "5.0", "5.1", "6.0"};
   }
 }

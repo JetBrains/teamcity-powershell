@@ -41,4 +41,10 @@ public class PowerShellConstants {
 
   public static final String RUNNER_EXECUTION_MODE = "jetbrains_powershell_execution";
 
+
+  /**
+   * Any bitness of runner is enough to run the build. 64bit should be selected if available (through selectTool())   *
+   */
+  public static final String PARAM_VALUE_BITNESS_AUTO = "<Auto>";
+
 }

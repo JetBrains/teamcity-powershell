@@ -16,11 +16,16 @@
 
 package jetbrains.buildServer.powershell.server;
 
-import jetbrains.buildServer.powershell.common.*;
+import jetbrains.buildServer.powershell.common.PowerShellBitness;
+import jetbrains.buildServer.powershell.common.PowerShellConstants;
+import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
+import jetbrains.buildServer.powershell.common.PowerShellScriptMode;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Eugene Petrenko (eugene.petrenko@jetbrains.com)
@@ -34,8 +39,11 @@ public class PowerShellBean {
   }
 
   @NotNull
-  public Collection<PowerShellBitness> getBitnessValues(){
-    return Arrays.asList(PowerShellBitness.values());
+  public Map<String, String> getBitnessValues() {
+    final Map<String, String> result = new LinkedHashMap<>();
+    result.put("<Auto>", "");
+    result.putAll(Arrays.stream(PowerShellBitness.values()).collect(Collectors.toMap(PowerShellBitness::getDescription, PowerShellBitness::getValue)));
+    return result;
   }
 
   @NotNull

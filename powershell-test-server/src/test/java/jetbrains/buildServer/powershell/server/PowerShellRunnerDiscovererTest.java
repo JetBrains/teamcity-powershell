@@ -16,7 +16,6 @@
 package jetbrains.buildServer.powershell.server;
 
 import jetbrains.buildServer.BaseTestCase;
-import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.powershell.common.PowerShellScriptMode;
@@ -269,8 +268,8 @@ public class PowerShellRunnerDiscovererTest extends BaseTestCase {
     assertEquals(PowerShellConstants.RUN_TYPE, runner.getType());
     final Map<String, String> params = runner.getParameters();
     assertEquals(params.get(PowerShellConstants.RUNNER_SCRIPT_FILE), scriptFullName);
-    assertEquals(params.get(PowerShellConstants.RUNNER_BITNESS), PowerShellBitness.values()[0].getValue());
     assertEquals(params.get(PowerShellConstants.RUNNER_EXECUTION_MODE), PowerShellExecutionMode.PS1.getValue());
     assertEquals(params.get(PowerShellConstants.RUNNER_SCRIPT_MODE), PowerShellScriptMode.FILE.getValue());
+    assertNull(params.get(PowerShellConstants.RUNNER_BITNESS));
   }
 }

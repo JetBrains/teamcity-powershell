@@ -34,7 +34,7 @@
     <label for="${bean.bitnessKey}">Bitness: </label>
     <props:selectProperty name="${bean.bitnessKey}">
       <c:forEach var="val" items="${bean.bitnessValues}">
-        <props:option value="${val.value}"><c:out value="${val.description}"/></props:option>
+        <props:option value="${val.value}"><c:out value="${val.key}"/></props:option>
       </c:forEach>
     </props:selectProperty>
     <span class="error" id="error_${bean.bitnessKey}"></span>

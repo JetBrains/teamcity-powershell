@@ -102,14 +102,17 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
 
   private PowerShellInfo selectTool() throws RunBuildException {
     final PowerShellBitness bit = fromString(getRunnerParameters().get(RUNNER_BITNESS));
-    if (bit == null) throw new RunBuildException("Failed to read: " + RUNNER_BITNESS);
-    for (PowerShellInfo info: myInfoProvider.getPowerShells()) {
-      if (info.getBitness() == bit) {
-        return info;
-      }
+    final String version = getRunnerParameters().get(RUNNER_MIN_VERSION);
+    final PowerShellInfo result = myInfoProvider.selectTool(bit, version);
+    if (result == null) {
+      throw new RunBuildException("Could not select PowerShell for given bitness ["
+          + (bit == null ? "any" : bit.getDescription() +"]"
+          + (version == null ? "" : " and minimum version [" + version + "]")));
     }
-    throw new RunBuildException("PowerShell " + bit + " was not found");
+    return result;
   }
+
+
 
   @Override
   public boolean isCommandLineLoggingEnabled() {

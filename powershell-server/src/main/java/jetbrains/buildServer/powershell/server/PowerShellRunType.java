@@ -19,6 +19,7 @@ package jetbrains.buildServer.powershell.server;
 import jetbrains.buildServer.parameters.ReferencesResolverUtil;
 import jetbrains.buildServer.powershell.common.*;
 import jetbrains.buildServer.requirements.Requirement;
+import jetbrains.buildServer.requirements.RequirementQualifier;
 import jetbrains.buildServer.requirements.RequirementType;
 import jetbrains.buildServer.serverSide.InvalidProperty;
 import jetbrains.buildServer.serverSide.PropertiesProcessor;
@@ -30,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static jetbrains.buildServer.powershell.common.PowerShellConstants.*;
 import static jetbrains.buildServer.powershell.common.PowerShellConstants.RUNNER_SCRIPT_CODE;
@@ -69,12 +71,6 @@ public class PowerShellRunType extends RunType {
   public PropertiesProcessor getRunnerPropertiesProcessor() {
     return properties -> {
       Collection<InvalidProperty> col = new ArrayList<>();
-
-      final PowerShellBitness bit = getBitness(properties);
-      if (bit == null) {
-        col.add(new InvalidProperty(RUNNER_BITNESS, "Bitness is not defined"));
-      }
-
       final PowerShellExecutionMode exe = PowerShellExecutionMode.fromString(properties.get(RUNNER_EXECUTION_MODE));
       if (exe == null) {
         col.add(new InvalidProperty(RUNNER_EXECUTION_MODE, "Execution mode must be specified"));
@@ -117,7 +113,6 @@ public class PowerShellRunType extends RunType {
   @Override
   public Map<String, String> getDefaultRunnerProperties() {
     Map<String, String> map = new HashMap<>();
-    map.put(RUNNER_BITNESS, PowerShellBitness.x86.toString());
     map.put(RUNNER_NO_PROFILE, "true");
     map.put(RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.toString());
     return map;
@@ -136,16 +131,18 @@ public class PowerShellRunType extends RunType {
     final PowerShellBitness bit = getBitness(parameters);
     if (bit != null) {
       sb.append(bit).append(" ");
+    } else {
+      sb.append(" <Any Bitness>");
     }
 
     final PowerShellScriptMode mode = getScriptMode(parameters);
     if (mode != null) {
       switch (mode) {
         case FILE:
-          sb.append(parameters.get(RUNNER_SCRIPT_FILE));
+          sb.append(" File: ").append(parameters.get(RUNNER_SCRIPT_FILE));
           break;
         case CODE:
-          sb.append("<script>");
+          sb.append(" <script>");
           break;
       }
     }
@@ -172,13 +169,29 @@ public class PowerShellRunType extends RunType {
   public List<Requirement> getRunnerSpecificRequirements(@NotNull final Map<String, String> runParameters) {
     final String minVersion = getMinimalVersion(runParameters);
     final PowerShellBitness bit = getBitness(runParameters);
-    if (bit != null) {
+    if (bit == null) {
+      return Collections.singletonList(generateDisjunctionReq(minVersion));
+    } else {
       if (minVersion == null) {
         return Collections.singletonList(new Requirement(bit.getVersionKey(), null, RequirementType.EXISTS));
       } else {
         return Collections.singletonList(new Requirement(bit.getVersionKey(), minVersion, RequirementType.VER_NO_LESS_THAN));
       }
     }
-    return Collections.emptyList();
+  }
+
+  private Requirement generateDisjunctionReq(@Nullable final String minVersion) {
+    Requirement result;
+    if (minVersion == null) { // generate OR requirement of type EXISTS
+      result = new Requirement(RequirementQualifier.EXISTS_QUALIFIER + "(" +
+          // version property is set only if corresponding PowerShell is properly detected
+          Arrays.stream(PowerShellBitness.values()).map(PowerShellBitness::getVersionKey).collect(Collectors.joining("|"))+")", null, RequirementType.EXISTS);
+    } else {
+      result = new Requirement(RequirementQualifier.EXISTS_QUALIFIER + "(" +
+          // version property is set only if corresponding PowerShell is properly detected
+          Arrays.stream(PowerShellBitness.values()).map(PowerShellBitness::getVersionKey).collect(Collectors.joining("|"))+")", minVersion, RequirementType.VER_NO_LESS_THAN);
+      // generate OR requirement of type VER_NO_LESS_THAN
+    }
+    return result;
   }
 }
