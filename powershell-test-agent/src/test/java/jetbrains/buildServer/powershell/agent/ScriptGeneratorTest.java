@@ -21,6 +21,7 @@ import jetbrains.buildServer.RunBuildException;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.powershell.common.PowerShellScriptMode;
+import jetbrains.buildServer.util.FileUtil;
 import jetbrains.buildServer.util.TestFor;
 import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -70,19 +71,14 @@ public class ScriptGeneratorTest extends BaseTestCase {
     m.assertIsSatisfied();
   }
 
-  @Test
+  @Test(expectedExceptions = RunBuildException.class)
   public void testNoEmptyScriptAllowed() throws Exception {
     final Map<String, String> runnerParams = new HashMap<String, String>();
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "1.0");
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_CODE, "");
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
-
-    try {
-      myGenerator.generateScript(runnerParams, myCheckoutDir, myTempDir);
-      fail("Expected RunBuildException");
-    } catch (RunBuildException ignored) {
-    }
+    myGenerator.generateScript(runnerParams, myCheckoutDir, myTempDir);
   }
 
   /**
@@ -117,5 +113,32 @@ public class ScriptGeneratorTest extends BaseTestCase {
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.FILE.getValue());
 
     assertFalse(ScriptGenerator.shouldRemoveGeneratedScript(runnerParams));
+  }
+
+  @Test(expectedExceptions = RunBuildException.class)
+  @TestFor(issues = "TW-49208")
+  public void testGenerateScript_FILE_NoFileExists() throws Exception {
+    final Map<String, String> runnerParams = new HashMap<String, String>();
+    runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "1.0");
+    runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
+    runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.FILE.getValue());
+    runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_FILE, "non_existent_script.ps1");
+    myGenerator.generateScript(runnerParams, myCheckoutDir, myTempDir);
+  }
+
+  @Test
+  @TestFor(issues = "TW-49208")
+  public void testGenerateScript_FILE_Exists() throws Exception {
+    final String fileName = "script.ps1";
+    final Map<String, String> runnerParams = new HashMap<String, String>();
+    runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "1.0");
+    runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
+    runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.FILE.getValue());
+    File scriptFile = new File(myCheckoutDir, fileName);
+    registerAsTempFile(scriptFile);
+    FileUtil.writeFile(scriptFile, "Write-Output \"works\"", "UTF-8");
+    runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_FILE, fileName);
+    final File resultingScript = myGenerator.generateScript(runnerParams, myCheckoutDir, myTempDir);
+    assertEquals(scriptFile.getAbsolutePath(), resultingScript.getAbsolutePath());
   }
 }

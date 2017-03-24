@@ -73,6 +73,9 @@ public class ScriptGenerator {
       }*/
       scriptFile = writeToTempFile(buildTempDir, sourceScript, runnerParameters);
     }
+    if (!scriptFile.isFile()) {
+      throw new RunBuildException("PowerShell script [" + scriptFile.getAbsolutePath() + "] does not exist");
+    }
     return scriptFile;
   }
 
