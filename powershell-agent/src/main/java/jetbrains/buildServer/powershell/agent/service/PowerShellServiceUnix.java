@@ -1,6 +1,7 @@
 package jetbrains.buildServer.powershell.agent.service;
 
 import com.intellij.execution.configurations.GeneralCommandLine;
+import com.intellij.execution.configurations.ParametersList;
 import jetbrains.buildServer.ExecResult;
 import jetbrains.buildServer.RunBuildException;
 import jetbrains.buildServer.SimpleCommandLineProcessRunner;
@@ -12,12 +13,10 @@ import jetbrains.buildServer.powershell.agent.ScriptGenerator;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.agent.system.PowerShellCommands;
 import jetbrains.buildServer.util.FileUtil;
-import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -49,10 +48,10 @@ public class PowerShellServiceUnix extends BasePowerShellService {
                                                         @NotNull final Map<String, String> env,
                                                         @NotNull final String workDir,
                                                         @NotNull final List<String> args) throws RunBuildException {
-    final List<String> argsList = new ArrayList<String>();
-    argsList.add(info.getExecutablePath());
-    argsList.addAll(args);
-    return executeWithWrapper(env, workDir, StringUtil.join(argsList, " "));
+    final ParametersList parametersList = new ParametersList();
+    parametersList.add(info.getExecutablePath());
+    parametersList.addAll(args);
+    return executeWithWrapper(env, workDir, parametersList.getParametersString());
   }
 
   private SimpleProgramCommandLine executeWithWrapper(@NotNull final Map<String, String> env,
