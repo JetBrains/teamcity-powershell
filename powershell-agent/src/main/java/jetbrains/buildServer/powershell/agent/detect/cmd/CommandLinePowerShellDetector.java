@@ -9,6 +9,7 @@ import jetbrains.buildServer.powershell.agent.detect.PowerShellDetector;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
+import jetbrains.buildServer.powershell.common.PowerShellEdition;
 import jetbrains.buildServer.serverSide.TeamCityProperties;
 import jetbrains.buildServer.util.FileUtil;
 import jetbrains.buildServer.util.StringUtil;
@@ -82,7 +83,7 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
               if (info.getBitness() != e.getKey()) { // if we are to substitute PowerShell installation explicitly, ignoring the bits of detected one
                 LOG.warn("Using configured bitness (" + e.getKey() + ") for PowerShell at [" + info.getHome() + "] instead of detected one (" + info.getBitness() + ")");
               }
-              register(result, new PowerShellInfo(e.getKey(), info.getHome(), info.getVersion()));
+              register(result, new PowerShellInfo(e.getKey(), info.getHome(), info.getVersion(), info.getEdition()));
             }
           }
         }
@@ -124,7 +125,13 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
     try {
       final List<String> outputLines = myRunner.runDetectionScript(executablePath, scriptPath);
       if (outputLines.size() == 3) {
-        result = new PowerShellInfo(Boolean.valueOf(outputLines.get(2)) ? PowerShellBitness.x64 : PowerShellBitness.x86, executable.getParentFile(), outputLines.get(0));
+        final PowerShellEdition edition = PowerShellEdition.fromString(outputLines.get(1));
+        if (edition != null) {
+          result = new PowerShellInfo(Boolean.valueOf(outputLines.get(2)) ? PowerShellBitness.x64 : PowerShellBitness.x86, executable.getParentFile(), outputLines.get(0), edition);
+        } else {
+          LOG.warn("Failed to determine PowerShell edition for [" + executablePath + "]");
+          LOG.debug(StringUtil.join("\n", outputLines));
+        }
       } else {
         LOG.warn("Failed to parse output from PowerShell executable [" + executablePath + "]");
         LOG.debug(StringUtil.join("\n", outputLines));

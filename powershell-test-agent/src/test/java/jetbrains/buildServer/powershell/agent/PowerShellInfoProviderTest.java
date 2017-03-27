@@ -1,11 +1,11 @@
 package jetbrains.buildServer.powershell.agent;
 
-import jetbrains.buildServer.BaseTestCase;
 import jetbrains.buildServer.agent.AgentLifeCycleListener;
 import jetbrains.buildServer.agent.BuildAgentConfiguration;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellDetector;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
+import jetbrains.buildServer.powershell.common.PowerShellEdition;
 import jetbrains.buildServer.util.EventDispatcher;
 import org.jetbrains.annotations.NotNull;
 import org.jmock.Expectations;
@@ -24,7 +24,7 @@ import java.util.Map;
  *
  * @author Oleg Rybak (oleg.rybak@jetbrains.com)
  */
-public class PowerShellInfoProviderTest extends BaseTestCase {
+public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
 
   private Mockery m;
 
@@ -56,45 +56,45 @@ public class PowerShellInfoProviderTest extends BaseTestCase {
       allowing(myConfig).getConfigurationParameters();
       will(returnValue(Collections.emptyMap()));
     }});
-    assertNull(myProvider.selectTool(PowerShellBitness.x86, null));
+    assertNull(myProvider.selectTool(PowerShellBitness.x86, null, null));
   }
 
-  @Test
-  public void testNull_BitnessNotSatisfied_32_64() {
+  @Test(dataProvider = "editionProvider")
+  public void testNull_BitnessNotSatisfied_32_64(@NotNull final PowerShellEdition edition) {
     final Map<String, String> params = new HashMap<String, String>();
-    params.putAll(mock32Bit("1.0"));
+    params.putAll(mock32Bit("1.0", edition));
     m.checking(new Expectations() {{
       allowing(myConfig).getConfigurationParameters();
       will(returnValue(params));
     }});
-    assertNull(myProvider.selectTool(PowerShellBitness.x64, null));
+    assertNull(myProvider.selectTool(PowerShellBitness.x64, null, null));
   }
 
-  @Test
-  public void testNull_BitnessNotSatisfied_64_32() {
+  @Test(dataProvider = "editionProvider")
+  public void testNull_BitnessNotSatisfied_64_32(@NotNull final PowerShellEdition edition) {
     final Map<String, String> params = new HashMap<String, String>();
-    params.putAll(mock64bit("1.0"));
+    params.putAll(mock64bit("1.0", edition));
     m.checking(new Expectations() {{
       allowing(myConfig).getConfigurationParameters();
       will(returnValue(params));
     }});
-    assertNull(myProvider.selectTool(PowerShellBitness.x86, null));
+    assertNull(myProvider.selectTool(PowerShellBitness.x86, null, null));
   }
 
 
   /**
    * Neither 64 bit, not 32 bit PowerShells has good enough version
    */
-  @Test
-  public void testNull_MinVersionNotSatisfied_32bit() {
+  @Test(dataProvider = "editionProvider")
+  public void testNull_MinVersionNotSatisfied_32bit(@NotNull final PowerShellEdition edition) {
     final Map<String, String> params = new HashMap<String, String>();
-    params.putAll(mock32Bit("1.0"));
-    params.putAll(mock64bit("2.0"));
+    params.putAll(mock32Bit("1.0", edition));
+    params.putAll(mock64bit("2.0", edition));
     m.checking(new Expectations() {{
       allowing(myConfig).getConfigurationParameters();
       will(returnValue(params));
     }});
-    assertNull(myProvider.selectTool(null, "3.0"));
+    assertNull(myProvider.selectTool(null, "3.0", null));
   }
 
   /**
@@ -103,16 +103,16 @@ public class PowerShellInfoProviderTest extends BaseTestCase {
    * Any version is required
    * 64bit should be used
    */
-  @Test
-  public void testSelect64Over32() {
+  @Test(dataProvider = "editionProvider")
+  public void testSelect64Over32(@NotNull final PowerShellEdition edition) {
     final Map<String, String> params = new HashMap<String, String>();
-    params.putAll(mock32Bit("2.0"));
-    params.putAll(mock64bit("2.0"));
+    params.putAll(mock32Bit("2.0", edition));
+    params.putAll(mock64bit("2.0", edition));
     m.checking(new Expectations() {{
       allowing(myConfig).getConfigurationParameters();
       will(returnValue(params));
     }});
-    final PowerShellInfo info = myProvider.selectTool(null, null);
+    final PowerShellInfo info = myProvider.selectTool(null, null, null);
     assertNotNull(info);
     assertEquals(PowerShellBitness.x64, info.getBitness());
   }
@@ -122,74 +122,99 @@ public class PowerShellInfoProviderTest extends BaseTestCase {
    * Any bitness is required
    * 64bit should be used
    */
-  @Test
-  public void testSelect32OVer64_Version() {
+  @Test(dataProvider = "editionProvider")
+  public void testSelect32OVer64_Version(@NotNull final PowerShellEdition edition) {
     final Map<String, String> params = new HashMap<String, String>();
-    params.putAll(mock32Bit("5.0"));
-    params.putAll(mock64bit("5.0"));
+    params.putAll(mock32Bit("5.0", edition));
+    params.putAll(mock64bit("5.0", edition));
     m.checking(new Expectations() {{
       allowing(myConfig).getConfigurationParameters();
       will(returnValue(params));
     }});
-    final PowerShellInfo info = myProvider.selectTool(null, "3.0");
+    final PowerShellInfo info = myProvider.selectTool(null, "3.0", null);
     assertNotNull(info);
     assertEquals(PowerShellBitness.x64, info.getBitness());
   }
 
-  @Test
-  public void testSelectExact() {
+  @Test(dataProvider = "editionProvider")
+  public void testSelectExact(@NotNull final PowerShellEdition edition) {
     final Map<String, String> params = new HashMap<String, String>();
-    params.putAll(mock32Bit("5.0"));
-    params.putAll(mock64bit("6.0"));
+    params.putAll(mock32Bit("5.0", edition));
+    params.putAll(mock64bit("6.0", edition));
     m.checking(new Expectations() {{
       allowing(myConfig).getConfigurationParameters();
       will(returnValue(params));
     }});
-    final PowerShellInfo info = myProvider.selectTool(PowerShellBitness.x64, "6.0");
+    final PowerShellInfo info = myProvider.selectTool(PowerShellBitness.x64, "6.0", null);
     assertNotNull(info);
     assertEquals(PowerShellBitness.x64, info.getBitness());
   }
 
-  @Test
-  public void testUseSemanticVersion() {
+  @Test(dataProvider = "editionProvider")
+  public void testUseSemanticVersion(@NotNull final PowerShellEdition edition) {
     final Map<String, String> params = new HashMap<String, String>();
-    params.putAll(mock32Bit("3.0-beta4"));
-    params.putAll(mock64bit("6.0-alpha6"));
+    params.putAll(mock32Bit("3.0-beta4", edition));
+    params.putAll(mock64bit("6.0-alpha6", edition));
     m.checking(new Expectations() {{
       allowing(myConfig).getConfigurationParameters();
       will(returnValue(params));
     }});
-    final PowerShellInfo info = myProvider.selectTool(null, "4.0");
+    final PowerShellInfo info = myProvider.selectTool(null, "4.0", null);
     assertNotNull(info);
     assertEquals(PowerShellBitness.x64, info.getBitness());
     assertEquals("6.0-alpha6", info.getVersion());
   }
 
-  @Test
-  public void testLoadInfo() {
+  @Test(dataProvider = "editionProvider")
+  public void testLoadInfo(@NotNull final PowerShellEdition edition) {
     final Map<String, String> params = new HashMap<String, String>();
-    params.putAll(mock32Bit("1.0"));
-    params.putAll(mock64bit("6.0"));
+    params.putAll(mock32Bit("1.0", edition));
+    params.putAll(mock64bit("6.0", edition));
     m.checking(new Expectations() {{
       allowing(myConfig).getConfigurationParameters();
       will(returnValue(params));
     }});
     assertTrue(myProvider.anyPowerShellDetected());
   }
+  
+  @Test
+  public void testFilterByEdition() {
+    final Map<String, String> params = new HashMap<String, String>();
+    params.putAll(mock32Bit("5.0", PowerShellEdition.DESKTOP));
+    params.putAll(mock64bit("6.0", PowerShellEdition.CORE));
+    m.checking(new Expectations() {{
+      allowing(myConfig).getConfigurationParameters();
+      will(returnValue(params));
+    }});
 
-  private Map<String, String> mock32Bit(@NotNull final String version) {
-    return mockInstance(PowerShellBitness.x86, version);
+    final PowerShellInfo infoCore = myProvider.selectTool(null, null, PowerShellEdition.CORE);
+    assertNotNull(infoCore);
+    assertEquals(PowerShellBitness.x64, infoCore.getBitness());
+    assertEquals("6.0", infoCore.getVersion());
+    assertEquals(PowerShellEdition.CORE, infoCore.getEdition());
+
+    final PowerShellInfo infoDesktop = myProvider.selectTool(null, null, PowerShellEdition.DESKTOP);
+    assertNotNull(infoDesktop);
+    assertEquals(PowerShellBitness.x86, infoDesktop.getBitness());
+    assertEquals("5.0", infoDesktop.getVersion());
+    assertEquals(PowerShellEdition.DESKTOP, infoDesktop.getEdition());
+  }
+  
+  private Map<String, String> mock32Bit(@NotNull final String version, @NotNull final PowerShellEdition edition) {
+    return mockInstance(PowerShellBitness.x86, version, edition);
   }
 
-  private Map<String, String> mock64bit(@NotNull final String version) {
-    return mockInstance(PowerShellBitness.x64, version);
+  private Map<String, String> mock64bit(@NotNull final String version, @NotNull final PowerShellEdition edition) {
+    return mockInstance(PowerShellBitness.x64, version, edition);
   }
 
   private Map<String, String> mockInstance(@NotNull final PowerShellBitness bits,
-                                           @NotNull final String version) {
+                                           @NotNull final String version,
+                                           @NotNull final PowerShellEdition edition) {
     final Map<String, String> result = new HashMap<String, String>();
     result.put(bits.getVersionKey(), version);
     result.put(bits.getPathKey(), "/path/to/" + bits.name());
+    result.put(bits.getEditionKey(), edition.getValue());
     return result;
   }
 

@@ -19,6 +19,7 @@ package jetbrains.buildServer.powershell.agent.detect;
 import com.intellij.openapi.util.SystemInfo;
 import jetbrains.buildServer.agent.BuildAgentConfiguration;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
+import jetbrains.buildServer.powershell.common.PowerShellEdition;
 import jetbrains.buildServer.util.FileUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -41,12 +42,17 @@ public class PowerShellInfo {
   @NotNull
   private final String myVersion;
 
+  @NotNull
+  private final PowerShellEdition myEdition;
+
   public PowerShellInfo(@NotNull final PowerShellBitness bitness,
                         @NotNull final File home,
-                        @NotNull final String version) {
+                        @NotNull final String version,
+                        @NotNull final PowerShellEdition edition) {
     myBitness = bitness;
     myHome = home;
     myVersion = version;
+    myEdition = edition;
   }
 
   @NotNull
@@ -66,20 +72,28 @@ public class PowerShellInfo {
 
   @Override
   public String toString() {
-    return "PowerShell v" + myVersion + " " + myBitness + "(" + getHome() + ")";
+    return "PowerShell " + myEdition + " Edition v" + myVersion + " " + myBitness + "(" + getHome() + ")";
+  }
+
+  @NotNull
+  public PowerShellEdition getEdition() {
+    return myEdition;
   }
 
   @Nullable
   public static PowerShellInfo loadInfo(@NotNull final BuildAgentConfiguration config,
                                         @Nullable final PowerShellBitness bitness) {
-    if (bitness == null) return null;
+    if (bitness == null) {
+      return null;
+    }
 
     final Map<String, String> ps = config.getConfigurationParameters();
     final String ver = ps.get(bitness.getVersionKey());
     final String path = ps.get(bitness.getPathKey());
+    final PowerShellEdition edition = PowerShellEdition.fromString(ps.get(bitness.getEditionKey()));
 
-    if (path != null && ver != null) {
-      return new PowerShellInfo(bitness, new File(path), ver);
+    if (path != null && ver != null && edition != null) {
+      return new PowerShellInfo(bitness, new File(path), ver, edition);
     }
     return null;
   }
@@ -87,6 +101,7 @@ public class PowerShellInfo {
   public void saveInfo(@NotNull final BuildAgentConfiguration config) {
     config.addConfigurationParameter(myBitness.getVersionKey(), myVersion);
     config.addConfigurationParameter(myBitness.getPathKey(), myHome.toString());
+    config.addConfigurationParameter(myBitness.getEditionKey(), myEdition.getValue());
   }
 
   @NotNull

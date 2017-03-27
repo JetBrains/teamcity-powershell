@@ -22,7 +22,7 @@
 <jsp:useBean id="propertiesBean" scope="request" type="jetbrains.buildServer.controllers.BasePropertiesBean"/>
 
 <tr class="advancedSetting">
-  <th rowspan="2">PowerShell run mode:</th>
+  <th rowspan="3">PowerShell run mode:</th>
   <td>
     <label for="${bean.minVersionKey}">Version: </label>
     <props:textProperty name="${bean.minVersionKey}" className="longField" onkeyup="BS.PowerShell.updateScriptMode()"/>
@@ -38,6 +38,17 @@
       </c:forEach>
     </props:selectProperty>
     <span class="error" id="error_${bean.bitnessKey}"></span>
+  </td>
+</tr>
+
+<tr class="advancedSetting">
+  <td>
+    <label for="${bean.editionKey}">Edition: </label>
+    <props:selectProperty name="${bean.editionKey}">
+      <c:forEach var="val" items="${bean.editionValues}">
+        <props:option value="${val.value}"><c:out value="${val.key}"/></props:option>
+      </c:forEach>
+    </props:selectProperty>
   </td>
 </tr>
 

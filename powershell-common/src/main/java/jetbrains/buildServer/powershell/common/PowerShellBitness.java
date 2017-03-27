@@ -49,13 +49,17 @@ public enum PowerShellBitness {
   }
 
   @NotNull
-  public String getDescription() {
+  public String getDisplayName() {
     return myDisplayName;
   }
 
   @NotNull
   public String getPathKey() {
     return getVersionKey() + "_Path";
+  }
+
+  public String getEditionKey() {
+    return getVersionKey() + "_Edition";
   }
 
   @Nullable

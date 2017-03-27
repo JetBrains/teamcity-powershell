@@ -16,10 +16,7 @@
 
 package jetbrains.buildServer.powershell.server;
 
-import jetbrains.buildServer.powershell.common.PowerShellBitness;
-import jetbrains.buildServer.powershell.common.PowerShellConstants;
-import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
-import jetbrains.buildServer.powershell.common.PowerShellScriptMode;
+import jetbrains.buildServer.powershell.common.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -39,13 +36,26 @@ public class PowerShellBean {
   }
 
   @NotNull
+  public String getEditionKey() {
+    return PowerShellConstants.RUNNER_EDITION;
+  }
+
+  @NotNull
   public Map<String, String> getBitnessValues() {
     final Map<String, String> result = new LinkedHashMap<>();
     result.put(PowerShellConstants.PARAM_VALUE_BITNESS_AUTO, "");
-    result.putAll(Arrays.stream(PowerShellBitness.values()).collect(Collectors.toMap(PowerShellBitness::getDescription, PowerShellBitness::getValue)));
+    result.putAll(Arrays.stream(PowerShellBitness.values()).collect(Collectors.toMap(PowerShellBitness::getDisplayName, PowerShellBitness::getValue)));
     return result;
   }
 
+  @NotNull
+  public Map<String, String> getEditionValues() {
+    final Map<String, String> result = new LinkedHashMap<>();
+    result.put(PowerShellConstants.PARAM_VALUE_EDITION_ANY, "");
+    result.putAll(Arrays.stream(PowerShellEdition.values()).collect(Collectors.toMap(PowerShellEdition::getDisplayName, PowerShellEdition::getValue)));
+    return result;
+  }
+  
   @NotNull
   public String getScriptModeKey() {
     return PowerShellConstants.RUNNER_SCRIPT_MODE;

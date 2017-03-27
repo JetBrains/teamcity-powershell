@@ -19,12 +19,15 @@ package jetbrains.buildServer.powershell.agent.detect;
 import jetbrains.buildServer.BaseTestCase;
 import jetbrains.buildServer.agent.BuildAgentConfiguration;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
+import jetbrains.buildServer.powershell.common.PowerShellEdition;
 import org.hamcrest.Description;
+import org.jetbrains.annotations.NotNull;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.api.Action;
 import org.jmock.api.Invocation;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -37,9 +40,10 @@ import java.util.Map;
  *         03.12.10 23:24
  */
 public class PowerShellInfoTest extends BaseTestCase {
-  @Test
-  public void testSaveLoad() throws IOException {
-    PowerShellInfo info = new PowerShellInfo(PowerShellBitness.x64, createTempDir(), "1.0");
+
+  @Test(dataProvider = "editionProvider")
+  public void testSaveLoad(@NotNull final PowerShellEdition edition) throws IOException {
+    PowerShellInfo info = new PowerShellInfo(PowerShellBitness.x64, createTempDir(), "1.0", edition);
 
     final Mockery m = new Mockery();
     final BuildAgentConfiguration conf = m.mock(BuildAgentConfiguration.class);
@@ -73,5 +77,14 @@ public class PowerShellInfoTest extends BaseTestCase {
     Assert.assertEquals(i.getHome(), info.getHome());
     Assert.assertEquals(i.getExecutablePath(), info.getExecutablePath());
     Assert.assertEquals(i.getVersion(), info.getVersion());
+    Assert.assertEquals(i.getEdition(), info.getEdition());
+  }
+
+  @DataProvider(name = "editionProvider")
+  public Object[][] editionProvider() {
+    Object[][] result = new Object[2][];
+    result[0] = new Object[] {PowerShellEdition.CORE};
+    result[1] = new Object[] {PowerShellEdition.DESKTOP};
+    return result;
   }
 }

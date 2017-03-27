@@ -12,6 +12,7 @@ import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.agent.system.PowerShellCommands;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
+import jetbrains.buildServer.powershell.common.PowerShellEdition;
 import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.util.FileUtil;
 import jetbrains.buildServer.util.StringUtil;
@@ -20,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.*;
 
-import static jetbrains.buildServer.powershell.common.PowerShellBitness.fromString;
 import static jetbrains.buildServer.powershell.common.PowerShellConstants.*;
 
 /**
@@ -101,12 +101,13 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
   }
 
   private PowerShellInfo selectTool() throws RunBuildException {
-    final PowerShellBitness bit = fromString(getRunnerParameters().get(RUNNER_BITNESS));
+    final PowerShellBitness bit = PowerShellBitness.fromString(getRunnerParameters().get(RUNNER_BITNESS));
     final String version = getRunnerParameters().get(RUNNER_MIN_VERSION);
-    final PowerShellInfo result = myInfoProvider.selectTool(bit, version);
+    final PowerShellEdition edition = PowerShellEdition.fromString(getRunnerParameters().get(RUNNER_EDITION));
+    final PowerShellInfo result = myInfoProvider.selectTool(bit, version, edition);
     if (result == null) {
       throw new RunBuildException("Could not select PowerShell for given bitness ["
-          + (bit == null ? "any" : bit.getDescription() +"]"
+          + (bit == null ? "any" : bit.getDisplayName() +"]"
           + (version == null ? "" : " and minimum version [" + version + "]")));
     }
     return result;

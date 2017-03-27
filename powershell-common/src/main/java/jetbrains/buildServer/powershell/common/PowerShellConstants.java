@@ -29,6 +29,7 @@ public class PowerShellConstants {
   public static final String CONFIG_KEEP_GENERATED = "powershell.keep.generated";
 
   public static final String RUNNER_BITNESS          = "jetbrains_powershell_bitness";
+  public static final String RUNNER_EDITION          = "jetbrains_powershell_edition";
   public static final String RUNNER_CUSTOM_ARGUMENTS = "jetbrains_powershell_additionalArguments";
   public static final String RUNNER_SCRIPT_ARGUMENTS = "jetbrains_powershell_scriptArguments";
   public static final String RUNNER_LOG_ERR_TO_ERROR = "jetbrains_powershell_errorToError";
@@ -45,4 +46,9 @@ public class PowerShellConstants {
    * Any bitness of runner is enough to run the build
    */
   public static final String PARAM_VALUE_BITNESS_AUTO = "<Auto>";
+
+  /**
+   * Any edition of PowerShell is suitable
+   */
+  public static final String PARAM_VALUE_EDITION_ANY = "<Any>";
 }

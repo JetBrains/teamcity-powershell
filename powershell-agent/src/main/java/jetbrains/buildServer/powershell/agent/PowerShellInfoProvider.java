@@ -24,6 +24,7 @@ import jetbrains.buildServer.powershell.agent.detect.DetectionContext;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellDetector;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
+import jetbrains.buildServer.powershell.common.PowerShellEdition;
 import jetbrains.buildServer.util.CollectionsUtil;
 import jetbrains.buildServer.util.EventDispatcher;
 import jetbrains.buildServer.util.VersionComparatorUtil;
@@ -74,9 +75,19 @@ public class PowerShellInfoProvider {
   }
   
   @Nullable
-  public PowerShellInfo selectTool(@Nullable final PowerShellBitness bit, @Nullable final String version) {
+  public PowerShellInfo selectTool(@Nullable final PowerShellBitness bit,
+                                   @Nullable final String version,
+                                   @Nullable final PowerShellEdition edition) {
     Map<PowerShellBitness, PowerShellInfo> available = getPowerShellsMap();
     PowerShellInfo result;
+    if (edition != null) {
+      available = CollectionsUtil.filterMapByValues(available, new Filter<PowerShellInfo>() {
+        @Override
+        public boolean accept(@NotNull PowerShellInfo data) {
+          return edition.equals(data.getEdition());
+        }
+      });
+    }
     if (bit == null) {
       if (version != null) {
         available = CollectionsUtil.filterMapByValues(available, new Filter<PowerShellInfo>() {

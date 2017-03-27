@@ -164,33 +164,50 @@ public class PowerShellRunType extends RunType {
     return parameters.get(RUNNER_MIN_VERSION);
   }
 
+  @Nullable
+  private PowerShellEdition getEdition(@NotNull final Map<String, String> parameters) {
+    return PowerShellEdition.fromString(parameters.get(RUNNER_EDITION));
+  }
+
   @NotNull
   @Override
   public List<Requirement> getRunnerSpecificRequirements(@NotNull final Map<String, String> runParameters) {
+    final List<Requirement> result = new ArrayList<>();
     final String minVersion = getMinimalVersion(runParameters);
     final PowerShellBitness bit = getBitness(runParameters);
+    final PowerShellEdition edition = getEdition(runParameters);
     if (bit == null) {
-      return Collections.singletonList(generateDisjunctionReq(minVersion));
+      result.addAll(generateDisjunctionReqs(minVersion, edition));
     } else {
       if (minVersion == null) {
-        return Collections.singletonList(new Requirement(bit.getVersionKey(), null, RequirementType.EXISTS));
+        result.add(new Requirement(bit.getVersionKey(), null, RequirementType.EXISTS));
       } else {
-        return Collections.singletonList(new Requirement(bit.getVersionKey(), minVersion, RequirementType.VER_NO_LESS_THAN));
+        result.add(new Requirement(bit.getVersionKey(), minVersion, RequirementType.VER_NO_LESS_THAN));
+      }
+      if (edition != null) {
+        result.add(new Requirement(bit.getEditionKey(), edition.getValue(), RequirementType.EQUALS));
       }
     }
+    return result;
   }
 
-  private Requirement generateDisjunctionReq(@Nullable final String minVersion) {
-    Requirement result;
+  private List<Requirement> generateDisjunctionReqs(@Nullable final String minVersion, @Nullable final PowerShellEdition edition) {
+    final List<Requirement> result = new ArrayList<>();
     if (minVersion == null) { // generate OR requirement of type EXISTS
-      result = new Requirement(RequirementQualifier.EXISTS_QUALIFIER + "(" +
+      result.add(new Requirement(RequirementQualifier.EXISTS_QUALIFIER + "(" +
           // version property is set only if corresponding PowerShell is properly detected
-          Arrays.stream(PowerShellBitness.values()).map(PowerShellBitness::getVersionKey).collect(Collectors.joining("|"))+")", null, RequirementType.EXISTS);
+          Arrays.stream(PowerShellBitness.values()).map(PowerShellBitness::getVersionKey).collect(Collectors.joining("|"))+")", null, RequirementType.EXISTS));
     } else {
-      result = new Requirement(RequirementQualifier.EXISTS_QUALIFIER + "(" +
+      result.add(new Requirement(RequirementQualifier.EXISTS_QUALIFIER + "(" +
           // version property is set only if corresponding PowerShell is properly detected
-          Arrays.stream(PowerShellBitness.values()).map(PowerShellBitness::getVersionKey).collect(Collectors.joining("|"))+")", minVersion, RequirementType.VER_NO_LESS_THAN);
+          Arrays.stream(PowerShellBitness.values()).map(PowerShellBitness::getVersionKey).collect(Collectors.joining("|"))+")", minVersion, RequirementType.VER_NO_LESS_THAN));
       // generate OR requirement of type VER_NO_LESS_THAN
+    }
+    // if some specific edition is required, add disjunction of editions by bitness
+    if (edition != null) {
+      result.add(new Requirement(RequirementQualifier.EXISTS_QUALIFIER + "(" +
+          // version property is set only if corresponding PowerShell is properly detected
+          Arrays.stream(PowerShellBitness.values()).map(PowerShellBitness::getEditionKey).collect(Collectors.joining("|"))+")", edition.getValue(), RequirementType.EQUALS));
     }
     return result;
   }

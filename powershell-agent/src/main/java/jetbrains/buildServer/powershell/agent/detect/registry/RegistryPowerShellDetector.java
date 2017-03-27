@@ -21,6 +21,7 @@ import jetbrains.buildServer.powershell.agent.detect.DetectionContext;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellDetector;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
+import jetbrains.buildServer.powershell.common.PowerShellEdition;
 import jetbrains.buildServer.util.Win32RegistryAccessor;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -69,7 +70,7 @@ public class RegistryPowerShellDetector implements PowerShellDetector {
         continue;
       }
 
-      final PowerShellInfo info = new PowerShellInfo(bitness, home, ver);
+      final PowerShellInfo info = new PowerShellInfo(bitness, home, ver, PowerShellEdition.DESKTOP);
       LOG.info("Found: " + info);
       result.put(info.getBitness(), info);
     }
