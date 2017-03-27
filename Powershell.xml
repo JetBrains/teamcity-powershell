@@ -8,6 +8,7 @@
     </param>
     <param name="jetbrains_powershell_minVersion" dslName="minRequiredVersion" />
     <param name="jetbrains_powershell_bitness" dslName="platform" type="Platform" />
+    <param name="jetbrains_powershell_edition" dslName="edition" type="Edition"/>
     <param name="jetbrains_powershell_errorToError" dslName="formatStderrAsError" type="boolean" trueValue="true" falseValue="" />
     <param name="teamcity.build.workingDir" dslName="workingDir" />
     <param name="jetbrains_powershell_script_mode" dslName="scriptMode" type="compound">
@@ -38,6 +39,11 @@
     <enum name="ExecutionMode">
       <option name="STDIN" value="STDIN"/>
       <option name="PS1" value="PS1"/>
+    </enum>
+    <enum name="Edition">
+      <option name="Any" value=""/>
+      <option name="Core" value="Core"/>
+      <option name="Desktop" value="Desktop"/>
     </enum>
   </types>
 </dsl-extension>
