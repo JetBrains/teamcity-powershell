@@ -35,14 +35,14 @@ import java.io.*;
  */
 public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTest {
 
-  @Test
+  @Test(dataProvider = "supportedBitnessProvider")
   @TestFor(issues = "TW-29803")
-  public void should_run_simple_command_code_stdin() throws Throwable {
+  public void should_run_simple_command_code_stdin(@NotNull final PowerShellBitness bits) throws Throwable {
     setRunnerParameter(PowerShellConstants.RUNNER_MIN_VERSION, "2.0");
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "echo works");
-    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, PowerShellBitness.x86.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, bits.getValue());
 
     final SFinishedBuild build = doTest(null);
     dumpBuildLogLocally(build);
@@ -50,15 +50,15 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
     Assert.assertTrue(getBuildLog(build).contains("works"));
   }
 
-  @Test
+  @Test(dataProvider = "supportedBitnessProvider")
   @TestFor(issues = "TW-29803")
-  public void should_run_simple_command_file_stdin() throws Throwable {
+  public void should_run_simple_command_file_stdin(@NotNull final PowerShellBitness bits) throws Throwable {
     final File code = createTempFile("echo works");
     setRunnerParameter(PowerShellConstants.RUNNER_MIN_VERSION, "2.0");
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.FILE.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_FILE, code.getPath());
-    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, PowerShellBitness.x86.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, bits.getValue());
 
     final SFinishedBuild build = doTest(null);
     dumpBuildLogLocally(build);
@@ -66,13 +66,13 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
     Assert.assertTrue(getBuildLog(build).contains("works"));
   }
 
-  @Test
+  @Test(dataProvider = "supportedBitnessProvider")
   @TestFor(issues = "TW-29803")
-  public void should_run_simple_command_code_ps1() throws Throwable {
+  public void should_run_simple_command_code_ps1(@NotNull final PowerShellBitness bits) throws Throwable {
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "echo works");
-    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, PowerShellBitness.x86.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, bits.getValue());
 
     final SFinishedBuild build = doTest(null);
     dumpBuildLogLocally(build);
@@ -80,9 +80,9 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
     Assert.assertTrue(getBuildLog(build).contains("works"));
   }
 
-  @Test
+  @Test(dataProvider = "supportedBitnessProvider")
   @TestFor(issues = "TW-29803")
-  public void should_run_simple_command_file_ps1() throws Throwable {
+  public void should_run_simple_command_file_ps1(@NotNull final PowerShellBitness bits) throws Throwable {
     final File dir = createTempDir();
     final File code = new File(dir, "code.ps1");
     FileUtil.writeFileAndReportErrors(code, "echo works");
@@ -90,7 +90,7 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.FILE.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_FILE, code.getPath());
-    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, PowerShellBitness.x86.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, bits.getValue());
 
     final SFinishedBuild build = doTest(null);
     dumpBuildLogLocally(build);
@@ -99,41 +99,29 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
     Assert.assertTrue(getBuildLog(build).contains("works"));
   }
 
-  @Test
-  public void should_run_x86() throws Throwable {
+  @Test(dataProvider = "supportedBitnessProvider")
+  public void should_proper_bitness_run(@NotNull final PowerShellBitness bits) throws Throwable {
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "Write-Host \"ptr: $([IntPtr]::size)\"\r\n");
-    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, PowerShellBitness.x86.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, bits.getValue());
 
     final SFinishedBuild build = doTest(null);
     dumpBuildLogLocally(build);
     Assert.assertTrue(build.getBuildStatus().isSuccessful());
 
-    Assert.assertTrue(getBuildLog(build).contains("ptr: 4 NO"));
+    final String output = bits == PowerShellBitness.x64 ? "8" : "4";
+    Assert.assertTrue(getBuildLog(build).contains("ptr: " + output + " NO"));
   }
 
-  @Test
-  public void should_run_x64() throws Throwable {
-    setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
-    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
-    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "Write-Host \"ptr: $([IntPtr]::size)\"");
-    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, PowerShellBitness.x64.getValue());
-
-    final SFinishedBuild build = doTest(null);
-    dumpBuildLogLocally(build);
-    Assert.assertTrue(build.getBuildStatus().isSuccessful());
-
-    Assert.assertTrue(getBuildLog(build).contains("ptr: 8 NO"));
-  }
-
-  @Test
+  @Test(dataProvider = "supportedBitnessProvider")
   @TestFor(issues = "TW-39841")
-  public void testShouldKeepGeneratedFiles_PowershellSpecific() throws Throwable {
+  public void testShouldKeepGeneratedFiles_PowerShellSpecific(@NotNull final PowerShellBitness bits) throws Throwable {
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "echo works");
-    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, PowerShellBitness.x86.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, bits.getValue());
+    
     setBuildConfigurationParameter(PowerShellConstants.CONFIG_KEEP_GENERATED, "");
     final SFinishedBuild build = doTest(null);
     assertEquals(1, getTempFiles().length);
@@ -142,13 +130,14 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
     Assert.assertTrue(getBuildLog(build).contains("works"));
   }
 
-  @Test
+  @Test(dataProvider = "supportedBitnessProvider")
   @TestFor(issues = "TW-39841")
-  public void testShouldKeepGeneratedFiles_Global() throws Throwable {
+  public void testShouldKeepGeneratedFiles_Global(@NotNull final PowerShellBitness bits) throws Throwable {
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "echo works\r\n");
-    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, PowerShellBitness.x86.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, bits.getValue());
+
     setBuildConfigurationParameter("teamcity.dont.delete.temp.files", "");
     final SFinishedBuild build = doTest(null);
     assertEquals(1, getTempFiles().length);
@@ -157,14 +146,15 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
     Assert.assertTrue(getBuildLog(build).contains("works"));
   }
 
-  @Test
+  @Test(dataProvider = "supportedBitnessProvider")
   @TestFor(issues = "TW-44082")
-  public void testShouldWriteBOMinExternalFileMode() throws Throwable {
+  public void testShouldWriteBOMinExternalFileMode(@NotNull final PowerShellBitness bits) throws Throwable {
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
-    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, PowerShellBitness.x86.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "$var = \"Value is \u00f8\u00e5\u00e6\"\r\n Write-Output $var\r\n");
+    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, bits.getValue());
     setBuildConfigurationParameter(PowerShellConstants.CONFIG_KEEP_GENERATED, "");
+
     final SFinishedBuild build = doTest(null);
     assertEquals(1, getTempFiles().length);
     final File generatedScript = getTempFiles()[0];

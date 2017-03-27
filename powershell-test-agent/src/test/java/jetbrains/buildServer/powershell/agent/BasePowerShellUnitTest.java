@@ -9,7 +9,7 @@ import org.testng.annotations.DataProvider;
  *
  * @author Oleg Rybak (oleg.rybak@jetbrains.com)
  */
-public class BasePowerShellUnitTest extends BaseTestCase {
+public abstract class BasePowerShellUnitTest extends BaseTestCase {
 
   @DataProvider(name = "editionProvider")
   public Object[][] editionProvider() {

@@ -16,7 +16,6 @@
 
 package jetbrains.buildServer.powershell.agent;
 
-import jetbrains.buildServer.BaseTestCase;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
@@ -38,7 +37,7 @@ import java.util.*;
  *
  * @author Oleg Rybak (oleg.rybak@jetbrains.com)
  */
-public class CommandLineProviderTest extends BaseTestCase {
+public class CommandLineProviderTest extends BasePowerShellUnitTest {
 
   private static final String SCRIPT_FILE_NAME = "script.ps1";
 
@@ -76,24 +75,17 @@ public class CommandLineProviderTest extends BaseTestCase {
   @TestFor(issues = "TW-33472")
   public void testStringProvided(@NotNull final String version) throws Exception {
     final String expectedVersionArg = "-Version";
-    final String expectedVersionValue = version;
     final PowerShellInfo info = m.mock(PowerShellInfo.class);
     final Map<String, String> runnerParams = new HashMap<String, String>();
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, version);
 
-    m.checking(new Expectations() {{
-      allowing(info).getExecutablePath();
-      will(returnValue("executablePath"));
-
-      allowing(info).getVersion();
-      will(returnValue(version));
-    }});
+    addExecutionExpectations(info, version);
 
     final List<String> result = myProvider.provideCommandLine(runnerParams, myScriptFile, false);
     // powershell.exe -Version $version
     assertTrue(result.size() >= 2);
     assertEquals(expectedVersionArg, result.get(0));
-    assertEquals(expectedVersionValue, result.get(1));
+    assertEquals(version, result.get(1));
   }
 
   @Test(dataProvider = "Strings")
@@ -106,13 +98,8 @@ public class CommandLineProviderTest extends BaseTestCase {
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_ARGUMENTS, args);
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, version);
 
-    m.checking(new Expectations() {{
-      allowing(info).getExecutablePath();
-      will(returnValue("executablePath"));
+    addExecutionExpectations(info, version);
 
-      allowing(info).getVersion();
-      will(returnValue(version));
-    }});
     final List<String> expected = new ArrayList<String>() {{
       add("-Version");
       add(version);
@@ -125,9 +112,10 @@ public class CommandLineProviderTest extends BaseTestCase {
     assertSameElements(result, expected);
   }
 
+  @SuppressWarnings({"ResultOfMethodCallIgnored"})
   @Test
   @TestFor(issues = "TW-34557")
-  public void testUseDefaultPowershellIfVersionAny() throws Exception {
+  public void testUseDefaultPowerShellIfVersionAny() throws Exception {
     final PowerShellInfo info = m.mock(PowerShellInfo.class);
     final Map<String, String> runnerParams = new HashMap<String, String>();
 
@@ -146,6 +134,7 @@ public class CommandLineProviderTest extends BaseTestCase {
     }
   }
 
+  @SuppressWarnings("Duplicates")
   @Test
   @TestFor(issues = "TW-34410")
   public void testFromFile() throws Exception {
@@ -154,13 +143,8 @@ public class CommandLineProviderTest extends BaseTestCase {
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "3.0");
 
-    m.checking(new Expectations() {{
-      allowing(info).getExecutablePath();
-      will(returnValue("executablePath"));
+    addExecutionExpectations(info, "3.0");
 
-      allowing(info).getVersion();
-      will(returnValue("3.0"));
-    }});
     final List<String> expected = new ArrayList<String>() {{
       add("-Version");
       add("3.0");
@@ -172,8 +156,9 @@ public class CommandLineProviderTest extends BaseTestCase {
     assertSameElements(result, expected);
   }
 
+
   @Test
-  @SuppressWarnings({"ResultOfMethodCallIgnored"})
+  @SuppressWarnings({"ResultOfMethodCallIgnored", "Duplicates"})
   public void testNotEscapeSpacesForFile() throws Exception {
     final PowerShellInfo info = m.mock(PowerShellInfo.class);
     final Map<String, String> runnerParams = new HashMap<String, String>();
@@ -186,13 +171,8 @@ public class CommandLineProviderTest extends BaseTestCase {
     final File scriptFile = new File(subDir, fileName);
     scriptFile.createNewFile();
 
-    m.checking(new Expectations() {{
-      allowing(info).getExecutablePath();
-      will(returnValue("executablePath"));
+    addExecutionExpectations(info, "3.0");
 
-      allowing(info).getVersion();
-      will(returnValue("3.0"));
-    }});
     final List<String> expected = new ArrayList<String>() {{
       add("-Version");
       add("3.0");
@@ -215,13 +195,8 @@ public class CommandLineProviderTest extends BaseTestCase {
     final File subDir = new File(myScriptsRootDir, subdirName);
     subDir.mkdir();
 
-    m.checking(new Expectations() {{
-      allowing(info).getExecutablePath();
-      will(returnValue("executablePath"));
+    addExecutionExpectations(info, "3.0");
 
-      allowing(info).getVersion();
-      will(returnValue("3.0"));
-    }});
     final List<String> expected = new ArrayList<String>() {{
       add("-Version");
       add("3.0");
@@ -244,13 +219,8 @@ public class CommandLineProviderTest extends BaseTestCase {
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "3.0");
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_ARGUMENTS, "arg1\r\n\"arg2.1 arg2.2\"\r\narg3\r\narg4 arg5");
 
-    m.checking(new Expectations() {{
-      allowing(info).getExecutablePath();
-      will(returnValue("executablePath"));
+    addExecutionExpectations(info, "3.0");
 
-      allowing(info).getVersion();
-      will(returnValue("3.0"));
-    }});
     final List<String> expected = new ArrayList<String>() {{
       add("-Version");
       add("3.0");
@@ -276,13 +246,8 @@ public class CommandLineProviderTest extends BaseTestCase {
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "3.0");
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_ARGUMENTS, "-PassToPowerShell\n^MatchTheWholeString$");
 
-    m.checking(new Expectations() {{
-      allowing(info).getExecutablePath();
-      will(returnValue("executablePath"));
+    addExecutionExpectations(info, "3.0");
 
-      allowing(info).getVersion();
-      will(returnValue("3.0"));
-    }});
     final List<String> expected = new ArrayList<String>() {{
       add("-Version");
       add("3.0");
@@ -294,6 +259,17 @@ public class CommandLineProviderTest extends BaseTestCase {
     }};
     final List<String> result = myProvider.provideCommandLine(runnerParams, myScriptFile, false);
     assertSameElements(result, expected);
+  }
+
+  @SuppressWarnings("ResultOfMethodCallIgnored")
+  private void addExecutionExpectations(final PowerShellInfo info, @NotNull final String version) {
+    m.checking(new Expectations() {{
+      allowing(info).getExecutablePath();
+      will(returnValue("executablePath"));
+
+      allowing(info).getVersion();
+      will(returnValue(version));
+    }});
   }
 
   @DataProvider(name = "Strings")

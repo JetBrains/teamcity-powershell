@@ -33,7 +33,7 @@ import org.testng.annotations.Test;
  */
 public class BuildFailureTests extends AbstractPowerShellIntegrationTest {
 
-  @Test(dataProvider = "bitnessProvider")
+  @Test(dataProvider = "supportedBitnessProvider")
   public void should_fail_on_uncaught_exception_stdin(@NotNull final PowerShellBitness bitness) throws Throwable {
     setRunnerParameter(PowerShellConstants.RUNNER_MIN_VERSION, "2.0");
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
@@ -46,7 +46,7 @@ public class BuildFailureTests extends AbstractPowerShellIntegrationTest {
     Assert.assertTrue(build.getBuildStatus().isFailed());
   }
 
-  @Test(dataProvider = "bitnessProvider")
+  @Test(dataProvider = "supportedBitnessProvider")
   public void should_fail_on_exception_file(@NotNull final PowerShellBitness bitness) throws Throwable {
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
@@ -66,7 +66,7 @@ public class BuildFailureTests extends AbstractPowerShellIntegrationTest {
     Assert.assertTrue(build.getBuildStatus().isFailed());
   }
 
-  @Test(dataProvider = "bitnessProvider")
+  @Test(dataProvider = "supportedBitnessProvider")
   public void should_fail_syntax_error_file(@NotNull final PowerShellBitness bitness) throws Throwable {
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
@@ -81,7 +81,7 @@ public class BuildFailureTests extends AbstractPowerShellIntegrationTest {
     Assert.assertTrue(build.getBuildStatus().isFailed());
   }
 
-  @Test(dataProvider = "bitnessProvider")
+  @Test(dataProvider = "supportedBitnessProvider")
   public void should_fail_syntax_error_cmd(@NotNull final PowerShellBitness bitness) throws Throwable {
     setRunnerParameter(PowerShellConstants.RUNNER_MIN_VERSION, "2.0");
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
@@ -97,7 +97,7 @@ public class BuildFailureTests extends AbstractPowerShellIntegrationTest {
     Assert.assertTrue(build.getBuildStatus().isFailed());
   }
 
-  @Test(dataProvider = "bitnessProvider")
+  @Test(dataProvider = "supportedBitnessProvider")
   public void should_fail_on_error_output_cmd(@NotNull final PowerShellBitness bitness) throws Throwable {
     setRunnerParameter(PowerShellConstants.RUNNER_MIN_VERSION, "2.0");
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
@@ -110,7 +110,7 @@ public class BuildFailureTests extends AbstractPowerShellIntegrationTest {
     Assert.assertTrue(build.getBuildStatus().isFailed());
   }
 
-  @Test(dataProvider = "bitnessProvider")
+  @Test(dataProvider = "supportedBitnessProvider")
   public void should_fail_on_error_output_file(@NotNull final PowerShellBitness bitness) throws Throwable {
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
@@ -125,7 +125,7 @@ public class BuildFailureTests extends AbstractPowerShellIntegrationTest {
     Assert.assertTrue(build.getBuildStatus().isFailed());
   }
 
-  @Test(dataProvider = "bitnessProvider")
+  @Test(dataProvider = "supportedBitnessProvider")
   public void should_pass_explicit_exit_code_cmd(@NotNull final PowerShellBitness bitness) throws Throwable {
     setRunnerParameter(PowerShellConstants.RUNNER_MIN_VERSION, "2.0");
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
@@ -139,7 +139,7 @@ public class BuildFailureTests extends AbstractPowerShellIntegrationTest {
     Assert.assertTrue(getBuildLog(build).contains("Process exited with code 123"));
   }
 
-  @Test(dataProvider = "bitnessProvider")
+  @Test(dataProvider = "supportedBitnessProvider")
   public void should_pass_explicit_exit_code_file(@NotNull final PowerShellBitness bitness) throws Throwable {
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());

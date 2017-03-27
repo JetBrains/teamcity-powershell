@@ -16,7 +16,6 @@
 
 package jetbrains.buildServer.powershell.agent;
 
-import jetbrains.buildServer.BaseTestCase;
 import jetbrains.buildServer.RunBuildException;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
@@ -39,7 +38,7 @@ import java.util.Map;
  * @author Oleg Rybak (oleg.rybak@jetbrains.com)
  */
 @TestFor(testForClass = ScriptGenerator.class)
-public class ScriptGeneratorTest extends BaseTestCase {
+public class ScriptGeneratorTest extends BasePowerShellUnitTest {
 
   private static final String SAMPLE_SCRIPT = "Get-Host\r\n";
 

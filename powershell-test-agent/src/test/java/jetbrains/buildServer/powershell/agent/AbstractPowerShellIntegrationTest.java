@@ -16,6 +16,7 @@
 
 package jetbrains.buildServer.powershell.agent;
 
+import com.jetbrains.launcher.SystemInfo;
 import jetbrains.buildServer.RunnerTest2Base;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
@@ -30,6 +31,19 @@ import org.testng.annotations.DataProvider;
  */
 public abstract class AbstractPowerShellIntegrationTest extends RunnerTest2Base {
 
+  /**
+   * Provides list of supported architectures
+   *
+   * @return x86 is supported only on windows, on other platforms only x64 is used
+   */
+  private PowerShellBitness[] getSupportedBitness() {
+    if (SystemInfo.isWindows) {
+      return PowerShellBitness.values();
+    } else {
+      return new PowerShellBitness[] { PowerShellBitness.x64 };
+    }
+  }
+  
   @BeforeMethod
   @Override
   protected void setUp1() throws Throwable {
@@ -48,11 +62,13 @@ public abstract class AbstractPowerShellIntegrationTest extends RunnerTest2Base 
     return "";
   }
 
-  @DataProvider(name = "bitnessProvider")
-  public Object[][] getBitness() {
-    Object[][] result = new Object[2][];
-    result[0] = new Object[] {PowerShellBitness.x86};
-    result[1] = new Object[] {PowerShellBitness.x64};
+  @DataProvider(name = "supportedBitnessProvider")
+  public Object[][] getSupportedBitnessValues() {
+    final PowerShellBitness[] supported = getSupportedBitness();
+    final Object[][] result = new Object[supported.length][];
+    for (int i = 0; i < supported.length; i++) {
+      result[i] = new Object[] {supported[i]};
+    }
     return result;
   }
 }

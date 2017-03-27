@@ -16,7 +16,6 @@
 
 package jetbrains.buildServer.powershell.agent;
 
-import jetbrains.buildServer.BaseTestCase;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.agent.system.PowerShellCommands;
 import jetbrains.buildServer.powershell.agent.system.SystemBitness;
@@ -39,7 +38,7 @@ import java.util.Map;
  *
  * @author Oleg Rybak (oleg.rybak@jetbrains.com)
  */
-public class PowerShellCommandsTest extends BaseTestCase {
+public class PowerShellCommandsTest extends BasePowerShellUnitTest {
 
   private Mockery m;
   private static final String PS32 = "32bit";
@@ -53,6 +52,7 @@ public class PowerShellCommandsTest extends BaseTestCase {
     put("windir", "C:\\Windows");
   }};
 
+  @SuppressWarnings("ResultOfMethodCallIgnored")
   @Override
   @BeforeMethod
   public void setUp() throws Exception {
@@ -86,19 +86,19 @@ public class PowerShellCommandsTest extends BaseTestCase {
 
   @Test(dataProvider = "bitnessVariations")
   public void testPatchPowerShellExecutable(final boolean is32Bit, final String shellName, final String search) {
-    m.checking(new Expectations() {{
-      allowing(mySystemBitness).is32bit();
-      will(returnValue(is32Bit));
-
-      allowing(mySystemBitness).is64bit();
-      will(returnValue(!is32Bit));
-    }});
+    addBitnessExpectations(is32Bit);
     final String result = myCommands.getNativeCommand(myShells.get(shellName));
     assertContains(result, search);
   }
 
   @Test(dataProvider = "commandConditions")
   public void testGetNativeCommand(final boolean is32Bit, final String shellName, final String search) {
+    addBitnessExpectations(is32Bit);
+    final String result = myCommands.getCMDWrappedCommand(myShells.get(shellName), myEnv);
+    assertContains(result, search);
+  }
+
+  private void addBitnessExpectations(final boolean is32Bit) {
     m.checking(new Expectations() {{
       allowing(mySystemBitness).is32bit();
       will(returnValue(is32Bit));
@@ -106,8 +106,6 @@ public class PowerShellCommandsTest extends BaseTestCase {
       allowing(mySystemBitness).is64bit();
       will(returnValue(!is32Bit));
     }});
-    final String result = myCommands.getCMDWrappedCommand(myShells.get(shellName), myEnv);
-    assertContains(result, search);
   }
 
   @DataProvider(name = "bitnessVariations")
