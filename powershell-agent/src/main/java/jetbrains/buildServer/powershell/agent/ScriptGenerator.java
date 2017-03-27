@@ -74,8 +74,8 @@ public class ScriptGenerator {
       scriptFile = writeToTempFile(buildTempDir, sourceScript, runnerParameters);
     }
     if (!scriptFile.isFile()) {
-      throw new RunBuildException("Cannot find PowerShell script by path specified in build configuration settings:"
-          + scriptFile.getAbsolutePath() + "] (absolute path on agent). Please check that specified path is correct.");
+      throw new RunBuildException("Cannot find PowerShell script by path specified in build configuration settings: "
+          + scriptFile.getAbsolutePath() + " (absolute path on agent). Please check that the specified path is correct.");
     }
     return scriptFile;
   }
