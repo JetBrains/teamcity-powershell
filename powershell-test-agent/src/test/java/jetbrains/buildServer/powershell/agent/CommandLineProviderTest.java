@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
+import org.testng.SkipException;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -71,9 +72,12 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
     m.assertIsSatisfied();
   }
 
-  @Test(dataProvider = "Strings")
+  @Test(dataProvider = "versionsProvider")
   @TestFor(issues = "TW-33472")
   public void testStringProvided(@NotNull final String version) throws Exception {
+    if (!PowerShellCommandLineProvider.isExplicitVersionSupported()) {
+      throw new SkipException("Explicit versions are not supported by PowerShell Core");
+    }
     final String expectedVersionArg = "-Version";
     final PowerShellInfo info = m.mock(PowerShellInfo.class);
     final Map<String, String> runnerParams = new HashMap<String, String>();
@@ -88,7 +92,7 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
     assertEquals(version, result.get(1));
   }
 
-  @Test(dataProvider = "Strings")
+  @Test(dataProvider = "versionsProvider")
   @TestFor(issues = "TW-34557")
   public void testScriptArgumentsProvided(@NotNull final String version) throws Exception {
     final PowerShellInfo info = m.mock(PowerShellInfo.class);
@@ -101,8 +105,10 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
     addExecutionExpectations(info, version);
 
     final List<String> expected = new ArrayList<String>() {{
-      add("-Version");
-      add(version);
+      if (PowerShellCommandLineProvider.isExplicitVersionSupported()) {
+        add("-Version");
+        add(version);
+      }
       add("-NonInteractive");
       add("-File");
       add(myScriptFile.getPath());
@@ -146,8 +152,10 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
     addExecutionExpectations(info, "3.0");
 
     final List<String> expected = new ArrayList<String>() {{
-      add("-Version");
-      add("3.0");
+      if (PowerShellCommandLineProvider.isExplicitVersionSupported()) {
+        add("-Version");
+        add("3.0");
+      }
       add("-NonInteractive");
       add("-File");
       add(myScriptFile.getPath());
@@ -174,8 +182,10 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
     addExecutionExpectations(info, "3.0");
 
     final List<String> expected = new ArrayList<String>() {{
-      add("-Version");
-      add("3.0");
+      if (PowerShellCommandLineProvider.isExplicitVersionSupported()) {
+        add("-Version");
+        add("3.0");
+      }
       add("-NonInteractive");
       add("-File");
       add(myScriptFile.getPath());
@@ -198,8 +208,10 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
     addExecutionExpectations(info, "3.0");
 
     final List<String> expected = new ArrayList<String>() {{
-      add("-Version");
-      add("3.0");
+      if (PowerShellCommandLineProvider.isExplicitVersionSupported()) {
+        add("-Version");
+        add("3.0");
+      }
       add("-NonInteractive");
       add("-Command");
       add("-");
@@ -222,8 +234,10 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
     addExecutionExpectations(info, "3.0");
 
     final List<String> expected = new ArrayList<String>() {{
-      add("-Version");
-      add("3.0");
+      if (PowerShellCommandLineProvider.isExplicitVersionSupported()) {
+        add("-Version");
+        add("3.0");
+      }
       add("-NonInteractive");
       add("-File");
       add(myScriptFile.getPath());
@@ -249,8 +263,10 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
     addExecutionExpectations(info, "3.0");
 
     final List<String> expected = new ArrayList<String>() {{
-      add("-Version");
-      add("3.0");
+      if (PowerShellCommandLineProvider.isExplicitVersionSupported()) {
+        add("-Version");
+        add("3.0");
+      }
       add("-NonInteractive");
       add("-File");
       add(myScriptFile.getPath());
@@ -272,7 +288,7 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
     }});
   }
 
-  @DataProvider(name = "Strings")
+  @DataProvider(name = "versionsProvider")
   public Object[][] getVersions() {
     String[] versions = {"1.0", "2.0", "3.0", "4.0", "5.0", "5.1", "6.0"};    
     final Object[][] result = new Object[versions.length][];

@@ -10,7 +10,6 @@ import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellEdition;
-import jetbrains.buildServer.serverSide.TeamCityProperties;
 import jetbrains.buildServer.util.FileUtil;
 import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
@@ -59,10 +58,6 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
   @Override
   public Map<PowerShellBitness, PowerShellInfo> findPowerShells(@NotNull final DetectionContext detectionContext) {
     if (SystemInfo.isWindows) {
-      return Collections.emptyMap();
-    }
-    if (!TeamCityProperties.getBoolean("teamcity.powershell.crossplatform.enabled")) {
-      LOG.info("Cross-platform PowerShell is disabled");
       return Collections.emptyMap();
     }
     final Map<PowerShellBitness, PowerShellInfo> result = new HashMap<PowerShellBitness, PowerShellInfo>();

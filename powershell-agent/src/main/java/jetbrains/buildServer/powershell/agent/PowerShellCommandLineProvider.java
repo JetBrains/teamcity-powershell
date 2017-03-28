@@ -17,6 +17,7 @@
 package jetbrains.buildServer.powershell.agent;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.util.SystemInfo;
 import jetbrains.buildServer.RunBuildException;
 import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.util.StringUtil;
@@ -65,11 +66,12 @@ public class PowerShellCommandLineProvider {
 
   private void addVersion(@NotNull final List<String> list,
                           @NotNull final Map<String, String> runnerParams) {
-
-    final String minVersion = runnerParams.get(RUNNER_MIN_VERSION);
-    if (!StringUtil.isEmptyOrSpaces(minVersion)) {
-      list.add("-Version");
-      list.add(minVersion);
+    if (isExplicitVersionSupported()) {
+      final String minVersion = runnerParams.get(RUNNER_MIN_VERSION);
+      if (!StringUtil.isEmptyOrSpaces(minVersion)) {
+        list.add("-Version");
+        list.add(minVersion);
+      }
     }
   }
 
@@ -130,5 +132,9 @@ public class PowerShellCommandLineProvider {
       default:
         throw new RunBuildException("Unknown ExecutionMode: " + mod);
     }
+  }
+
+  static boolean isExplicitVersionSupported() {
+    return SystemInfo.isWindows;
   }
 }
