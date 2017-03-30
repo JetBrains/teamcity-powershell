@@ -24,15 +24,15 @@
 <tr class="advancedSetting">
   <th rowspan="3">PowerShell run mode:</th>
   <td>
-    <label for="${bean.minVersionKey}">Version: </label>
-    <props:textProperty name="${bean.minVersionKey}" className="longField" onkeyup="BS.PowerShell.updateScriptMode()"/>
+    <label for="${bean.minVersionKey}" class="fixedLabel">Version: </label>
+    <props:textProperty name="${bean.minVersionKey}" className="smallField " onkeyup="BS.PowerShell.updateScriptMode()"/>
   </td>
 </tr>
 
 <tr class="advancedSetting">
-  <td>
-    <label for="${bean.bitnessKey}">Bitness: </label>
-    <props:selectProperty name="${bean.bitnessKey}">
+  <td class="noBorder">
+    <label for="${bean.bitnessKey}" class="fixedLabel">Platform: </label>
+    <props:selectProperty name="${bean.bitnessKey}" className="smallField ">
       <c:forEach var="val" items="${bean.bitnessValues}">
         <props:option value="${val.value}"><c:out value="${val.key}"/></props:option>
       </c:forEach>
@@ -42,9 +42,9 @@
 </tr>
 
 <tr class="advancedSetting">
-  <td>
-    <label for="${bean.editionKey}">Edition: </label>
-    <props:selectProperty name="${bean.editionKey}">
+  <td class="noBorder">
+    <label for="${bean.editionKey}" class="fixedLabel">Edition: </label>
+    <props:selectProperty name="${bean.editionKey}" className="smallField ">
       <c:forEach var="val" items="${bean.editionValues}">
         <props:option value="${val.value}"><c:out value="${val.key}"/></props:option>
       </c:forEach>
@@ -55,7 +55,7 @@
 <tr class="advancedSetting">
   <th><label for="${bean.errorToErrorKey}">Format stderr output as:</label></th>
   <td>
-    <props:selectProperty name="${bean.errorToErrorKey}">
+    <props:selectProperty name="${bean.errorToErrorKey}" className="smallField">
       <props:option value="">warning</props:option>
       <props:option value="true">error</props:option>
     </props:selectProperty>
@@ -68,7 +68,7 @@
 <tr>
   <th>Script:</th>
   <td>
-    <props:selectProperty name="${bean.scriptModeKey}" id="powershell_option" className="longField" onchange="BS.PowerShell.updateScriptType()">
+    <props:selectProperty name="${bean.scriptModeKey}" id="powershell_option" className="shortField" onchange="BS.PowerShell.updateScriptType()">
       <props:option value="${bean.scriptModeFileValue}">File</props:option>
       <props:option value="${bean.scriptModeCodeValue}">Source code</props:option>
     </props:selectProperty>

@@ -44,7 +44,7 @@ public class PowerShellBean {
   public Map<String, String> getBitnessValues() {
     final Map<String, String> result = new LinkedHashMap<>();
     result.put(PowerShellConstants.PARAM_VALUE_BITNESS_AUTO, "");
-    result.putAll(Arrays.stream(PowerShellBitness.values()).collect(Collectors.toMap(PowerShellBitness::getDisplayName, PowerShellBitness::getValue)));
+    result.putAll(Arrays.stream(PowerShellBitness.values()).collect(Collectors.toMap(PowerShellBitness::getValue, PowerShellBitness::getValue)));
     return result;
   }
 
