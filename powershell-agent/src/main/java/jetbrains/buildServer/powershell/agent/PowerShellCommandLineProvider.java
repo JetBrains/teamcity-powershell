@@ -19,6 +19,8 @@ package jetbrains.buildServer.powershell.agent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.SystemInfo;
 import jetbrains.buildServer.RunBuildException;
+import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
+import jetbrains.buildServer.powershell.common.PowerShellEdition;
 import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +42,8 @@ public class PowerShellCommandLineProvider {
   private static final Logger LOG = Logger.getInstance(PowerShellCommandLineProvider.class.getName());
 
   @NotNull
-  public List<String> provideCommandLine(@NotNull final Map<String, String> runnerParams,
+  public List<String> provideCommandLine(@NotNull final PowerShellInfo info,
+                                         @NotNull final Map<String, String> runnerParams,
                                          @NotNull final File scriptFile,
                                          final boolean useExecutionPolicy) throws RunBuildException {
     final List<String> result = new ArrayList<String>();
@@ -48,8 +51,7 @@ public class PowerShellCommandLineProvider {
     if (mod == null) {
       throw new RunBuildException("'" + RUNNER_EXECUTION_MODE + "' runner parameter is not defined");
     }
-
-    addVersion(result, runnerParams); // version must be the 1st arg after executable path
+    addVersion(result, runnerParams, info); // version must be the 1st arg after executable path
     if (!StringUtil.isEmptyOrSpaces(runnerParams.get(RUNNER_NO_PROFILE))) {
       result.add("-NoProfile");
     }
@@ -65,8 +67,9 @@ public class PowerShellCommandLineProvider {
   }
 
   private void addVersion(@NotNull final List<String> list,
-                          @NotNull final Map<String, String> runnerParams) {
-    if (isExplicitVersionSupported()) {
+                          @NotNull final Map<String, String> runnerParams,
+                          @NotNull final PowerShellInfo info) {
+    if (isExplicitVersionSupported(info)) {
       final String minVersion = runnerParams.get(RUNNER_MIN_VERSION);
       if (!StringUtil.isEmptyOrSpaces(minVersion)) {
         list.add("-Version");
@@ -134,7 +137,7 @@ public class PowerShellCommandLineProvider {
     }
   }
 
-  static boolean isExplicitVersionSupported() {
-    return SystemInfo.isWindows;
+  static boolean isExplicitVersionSupported(@NotNull final PowerShellInfo info) {
+    return SystemInfo.isWindows && info.getEdition() == PowerShellEdition.DESKTOP;
   }
 }

@@ -86,7 +86,7 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
       myFilesToRemove.add(scriptFile);
     }
     parametersList.add(info.getExecutablePath());
-    parametersList.addAll(myCmdProvider.provideCommandLine(runnerParameters, scriptFile, useExecutionPolicy(info)));
+    parametersList.addAll(myCmdProvider.provideCommandLine(info, runnerParameters, scriptFile, useExecutionPolicy(info)));
     return parametersList.getParametersString();
   }
 
@@ -97,7 +97,7 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
     if (ScriptGenerator.shouldRemoveGeneratedScript(runnerParameters)) {
       myFilesToRemove.add(scriptFile);
     }
-    return myCmdProvider.provideCommandLine(runnerParameters, scriptFile, useExecutionPolicy(info));
+    return myCmdProvider.provideCommandLine(info, runnerParameters, scriptFile, useExecutionPolicy(info));
   }
 
   private PowerShellInfo selectTool() throws RunBuildException {

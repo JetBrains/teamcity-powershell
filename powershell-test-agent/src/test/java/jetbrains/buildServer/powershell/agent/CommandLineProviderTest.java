@@ -16,15 +16,16 @@
 
 package jetbrains.buildServer.powershell.agent;
 
+import com.intellij.openapi.util.SystemInfo;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
+import jetbrains.buildServer.powershell.common.PowerShellEdition;
 import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.util.TestFor;
 import org.jetbrains.annotations.NotNull;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
-import org.testng.SkipException;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -49,6 +50,8 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
   private File myScriptFile;
 
   private File myScriptsRootDir;
+  
+  private PowerShellInfo myInfo;
 
   @SuppressWarnings("ResultOfMethodCallIgnored")
   @Override
@@ -58,6 +61,13 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
     m = new Mockery() {{
       setImposteriser(ClassImposteriser.INSTANCE);
     }};
+    myInfo = m.mock(PowerShellInfo.class);
+    final PowerShellEdition edition = SystemInfo.isWindows ? PowerShellEdition.DESKTOP : PowerShellEdition.CORE;
+    m.checking(new Expectations() {{
+      allowing(myInfo).getEdition();
+      will(returnValue(edition));
+    }});
+
     myProvider = new PowerShellCommandLineProvider();
     myScriptsRootDir = createTempDir();
     myScriptFile = new File(myScriptsRootDir, SCRIPT_FILE_NAME);
@@ -75,37 +85,32 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
   @Test(dataProvider = "versionsProvider")
   @TestFor(issues = "TW-33472")
   public void testStringProvided(@NotNull final String version) throws Exception {
-    if (!PowerShellCommandLineProvider.isExplicitVersionSupported()) {
-      throw new SkipException("Explicit versions are not supported by PowerShell Core");
+    if (PowerShellCommandLineProvider.isExplicitVersionSupported(myInfo)) {
+      final String expectedVersionArg = "-Version";
+      final Map<String, String> runnerParams = new HashMap<String, String>();
+      runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, version);
+      addExecutionExpectations(myInfo, version);
+      final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false);
+      // powershell.exe -Version $version
+      assertTrue(result.size() >= 2);
+      assertEquals(expectedVersionArg, result.get(0));
+      assertEquals(version, result.get(1));
     }
-    final String expectedVersionArg = "-Version";
-    final PowerShellInfo info = m.mock(PowerShellInfo.class);
-    final Map<String, String> runnerParams = new HashMap<String, String>();
-    runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, version);
-
-    addExecutionExpectations(info, version);
-
-    final List<String> result = myProvider.provideCommandLine(runnerParams, myScriptFile, false);
-    // powershell.exe -Version $version
-    assertTrue(result.size() >= 2);
-    assertEquals(expectedVersionArg, result.get(0));
-    assertEquals(version, result.get(1));
   }
 
   @Test(dataProvider = "versionsProvider")
   @TestFor(issues = "TW-34557")
   public void testScriptArgumentsProvided(@NotNull final String version) throws Exception {
-    final PowerShellInfo info = m.mock(PowerShellInfo.class);
     final Map<String, String> runnerParams = new HashMap<String, String>();
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     final String args = "arg1 arg2 arg3";
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_ARGUMENTS, args);
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, version);
 
-    addExecutionExpectations(info, version);
+    addExecutionExpectations(myInfo, version);
 
     final List<String> expected = new ArrayList<String>() {{
-      if (PowerShellCommandLineProvider.isExplicitVersionSupported()) {
+      if (PowerShellCommandLineProvider.isExplicitVersionSupported(myInfo)) {
         add("-Version");
         add(version);
       }
@@ -114,7 +119,7 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
       add(myScriptFile.getPath());
       addAll(Arrays.asList(args.split("\\s+")));
     }};
-    final List<String> result = myProvider.provideCommandLine(runnerParams, myScriptFile, false);
+    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false);
     assertSameElements(result, expected);
   }
 
@@ -122,17 +127,16 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
   @Test
   @TestFor(issues = "TW-34557")
   public void testUseDefaultPowerShellIfVersionAny() throws Exception {
-    final PowerShellInfo info = m.mock(PowerShellInfo.class);
     final Map<String, String> runnerParams = new HashMap<String, String>();
 
     m.checking(new Expectations() {{
-      allowing(info).getExecutablePath();
+      allowing(myInfo).getExecutablePath();
       will(returnValue("executablePath"));
 
-      never(info).getVersion();
+      never(myInfo).getVersion();
     }});
 
-    final List<String> result = myProvider.provideCommandLine(runnerParams, myScriptFile, false);
+    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false);
     for (String str: result) {
       if ("-Version".equals(str)) {
         fail("PowerShell version should not be supplied if Any is selected in runner parameters");
@@ -144,15 +148,14 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
   @Test
   @TestFor(issues = "TW-34410")
   public void testFromFile() throws Exception {
-    final PowerShellInfo info = m.mock(PowerShellInfo.class);
     final Map<String, String> runnerParams = new HashMap<String, String>();
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "3.0");
 
-    addExecutionExpectations(info, "3.0");
+    addExecutionExpectations(myInfo, "3.0");
 
     final List<String> expected = new ArrayList<String>() {{
-      if (PowerShellCommandLineProvider.isExplicitVersionSupported()) {
+      if (PowerShellCommandLineProvider.isExplicitVersionSupported(myInfo)) {
         add("-Version");
         add("3.0");
       }
@@ -160,7 +163,7 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
       add("-File");
       add(myScriptFile.getPath());
     }};
-    final List<String> result = myProvider.provideCommandLine(runnerParams, myScriptFile, false);
+    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false);
     assertSameElements(result, expected);
   }
 
@@ -168,7 +171,6 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
   @Test
   @SuppressWarnings({"ResultOfMethodCallIgnored", "Duplicates"})
   public void testNotEscapeSpacesForFile() throws Exception {
-    final PowerShellInfo info = m.mock(PowerShellInfo.class);
     final Map<String, String> runnerParams = new HashMap<String, String>();
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "3.0");
@@ -179,10 +181,10 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
     final File scriptFile = new File(subDir, fileName);
     scriptFile.createNewFile();
 
-    addExecutionExpectations(info, "3.0");
+    addExecutionExpectations(myInfo, "3.0");
 
     final List<String> expected = new ArrayList<String>() {{
-      if (PowerShellCommandLineProvider.isExplicitVersionSupported()) {
+      if (PowerShellCommandLineProvider.isExplicitVersionSupported(myInfo)) {
         add("-Version");
         add("3.0");
       }
@@ -190,14 +192,13 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
       add("-File");
       add(myScriptFile.getPath());
     }};
-    final List<String> result = myProvider.provideCommandLine(runnerParams, myScriptFile, false);
+    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false);
     assertSameElements(result, expected);
   }
 
   @Test
   @SuppressWarnings({"ResultOfMethodCallIgnored"})
   public void testLeavePathAsIsForCommand() throws Exception {
-    final PowerShellInfo info = m.mock(PowerShellInfo.class);
     final Map<String, String> runnerParams = new HashMap<String, String>();
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "3.0");
@@ -205,10 +206,10 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
     final File subDir = new File(myScriptsRootDir, subdirName);
     subDir.mkdir();
 
-    addExecutionExpectations(info, "3.0");
+    addExecutionExpectations(myInfo, "3.0");
 
     final List<String> expected = new ArrayList<String>() {{
-      if (PowerShellCommandLineProvider.isExplicitVersionSupported()) {
+      if (PowerShellCommandLineProvider.isExplicitVersionSupported(myInfo)) {
         add("-Version");
         add("3.0");
       }
@@ -218,23 +219,22 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
       add("<");
       add(myScriptFile.getPath());
     }};
-    final List<String> result = myProvider.provideCommandLine(runnerParams, myScriptFile, false);
+    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false);
     assertSameElements(result, expected);
   }
 
   @Test
   @TestFor(issues = "TW-35063")
   public void testMultiWordArgs_File() throws Exception {
-    final PowerShellInfo info = m.mock(PowerShellInfo.class);
     final Map<String, String> runnerParams = new HashMap<String, String>();
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "3.0");
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_ARGUMENTS, "arg1\r\n\"arg2.1 arg2.2\"\r\narg3\r\narg4 arg5");
 
-    addExecutionExpectations(info, "3.0");
+    addExecutionExpectations(myInfo, "3.0");
 
     final List<String> expected = new ArrayList<String>() {{
-      if (PowerShellCommandLineProvider.isExplicitVersionSupported()) {
+      if (PowerShellCommandLineProvider.isExplicitVersionSupported(myInfo)) {
         add("-Version");
         add("3.0");
       }
@@ -247,23 +247,22 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
       add("arg4");
       add("arg5");
     }};
-    final List<String> result = myProvider.provideCommandLine(runnerParams, myScriptFile, false);
+    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false);
     assertSameElements(result, expected);
   }
 
   @Test
   @TestFor(issues = "TW-37730")
   public void testEscapeCmdChar_File() throws Exception {
-    final PowerShellInfo info = m.mock(PowerShellInfo.class);
     final Map<String, String> runnerParams = new HashMap<String, String>();
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "3.0");
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_ARGUMENTS, "-PassToPowerShell\n^MatchTheWholeString$");
 
-    addExecutionExpectations(info, "3.0");
+    addExecutionExpectations(myInfo, "3.0");
 
     final List<String> expected = new ArrayList<String>() {{
-      if (PowerShellCommandLineProvider.isExplicitVersionSupported()) {
+      if (PowerShellCommandLineProvider.isExplicitVersionSupported(myInfo)) {
         add("-Version");
         add("3.0");
       }
@@ -273,17 +272,17 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
       add("-PassToPowerShell");
       add("^MatchTheWholeString$");
     }};
-    final List<String> result = myProvider.provideCommandLine(runnerParams, myScriptFile, false);
+    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false);
     assertSameElements(result, expected);
   }
 
   @SuppressWarnings("ResultOfMethodCallIgnored")
-  private void addExecutionExpectations(final PowerShellInfo info, @NotNull final String version) {
+  private void addExecutionExpectations(final PowerShellInfo myInfo, @NotNull final String version) {
     m.checking(new Expectations() {{
-      allowing(info).getExecutablePath();
+      allowing(myInfo).getExecutablePath();
       will(returnValue("executablePath"));
 
-      allowing(info).getVersion();
+      allowing(myInfo).getVersion();
       will(returnValue(version));
     }});
   }
