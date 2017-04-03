@@ -21,17 +21,25 @@
 <jsp:useBean id="bean" class="jetbrains.buildServer.powershell.server.PowerShellBean"/>
 <jsp:useBean id="propertiesBean" scope="request" type="jetbrains.buildServer.controllers.BasePropertiesBean"/>
 
+<style type="text/css">
+  .localLabel {
+    display: inline-block;
+    white-space: nowrap;
+    width: 6em;
+  }
+</style>
+
 <tr class="advancedSetting">
   <th rowspan="3">PowerShell run mode:</th>
   <td>
-    <label for="${bean.minVersionKey}" class="fixedLabel">Version: </label>
+    <label for="${bean.minVersionKey}" class="localLabel">Version:<bs:help file="PowerShell" anchor="version"/> </label>
     <props:textProperty name="${bean.minVersionKey}" className="smallField " onkeyup="BS.PowerShell.updateScriptMode()"/>
   </td>
 </tr>
 
 <tr class="advancedSetting">
   <td class="noBorder">
-    <label for="${bean.bitnessKey}" class="fixedLabel">Platform: </label>
+    <label for="${bean.bitnessKey}" class="localLabel">Platform:<bs:help file="PowerShell" anchor="platform"/> </label>
     <props:selectProperty name="${bean.bitnessKey}" className="smallField ">
       <c:forEach var="val" items="${bean.bitnessValues}">
         <props:option value="${val.value}"><c:out value="${val.key}"/></props:option>
@@ -43,7 +51,7 @@
 
 <tr class="advancedSetting">
   <td class="noBorder">
-    <label for="${bean.editionKey}" class="fixedLabel">Edition: </label>
+    <label for="${bean.editionKey}" class="localLabel">Edition:<bs:help file="PowerShell" anchor="edition"/> </label>
     <props:selectProperty name="${bean.editionKey}" className="smallField ">
       <c:forEach var="val" items="${bean.editionValues}">
         <props:option value="${val.value}"><c:out value="${val.key}"/></props:option>
