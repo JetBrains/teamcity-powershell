@@ -1,27 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dsl-extension kind="buildStep" type="jetbrains_powershell" generateDslJar="true">
-  <class name="PowerShellStep"/>
-  <function name="powerShell"/>
+  <class name="PowerShellStep">
+    <description>
+      A [build step](https://confluence.jetbrains.com/display/TCDL/PowerShell) running PowerShell script
+    </description>
+  </class>
+  <function name="powerShell">
+    <description>
+      Adds a [build step](https://confluence.jetbrains.com/display/TCDL/PowerShell) running PowerShell script
+      @see PowerShellStep
+    </description>
+  </function>
   <params>
     <param name="jetbrains_powershell_minVersion" dslName="minVersion" type="Version">
       <deprecated>This property allows to specify a limited number of versions, please use minRequiredVersion instead.</deprecated>
     </param>
-    <param name="jetbrains_powershell_minVersion" dslName="minRequiredVersion" />
-    <param name="jetbrains_powershell_bitness" dslName="platform" type="Platform" />
-    <param name="jetbrains_powershell_edition" dslName="edition" type="Edition"/>
-    <param name="jetbrains_powershell_errorToError" dslName="formatStderrAsError" type="boolean" trueValue="true" falseValue="" />
-    <param name="teamcity.build.workingDir" dslName="workingDir" />
+    <param name="jetbrains_powershell_minVersion" dslName="minRequiredVersion">
+      <description>
+        A minimum required PowerShell version installed on a build agent
+      </description>
+    </param>
+    <param name="jetbrains_powershell_bitness" dslName="platform" type="Platform">
+      <description>
+        A required platform bitness
+        @see Platform
+      </description>
+    </param>
+    <param name="jetbrains_powershell_edition" dslName="edition" type="Edition">
+      <description>
+        PowerShell edition to use
+        @see Edition
+      </description>
+    </param>
+    <param name="jetbrains_powershell_errorToError" dslName="formatStderrAsError" type="boolean" trueValue="true" falseValue="">
+      <description>
+        Specifies how the error output is handled. If set to true any output to stderr is handled as an error.
+        By default any output to stderr is handled as a warning.
+      </description>
+    </param>
+    <param name="teamcity.build.workingDir" dslName="workingDir">
+      <description>
+        [Build working directory](https://confluence.jetbrains.com/display/TCDL/Build+Working+Directory) for ant script,
+        specify it if it is different from the [checkout directory](https://confluence.jetbrains.com/display/TCDL/Build+Checkout+Directory).
+      </description>
+    </param>
     <param name="jetbrains_powershell_script_mode" dslName="scriptMode" type="compound">
+      <description>
+        PowerShell script execution mode
+      </description>
       <option name="file" value="FILE">
-        <param name="jetbrains_powershell_script_file" dslName="path" />
+        <description>
+          Run a PowerShell script at the given path
+        </description>
+        <param name="jetbrains_powershell_script_file" dslName="path">
+          <description>
+            A path to the script to run
+          </description>
+        </param>
       </option>
       <option name="script" value="CODE">
-        <param name="jetbrains_powershell_script_code" dslName="content" />
+        <description>
+          Run a PowerShell script with the given content
+        </description>
+        <param name="jetbrains_powershell_script_code" dslName="content">
+          <description>
+            A PowerShell script content
+          </description>
+        </param>
       </option>
     </param>
-    <param name="jetbrains_powershell_execution" dslName="scriptExecMode" type="ExecutionMode" />
-    <param name="jetbrains_powershell_noprofile" dslName="noProfile" type="boolean" trueValue="true" falseValue="" />
-    <param name="jetbrains_powershell_additionalArguments" dslName="args" />
+    <param name="jetbrains_powershell_execution" dslName="scriptExecMode" type="ExecutionMode">
+      <description>
+        PowerShell execution mode
+        @see ExecutionMode
+      </description>
+    </param>
+    <param name="jetbrains_powershell_noprofile" dslName="noProfile" type="boolean" trueValue="true" falseValue="">
+      <description>
+        Whether the script should be executed with the -NoProfile added
+      </description>
+    </param>
+    <param name="jetbrains_powershell_additionalArguments" dslName="args">
+      <description>
+        Additional arguments to be passed to PowerShell
+      </description>
+    </param>
   </params>
   <types>
     <enum name="Version">
@@ -33,17 +96,54 @@
       <option name="v5_0" value="5.0"/>
     </enum>
     <enum name="Platform">
-      <option name="x86" value="x86"/>
-      <option name="x64" value="x64"/>
+      <description>
+        A required platform bitness
+      </description>
+      <option name="x86" value="x86">
+        <description>
+          Require a 32-bit platform
+        </description>
+      </option>
+      <option name="x64" value="x64">
+        <description>
+          Require a 64-bit platform
+        </description>
+      </option>
     </enum>
     <enum name="ExecutionMode">
-      <option name="STDIN" value="STDIN"/>
-      <option name="PS1" value="PS1"/>
+      <description>
+        PowerShell script execution mode
+      </description>
+      <option name="STDIN" value="STDIN">
+        <description>
+          Run script using the -Command argument
+        </description>
+      </option>
+      <option name="PS1" value="PS1">
+        <description>
+          Run script with the -ExecutionPolicy ByPass argument to enable arbitrary scripts execution
+        </description>
+      </option>
     </enum>
     <enum name="Edition">
-      <option name="Any" value=""/>
-      <option name="Core" value="Core"/>
-      <option name="Desktop" value="Desktop"/>
+      <description>
+        A PowerShell edition
+      </description>
+      <option name="Any" value="">
+        <description>
+          Use any edition
+        </description>
+      </option>
+      <option name="Core" value="Core">
+        <description>
+          Open-source edition based on .Net Core, cross-platform, 64-bit only
+        </description>
+      </option>
+      <option name="Desktop" value="Desktop">
+        <description>
+          Closed-source edition bundled with Windows, available only on Windows platforms.
+        </description>
+      </option>
     </enum>
   </types>
 </dsl-extension>
