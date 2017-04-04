@@ -34,6 +34,8 @@
   <td>
     <label for="${bean.minVersionKey}" class="localLabel">Version:<bs:help file="PowerShell" anchor="version"/> </label>
     <props:textProperty name="${bean.minVersionKey}" className="smallField " onkeyup="BS.PowerShell.updateScriptMode()"/>
+    <span class="smallNote">On Desktop edition the <span style="font-style: italic">exact</span> version will be used,
+      on Core edition the <span style="font-style: italic">lower bound version requirement</span> will be added</span>
   </td>
 </tr>
 
@@ -45,6 +47,7 @@
         <props:option value="${val.value}"><c:out value="${val.key}"/></props:option>
       </c:forEach>
     </props:selectProperty>
+    <span class="smallNote">If &lt;Auto&gt; is chosen, x64 wll be preferred over x86 when both are available</span>
     <span class="error" id="error_${bean.bitnessKey}"></span>
   </td>
 </tr>
