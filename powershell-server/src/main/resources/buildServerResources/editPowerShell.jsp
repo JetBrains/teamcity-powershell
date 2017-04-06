@@ -35,7 +35,7 @@
 <tr class="advancedSetting">
   <th><label for="${bean.minVersionKey}" class="localLabel">PowerShell version: <bs:help file="PowerShell" anchor="version"/> </label></th>
   <td>
-    <props:textProperty name="${bean.minVersionKey}" className="smallField " onkeyup="BS.PowerShell.updateScriptMode()"/>
+    <props:textProperty name="${bean.minVersionKey}" className="smallField disableBuildTypeParams" onkeyup="BS.PowerShell.updateScriptMode()"/>
     <span class="smallNote">On Desktop edition the <span style="font-style: italic">exact</span> version will be used,
       on Core edition the <span style="font-style: italic">lower bound version requirement</span> will be added</span>
   </td>

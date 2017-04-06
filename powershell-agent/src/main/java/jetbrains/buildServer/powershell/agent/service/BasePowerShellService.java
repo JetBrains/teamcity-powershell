@@ -106,9 +106,9 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
     final PowerShellEdition edition = PowerShellEdition.fromString(getRunnerParameters().get(RUNNER_EDITION));
     final PowerShellInfo result = myInfoProvider.selectTool(bit, version, edition);
     if (result == null) {
-      throw new RunBuildException("Could not select PowerShell for given bitness ["
-          + (bit == null ? "any" : bit.getDisplayName() +"]"
-          + (version == null ? "" : " and minimum version [" + version + "]")));
+      throw new RunBuildException("Could not select PowerShell for given bitness "
+          + (bit == null ? "<Auto>" : bit.getDisplayName() + " and version "
+          + (version == null ? "<Any>" : version)));
     }
     return result;
   }
