@@ -27,12 +27,14 @@
     white-space: nowrap;
     width: 6em;
   }
+  td.dense {
+    padding-top: 0px;
+  }
 </style>
 
 <tr class="advancedSetting">
-  <th rowspan="3">PowerShell run mode:</th>
+  <th><label for="${bean.minVersionKey}" class="localLabel">PowerShell version: <bs:help file="PowerShell" anchor="version"/> </label></th>
   <td>
-    <label for="${bean.minVersionKey}" class="localLabel">Version:<bs:help file="PowerShell" anchor="version"/> </label>
     <props:textProperty name="${bean.minVersionKey}" className="smallField " onkeyup="BS.PowerShell.updateScriptMode()"/>
     <span class="smallNote">On Desktop edition the <span style="font-style: italic">exact</span> version will be used,
       on Core edition the <span style="font-style: italic">lower bound version requirement</span> will be added</span>
@@ -40,8 +42,8 @@
 </tr>
 
 <tr class="advancedSetting">
-  <td class="noBorder">
-    <label for="${bean.bitnessKey}" class="localLabel">Platform:<bs:help file="PowerShell" anchor="platform"/> </label>
+  <th class="noBorder dense"><label for="${bean.bitnessKey}" class="localLabel">Platform: <bs:help file="PowerShell" anchor="platform"/> </label></th>
+  <td class="noBorder dense">
     <props:selectProperty name="${bean.bitnessKey}" className="smallField ">
       <c:forEach var="val" items="${bean.bitnessValues}">
         <props:option value="${val.value}"><c:out value="${val.key}"/></props:option>
@@ -53,8 +55,8 @@
 </tr>
 
 <tr class="advancedSetting">
-  <td class="noBorder">
-    <label for="${bean.editionKey}" class="localLabel">Edition:<bs:help file="PowerShell" anchor="edition"/> </label>
+  <th class="noBorder dense"><label for="${bean.editionKey}" class="localLabel">Edition: <bs:help file="PowerShell" anchor="edition"/> </label></th>
+  <td class="noBorder dense">
     <props:selectProperty name="${bean.editionKey}" className="smallField ">
       <c:forEach var="val" items="${bean.editionValues}">
         <props:option value="${val.value}"><c:out value="${val.key}"/></props:option>
