@@ -106,14 +106,14 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
   }
 
   @Test(dataProvider = "supportedBitnessProvider")
-  @TestFor(issues = "TW-39841")
+  @TestFor(issues = {"TW-39841", "TW-49772"})
   public void testShouldKeepGeneratedFiles_PowerShellSpecific(@NotNull final PowerShellBitness bits) throws Throwable {
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "echo works");
     setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, bits.getValue());
     
-    setBuildConfigurationParameter(PowerShellConstants.CONFIG_KEEP_GENERATED, "");
+    setBuildConfigurationParameter(PowerShellConstants.CONFIG_KEEP_GENERATED, "true");
     final SFinishedBuild build = doTest(null);
     assertEquals(1, getTempFiles().length);
     dumpBuildLogLocally(build);
@@ -122,14 +122,14 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
   }
 
   @Test(dataProvider = "supportedBitnessProvider")
-  @TestFor(issues = "TW-39841")
+  @TestFor(issues = {"TW-39841", "TW-49772"})
   public void testShouldKeepGeneratedFiles_Global(@NotNull final PowerShellBitness bits) throws Throwable {
     setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "echo works\r\n");
     setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, bits.getValue());
 
-    setBuildConfigurationParameter("teamcity.dont.delete.temp.files", "");
+    setBuildConfigurationParameter("teamcity.dont.delete.temp.files", "true");
     final SFinishedBuild build = doTest(null);
     assertEquals(1, getTempFiles().length);
     dumpBuildLogLocally(build);
@@ -144,7 +144,7 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "$var = \"Value is \u00f8\u00e5\u00e6\"\r\n Write-Output $var\r\n");
     setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, bits.getValue());
-    setBuildConfigurationParameter(PowerShellConstants.CONFIG_KEEP_GENERATED, "");
+    setBuildConfigurationParameter(PowerShellConstants.CONFIG_KEEP_GENERATED, "true");
 
     final SFinishedBuild build = doTest(null);
     assertEquals(1, getTempFiles().length);

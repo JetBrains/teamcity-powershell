@@ -167,7 +167,8 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
   }
 
   private boolean shouldKeepGeneratedFiles() {
-    return getConfigParameters().containsKey(CONFIG_KEEP_GENERATED) || getConfigParameters().containsKey("teamcity.dont.delete.temp.files");
+    return StringUtil.isTrue(getConfigParameters().get(CONFIG_KEEP_GENERATED))
+        || StringUtil.isTrue(getConfigParameters().get("teamcity.dont.delete.temp.files"));
   }
 
   @Override
