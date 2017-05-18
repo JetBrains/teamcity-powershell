@@ -58,7 +58,11 @@ public class PowerShellServiceWindows extends BasePowerShellService {
                                                         @NotNull final Map<String, String> env,
                                                         @NotNull final String workDir,
                                                         @NotNull final List<String> args) throws RunBuildException {
-    return new SimpleProgramCommandLine(env, workDir, myCommands.getNativeCommand(info), args);
+    final BuildProgressLogger buildLogger = getBuild().getBuildLogger();
+    final String command = myCommands.getNativeCommand(info);
+    buildLogger.message("Command: " + command);
+    buildLogger.message("PowerShell arguments: " + StringUtil.join(args, ", "));
+    return new SimpleProgramCommandLine(env, workDir, command, args);
   }
 
   @NotNull
