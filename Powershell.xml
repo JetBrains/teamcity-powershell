@@ -51,7 +51,7 @@
         specify it if it is different from the [checkout directory](https://confluence.jetbrains.com/display/TCDL/Build+Checkout+Directory).
       </description>
     </param>
-    <param name="jetbrains_powershell_script_mode" dslName="scriptMode" type="compound">
+    <param name="jetbrains_powershell_script_mode" dslName="scriptMode" type="compound" mandatory="true">
       <description>
         PowerShell script execution mode
       </description>
@@ -59,7 +59,7 @@
         <description>
           Run a PowerShell script at the given path
         </description>
-        <param name="jetbrains_powershell_script_file" dslName="path">
+        <param name="jetbrains_powershell_script_file" dslName="path" mandatory="true">
           <description>
             A path to the script to run
           </description>
@@ -69,7 +69,7 @@
         <description>
           Run a PowerShell script with the given content
         </description>
-        <param name="jetbrains_powershell_script_code" dslName="content">
+        <param name="jetbrains_powershell_script_code" dslName="content" mandatory="true">
           <description>
             A PowerShell script content
           </description>
