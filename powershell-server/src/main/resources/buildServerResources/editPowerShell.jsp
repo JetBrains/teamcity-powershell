@@ -83,8 +83,9 @@
 <tr id="powershell_scriptFile">
   <th><label for="${bean.scriptFileKey}">Script file: <l:star/></label></th>
   <td>
-    <props:textProperty name="${bean.scriptFileKey}" className="longField"/>
-    <bs:vcsTree fieldId="${bean.scriptFileKey}"/>
+    <props:textProperty name="${bean.scriptFileKey}" className="longField">
+    <jsp:attribute name="afterTextField"><bs:vcsTree fieldId="${bean.scriptFileKey}"/></jsp:attribute>
+    </props:textProperty>
     <span class="smallNote">Path to the PowerShell script, relative to the checkout directory</span>
     <span class="error" id="error_${bean.scriptFileKey}"></span>
   </td>
