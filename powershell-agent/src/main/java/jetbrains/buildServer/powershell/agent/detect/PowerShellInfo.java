@@ -7,7 +7,6 @@
 
 package jetbrains.buildServer.powershell.agent.detect;
 
-import com.intellij.openapi.util.SystemInfo;
 import jetbrains.buildServer.agent.BuildAgentConfiguration;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellEdition;
@@ -36,14 +35,19 @@ public class PowerShellInfo {
   @NotNull
   private final PowerShellEdition myEdition;
 
+  @NotNull
+  private final String myExecutable;
+
   public PowerShellInfo(@NotNull final PowerShellBitness bitness,
                         @NotNull final File home,
                         @NotNull final String version,
-                        @NotNull final PowerShellEdition edition) {
+                        @NotNull final PowerShellEdition edition,
+                        @NotNull final String executable) {
     myBitness = bitness;
     myHome = home;
     myVersion = version;
     myEdition = edition;
+    myExecutable = executable;
   }
 
   @NotNull
@@ -63,7 +67,12 @@ public class PowerShellInfo {
 
   @Override
   public String toString() {
-    return "PowerShell " + myEdition + " Edition v" + myVersion + " " + myBitness + "(" + getHome() + ")";
+    return "PowerShell " + myEdition + " Edition v" + myVersion + " " + myBitness + "(" + getHome() + "/" + myExecutable + ")";
+  }
+
+  @NotNull
+  public String getExecutable() {
+    return myExecutable;
   }
 
   @NotNull
@@ -81,10 +90,11 @@ public class PowerShellInfo {
     final Map<String, String> ps = config.getConfigurationParameters();
     final String ver = ps.get(bitness.getVersionKey());
     final String path = ps.get(bitness.getPathKey());
+    final String executable = ps.get(bitness.getExecutableKey());
     final PowerShellEdition edition = PowerShellEdition.fromString(ps.get(bitness.getEditionKey()));
 
     if (path != null && ver != null && edition != null) {
-      return new PowerShellInfo(bitness, new File(path), ver, edition);
+      return new PowerShellInfo(bitness, new File(path), ver, edition, executable);
     }
     return null;
   }
@@ -93,10 +103,11 @@ public class PowerShellInfo {
     config.addConfigurationParameter(myBitness.getVersionKey(), myVersion);
     config.addConfigurationParameter(myBitness.getPathKey(), myHome.toString());
     config.addConfigurationParameter(myBitness.getEditionKey(), myEdition.getValue());
+    config.addConfigurationParameter(myBitness.getExecutableKey(), myExecutable);
   }
 
   @NotNull
   public String getExecutablePath() {
-    return FileUtil.getCanonicalFile(new File(myHome, "powershell" + (SystemInfo.isWindows ? ".exe" : ""))).getPath();
+    return FileUtil.getCanonicalFile(new File(myHome, myExecutable)).getPath();
   }
 }

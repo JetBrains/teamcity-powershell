@@ -61,7 +61,7 @@ public class RegistryPowerShellDetector implements PowerShellDetector {
         continue;
       }
 
-      final PowerShellInfo info = new PowerShellInfo(bitness, home, ver, PowerShellEdition.DESKTOP);
+      final PowerShellInfo info = new PowerShellInfo(bitness, home, ver, PowerShellEdition.DESKTOP, "powershell.exe");
       LOG.info("Found: " + info);
       result.put(info.getBitness(), info);
     }

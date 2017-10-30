@@ -34,7 +34,7 @@ public class PowerShellInfoTest extends BaseTestCase {
 
   @Test(dataProvider = "editionProvider")
   public void testSaveLoad(@NotNull final PowerShellEdition edition) throws IOException {
-    PowerShellInfo info = new PowerShellInfo(PowerShellBitness.x64, createTempDir(), "1.0", edition);
+    PowerShellInfo info = new PowerShellInfo(PowerShellBitness.x64, createTempDir(), "1.0", edition, "powershell.exe");
 
     final Mockery m = new Mockery();
     final BuildAgentConfiguration conf = m.mock(BuildAgentConfiguration.class);
@@ -69,6 +69,7 @@ public class PowerShellInfoTest extends BaseTestCase {
     Assert.assertEquals(i.getExecutablePath(), info.getExecutablePath());
     Assert.assertEquals(i.getVersion(), info.getVersion());
     Assert.assertEquals(i.getEdition(), info.getEdition());
+    Assert.assertEquals(i.getExecutable(), info.getExecutable());
   }
 
   @DataProvider(name = "editionProvider")

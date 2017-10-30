@@ -49,6 +49,10 @@ public enum PowerShellBitness {
     return getVersionKey() + "_Path";
   }
 
+  public String getExecutableKey() {
+    return getEditionKey() + "_Executable";
+  }
+
   public String getEditionKey() {
     return getVersionKey() + "_Edition";
   }
