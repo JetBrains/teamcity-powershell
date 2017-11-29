@@ -112,7 +112,7 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
     setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "echo works");
     setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, bits.getValue());
-    
+
     setBuildConfigurationParameter(PowerShellConstants.CONFIG_KEEP_GENERATED, "true");
     final SFinishedBuild build = doTest(null);
     assertEquals(1, getTempFiles().length);
@@ -151,10 +151,10 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
     final File generatedScript = getTempFiles()[0];
     InputStreamReader reader = null;
     try {
-       reader = new InputStreamReader(new FileInputStream(generatedScript), FILES_ENCODING);
-       char[] buf = new char[1];
-       assertEquals(1, reader.read(buf));
-       assertEquals("BOM is not written to external file", '\ufeff', buf[0]);
+      reader = new InputStreamReader(new FileInputStream(generatedScript), FILES_ENCODING);
+      char[] buf = new char[1];
+      assertEquals(1, reader.read(buf));
+      assertEquals("BOM is not written to external file", '\ufeff', buf[0]);
     } catch (IOException e) {
       fail(e.getMessage());
     } finally {
@@ -166,6 +166,33 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
     assertTrue("Non-ASCII symbols were not written to generated script", fileContents.contains("\u00f8\u00e5\u00e6"));
     dumpBuildLogLocally(build);
     Assert.assertTrue(build.getBuildStatus().isSuccessful());
+  }
+
+  @Test(dataProvider = "supportedBitnessProvider")
+  @TestFor(issues = "TW-34775")
+  public void testOutputIsWrittenFromScriptInFile(@NotNull final PowerShellBitness bits) throws Throwable {
+    final File dir = createTempDir();
+    final File code = new File(dir, "code.ps1");
+    FileUtil.writeFileAndReportErrors(code,
+        "param ([string]$PowerShellParam = \"value\",)\n" +
+            "Write-Host \"String from Write-Host\"\n" +
+            "Write-Output \"String from Write-Output\"\n" +
+            "Write-Host \"Function call from Write-Host $((Get-Date -Year 2000 -Month 12 -Day 31).DayOfYear)\"\n" +
+            "Write-Output \"Function call from Write-Output $((Get-Date -Year 2000 -Month 12 -Day 31).DayOfYear)\"\n"
+    );
+
+    setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.FILE.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_FILE, code.getPath());
+    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, bits.getValue());
+
+    final SFinishedBuild build = doTest(null);
+    dumpBuildLogLocally(build);
+    Assert.assertTrue(build.getBuildStatus().isSuccessful());
+    Assert.assertTrue(getBuildLog(build).contains("String from Write-Host"));
+    Assert.assertTrue(getBuildLog(build).contains("String from Write-Output"));
+    Assert.assertTrue(getBuildLog(build).contains("Function call from Write-Host 366"));
+    Assert.assertTrue(getBuildLog(build).contains("Function call from Write-Output 366"));
   }
 
   @NotNull
