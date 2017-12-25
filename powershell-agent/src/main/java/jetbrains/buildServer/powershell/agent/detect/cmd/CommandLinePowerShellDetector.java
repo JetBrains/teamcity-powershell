@@ -118,7 +118,7 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
     }
   }
   private void register(@NotNull final Map<PowerShellBitness, PowerShellInfo> detected, @NotNull final PowerShellInfo info) {
-    LOG.info("Registering " + info.getBitness() + " PowerShell at:" + info.getExecutablePath());
+    LOG.info("Registering " + info.getBitness() + " PowerShell at: " + info.getExecutablePath());
     detected.put(info.getBitness(), info);
   }
 

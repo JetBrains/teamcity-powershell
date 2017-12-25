@@ -11,6 +11,7 @@ import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.CapturingProcessHandler;
 import com.intellij.execution.process.ProcessOutput;
+import com.intellij.openapi.diagnostic.Logger;
 import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,6 +25,8 @@ import java.util.List;
  */
 public class DetectionRunner {
 
+  private static final Logger LOG = Logger.getInstance(DetectionRunner.class.getName());
+
   /**
    * Runs detection script
    *
@@ -35,8 +38,12 @@ public class DetectionRunner {
   List<String> runDetectionScript(@NotNull final String executablePath, @NotNull final String detectionScriptPath) throws ExecutionException {
     final GeneralCommandLine cl = new GeneralCommandLine();
     cl.setExePath(executablePath);
+    cl.addParameter("-NoProfile");
     cl.addParameter("-File");
     cl.addParameter(detectionScriptPath);
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Running detection script using command line: " + cl.getCommandLineString());
+    }
     final ProcessOutput execResult = runProcess(cl);
     return execResult.getStdoutLines();
   }
