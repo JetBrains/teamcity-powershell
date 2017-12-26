@@ -42,4 +42,7 @@ public class PowerShellConstants {
    * Any edition of PowerShell is suitable
    */
   public static final String PARAM_VALUE_EDITION_ANY = "<Any>";
+
+
+  public static final String PARAM_NAME_LOAD_TC_PROFILE = "teamcity.powershell.load.profile";
 }

@@ -35,8 +35,9 @@ public class PowerShellServiceWindows extends BasePowerShellService {
   public PowerShellServiceWindows(@NotNull final PowerShellInfoProvider infoProvider,
                                   @NotNull final ScriptGenerator scriptGenerator,
                                   @NotNull final PowerShellCommandLineProvider cmdProvider,
-                                  @NotNull final PowerShellCommands commands) {
-    super(infoProvider, scriptGenerator, cmdProvider, commands);
+                                  @NotNull final PowerShellCommands commands,
+                                  @NotNull final ProfileWriter profileWriter) {
+    super(infoProvider, scriptGenerator, cmdProvider, commands, profileWriter);
   }
 
   @Override
@@ -57,7 +58,7 @@ public class PowerShellServiceWindows extends BasePowerShellService {
   protected SimpleProgramCommandLine getFileCommandLine(@NotNull final PowerShellInfo info,
                                                         @NotNull final Map<String, String> env,
                                                         @NotNull final String workDir,
-                                                        @NotNull final List<String> args) throws RunBuildException {
+                                                        @NotNull final List<String> args) {
     final BuildProgressLogger buildLogger = getBuild().getBuildLogger();
     final String command = myCommands.getNativeCommand(info);
     buildLogger.message("Command: " + command);

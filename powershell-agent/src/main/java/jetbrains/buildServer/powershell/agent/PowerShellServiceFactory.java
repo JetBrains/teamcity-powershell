@@ -14,6 +14,7 @@ import jetbrains.buildServer.agent.runner.CommandLineBuildService;
 import jetbrains.buildServer.agent.runner.CommandLineBuildServiceFactory;
 import jetbrains.buildServer.powershell.agent.service.PowerShellServiceUnix;
 import jetbrains.buildServer.powershell.agent.service.PowerShellServiceWindows;
+import jetbrains.buildServer.powershell.agent.service.ProfileWriter;
 import jetbrains.buildServer.powershell.agent.system.PowerShellCommands;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import org.jetbrains.annotations.NotNull;
@@ -33,23 +34,27 @@ public class PowerShellServiceFactory implements CommandLineBuildServiceFactory,
   
   @NotNull
   private final PowerShellCommands myCommands;
+  @NotNull
+  private final ProfileWriter myProfileWriter;
 
   public PowerShellServiceFactory(@NotNull final PowerShellInfoProvider powerShellInfoProvider,
                                   @NotNull final PowerShellCommandLineProvider cmdProvider,
                                   @NotNull final ScriptGenerator generator,
-                                  @NotNull final PowerShellCommands powerShellCommands) {
+                                  @NotNull final PowerShellCommands powerShellCommands,
+                                  @NotNull final ProfileWriter profileWriter) {
     myInfoProvider = powerShellInfoProvider;
     myCmdProvider = cmdProvider;
     myGenerator = generator;
     myCommands = powerShellCommands;
+    myProfileWriter = profileWriter;
   }
 
   @NotNull
   public CommandLineBuildService createService() {
     if (SystemInfo.isWindows) {
-      return new PowerShellServiceWindows(myInfoProvider, myGenerator, myCmdProvider, myCommands);
+      return new PowerShellServiceWindows(myInfoProvider, myGenerator, myCmdProvider, myCommands, myProfileWriter);
     } else {
-      return new PowerShellServiceUnix(myInfoProvider, myGenerator, myCmdProvider, myCommands);
+      return new PowerShellServiceUnix(myInfoProvider, myGenerator, myCmdProvider, myCommands, myProfileWriter);
     }
   }
 

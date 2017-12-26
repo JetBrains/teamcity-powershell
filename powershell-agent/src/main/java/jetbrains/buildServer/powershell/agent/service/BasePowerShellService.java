@@ -22,6 +22,7 @@ import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellEdition;
 import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.util.FileUtil;
+import jetbrains.buildServer.util.PropertiesUtil;
 import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,15 +54,19 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
 
   @NotNull
   final PowerShellCommands myCommands;
+  @NotNull
+  private final ProfileWriter myProfileWriter;
 
   BasePowerShellService(@NotNull final PowerShellInfoProvider infoProvider,
-                               @NotNull final ScriptGenerator scriptGenerator,
-                               @NotNull final PowerShellCommandLineProvider cmdProvider,
-                               @NotNull final PowerShellCommands commands) {
+                        @NotNull final ScriptGenerator scriptGenerator,
+                        @NotNull final PowerShellCommandLineProvider cmdProvider,
+                        @NotNull final PowerShellCommands commands,
+                        @NotNull final ProfileWriter profileWriter) {
     myInfoProvider = infoProvider;
     myScriptGenerator = scriptGenerator;
     myCmdProvider = cmdProvider;
     myCommands = commands;
+    myProfileWriter = profileWriter;
   }
 
   @NotNull
@@ -74,6 +79,11 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
     final BuildProgressLogger buildLogger = getBuild().getBuildLogger();
     buildLogger.message("PowerShell Executable: " + psExecutable);
     buildLogger.message("Working directory: " + workDir);
+
+    if (PropertiesUtil.getBoolean(getConfigParameters().get(PowerShellConstants.PARAM_NAME_LOAD_TC_PROFILE))) {
+      myProfileWriter.writeProfile(buildLogger, info, getBuildTempDirectory(), getSystemProperties());
+    }
+
     if (PowerShellExecutionMode.STDIN == mode) {
       return getStdInCommandLine(info, getEnv(info), workDir, generateCommand(info));
     } else if (PowerShellExecutionMode.PS1 == mode) {
@@ -93,7 +103,7 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
       myFilesToRemove.add(scriptFile);
     }
     parametersList.add(info.getExecutablePath());
-    parametersList.addAll(myCmdProvider.provideCommandLine(info, runnerParameters, scriptFile, useExecutionPolicy(info)));
+    parametersList.addAll(myCmdProvider.provideCommandLine(info, runnerParameters, getSystemProperties(), scriptFile, useExecutionPolicy(info)));
     return parametersList.getParametersString();
   }
 
@@ -104,7 +114,7 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
     if (ScriptGenerator.shouldRemoveGeneratedScript(runnerParameters)) {
       myFilesToRemove.add(scriptFile);
     }
-    return myCmdProvider.provideCommandLine(info, runnerParameters, scriptFile, useExecutionPolicy(info));
+    return myCmdProvider.provideCommandLine(info, runnerParameters, getSystemProperties(), scriptFile, useExecutionPolicy(info));
   }
 
   private PowerShellInfo selectTool() throws RunBuildException {

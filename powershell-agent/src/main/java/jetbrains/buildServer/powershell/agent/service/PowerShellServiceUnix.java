@@ -38,8 +38,9 @@ public class PowerShellServiceUnix extends BasePowerShellService {
   public PowerShellServiceUnix(@NotNull final PowerShellInfoProvider infoProvider,
                                @NotNull final ScriptGenerator scriptGenerator,
                                @NotNull final PowerShellCommandLineProvider cmdProvider,
-                               @NotNull final PowerShellCommands commands) {
-    super(infoProvider, scriptGenerator, cmdProvider, commands);
+                               @NotNull final PowerShellCommands commands,
+                               @NotNull final ProfileWriter profileWriter) {
+    super(infoProvider, scriptGenerator, cmdProvider, commands, profileWriter);
   }
 
   @Override

@@ -13,6 +13,7 @@ import jetbrains.buildServer.RunBuildException;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.common.PowerShellEdition;
 import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
+import jetbrains.buildServer.util.PropertiesUtil;
 import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,6 +36,7 @@ public class PowerShellCommandLineProvider {
   @NotNull
   public List<String> provideCommandLine(@NotNull final PowerShellInfo info,
                                          @NotNull final Map<String, String> runnerParams,
+                                         @NotNull final Map<String, String> systemProperties,
                                          @NotNull final File scriptFile,
                                          final boolean useExecutionPolicy) throws RunBuildException {
     final List<String> result = new ArrayList<String>();
@@ -43,7 +45,7 @@ public class PowerShellCommandLineProvider {
       throw new RunBuildException("'" + RUNNER_EXECUTION_MODE + "' runner parameter is not defined");
     }
     addVersion(result, runnerParams, info); // version must be the 1st arg after executable path
-    if (!StringUtil.isEmptyOrSpaces(runnerParams.get(RUNNER_NO_PROFILE))) {
+    if (!StringUtil.isEmptyOrSpaces(runnerParams.get(RUNNER_NO_PROFILE)) && !PropertiesUtil.getBoolean(systemProperties.get(PARAM_NAME_LOAD_TC_PROFILE))) {
       result.add("-NoProfile");
     }
     result.add("-NonInteractive");

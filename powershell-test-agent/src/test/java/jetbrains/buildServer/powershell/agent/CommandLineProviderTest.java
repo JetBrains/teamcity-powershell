@@ -44,6 +44,8 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
   
   private PowerShellInfo myInfo;
 
+  private final Map<String, String> systemProperties = Collections.emptyMap();
+
   @SuppressWarnings("ResultOfMethodCallIgnored")
   @Override
   @BeforeMethod
@@ -81,7 +83,7 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
       final Map<String, String> runnerParams = new HashMap<String, String>();
       runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, version);
       addExecutionExpectations(myInfo, version);
-      final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false);
+      final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, systemProperties, myScriptFile, false);
       // powershell.exe -Version $version
       assertTrue(result.size() >= 2);
       assertEquals(expectedVersionArg, result.get(0));
@@ -110,7 +112,7 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
       add(myScriptFile.getPath());
       addAll(Arrays.asList(args.split("\\s+")));
     }};
-    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false);
+    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, systemProperties, myScriptFile, false);
     assertSameElements(result, expected);
   }
 
@@ -127,7 +129,7 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
       never(myInfo).getVersion();
     }});
 
-    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false);
+    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, systemProperties, myScriptFile, false);
     for (String str: result) {
       if ("-Version".equals(str)) {
         fail("PowerShell version should not be supplied if Any is selected in runner parameters");
@@ -154,7 +156,7 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
       add("-File");
       add(myScriptFile.getPath());
     }};
-    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false);
+    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, systemProperties, myScriptFile, false);
     assertSameElements(result, expected);
   }
 
@@ -183,7 +185,7 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
       add("-File");
       add(myScriptFile.getPath());
     }};
-    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false);
+    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, systemProperties, myScriptFile, false);
     assertSameElements(result, expected);
   }
 
@@ -210,7 +212,7 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
       add("<");
       add(myScriptFile.getPath());
     }};
-    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false);
+    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, systemProperties, myScriptFile, false);
     assertSameElements(result, expected);
   }
 
@@ -238,7 +240,7 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
       add("arg4");
       add("arg5");
     }};
-    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false);
+    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, systemProperties, myScriptFile, false);
     assertSameElements(result, expected);
   }
 
@@ -263,7 +265,7 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
       add("-PassToPowerShell");
       add("^MatchTheWholeString$");
     }};
-    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false);
+    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, systemProperties, myScriptFile, false);
     assertSameElements(result, expected);
   }
 

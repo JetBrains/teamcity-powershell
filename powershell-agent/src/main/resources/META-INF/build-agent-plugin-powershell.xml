@@ -21,5 +21,6 @@
   <bean class="jetbrains.buildServer.powershell.agent.detect.registry.RegistryPowerShellDetector"/>
   <bean class="jetbrains.buildServer.powershell.agent.detect.cmd.DetectionRunner"/>
   <bean class="jetbrains.buildServer.powershell.agent.detect.cmd.CommandLinePowerShellDetector"/>
+  <bean class="jetbrains.buildServer.powershell.agent.service.ProfileWriter"/>
 
 </beans>
