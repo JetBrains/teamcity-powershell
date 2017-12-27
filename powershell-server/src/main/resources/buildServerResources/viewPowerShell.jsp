@@ -18,11 +18,11 @@
   <strong>
     <c:set var="type" value="${propertiesBean.properties[bean.bitnessKey]}"/>
     <c:forEach var="val" items="${bean.bitnessValues}">
-      <c:if test="${type eq val.value}"><c:out value="${val.key}"/></c:if>
+      <c:if test="${type eq val.value or empty type and empty val.value}"><c:out value="bitness: ${val.key}"/></c:if>
     </c:forEach>
     <c:set var="edition" value="${propertiesBean.properties[bean.editionKey]}"/>
     <c:forEach var="val" items="${bean.editionValues}">
-      <c:if test="${edition eq val.value}"><c:out value="${val.key} Edition"/></c:if>
+      <c:if test="${edition eq val.value or empty type and empty val.value}"><c:out value="edition: ${val.key}"/></c:if>
     </c:forEach>
   </strong>
 </div>
@@ -41,12 +41,12 @@
 
 <c:if test="${propertiesBean.properties[bean.scriptModeKey] eq bean.scriptModeCodeValue}">
   <div class="parameter">
-    Script: <strong>custom</strong>
+    Custom script: <props:displayValue name="jetbrains_powershell_script_code" emptyValue="<empty>" showInPopup="true" popupTitle="Script content" popupLinkText="view script content"/>
   </div>
 </c:if>
 
 <div class="parameter">
-  Add -NoProfile argument: <props:displayCheckboxValue name="${bean.noProfileKey}"/>
+  Add -NoProfile argument: <props:displayCheckboxValue name="${bean.noProfileKey}" checkedValue="Yes" uncheckedValue="No"/>
 </div>
 
 <div class="parameter">
