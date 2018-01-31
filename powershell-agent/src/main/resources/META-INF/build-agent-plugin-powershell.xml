@@ -12,6 +12,7 @@
        default-autowire="constructor">
 
   <bean class="jetbrains.buildServer.powershell.agent.PowerShellInfoProvider"/>
+  <bean class="jetbrains.buildServer.powershell.agent.ShellInfoHolder"/>
   <bean class="jetbrains.buildServer.powershell.agent.PowerShellCommandLineProvider"/>
   <bean class="jetbrains.buildServer.powershell.agent.ScriptGenerator"/>
   <bean class="jetbrains.buildServer.powershell.agent.system.SystemBitness"/>

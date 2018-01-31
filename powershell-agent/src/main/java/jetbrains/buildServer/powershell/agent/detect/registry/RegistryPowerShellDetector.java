@@ -36,15 +36,16 @@ public class RegistryPowerShellDetector implements PowerShellDetector {
     myAccessor = accessor;
   }
 
-  @Override
   @NotNull
-  public Map<PowerShellBitness, PowerShellInfo> findPowerShells(@NotNull final DetectionContext detectionContext) {
+  @Override
+  public Map<String, PowerShellInfo> findShells(@NotNull DetectionContext detectionContext) {
+    Map<String, PowerShellInfo> result = new HashMap<String, PowerShellInfo>();
+
     LOG.info("Detecting PowerShell using RegistryPowerShellDetector");
     if (!SystemInfo.isWindows) {
       LOG.info("RegistryPowerShellDetector is only available on Windows");
       return Collections.emptyMap();
     }
-    final Map<PowerShellBitness, PowerShellInfo> result = new HashMap<PowerShellBitness, PowerShellInfo>(2);
     for (PowerShellBitness bitness: PowerShellBitness.values()) {
       final PowerShellRegistry reg = new PowerShellRegistry(bitness.toBitness(), myAccessor);
 
@@ -63,7 +64,7 @@ public class RegistryPowerShellDetector implements PowerShellDetector {
 
       final PowerShellInfo info = new PowerShellInfo(bitness, home, ver, PowerShellEdition.DESKTOP, "powershell.exe");
       LOG.info("Found: " + info);
-      result.put(info.getBitness(), info);
+      result.put(info.getHome().getAbsolutePath(), info);
     }
     return result;
   }

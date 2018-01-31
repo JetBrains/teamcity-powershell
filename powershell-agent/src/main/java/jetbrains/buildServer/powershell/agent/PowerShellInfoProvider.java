@@ -32,13 +32,16 @@ import java.util.*;
 public class PowerShellInfoProvider {
 
   private final BuildAgentConfiguration myConfig;
+  @NotNull
+  private final ShellInfoHolder myHolder;
 
   public PowerShellInfoProvider(@NotNull final BuildAgentConfiguration config,
                                 @NotNull final EventDispatcher<AgentLifeCycleListener> events,
-                                @NotNull final List<PowerShellDetector> detectors) {
+                                @NotNull final List<PowerShellDetector> detectors,
+                                @NotNull final ShellInfoHolder holder) {
     myConfig = config;
-    events.addListener(new AgentLifeCycleAdapter(){
-
+    myHolder = holder;
+    events.addListener(new AgentLifeCycleAdapter() {
       @Override
       public void afterAgentConfigurationLoaded(@NotNull BuildAgent agent) {
         registerDetectedPowerShells(detectors, new DetectionContext(agent.getConfiguration()));
@@ -48,76 +51,141 @@ public class PowerShellInfoProvider {
 
   private void registerDetectedPowerShells(@NotNull final List<PowerShellDetector> detectors,
                                            @NotNull final DetectionContext detectionContext) {
-    Map<PowerShellBitness, PowerShellInfo> detected = new HashMap<PowerShellBitness, PowerShellInfo>();
+    Map<String, PowerShellInfo> shells = new HashMap<String, PowerShellInfo>();
     for (PowerShellDetector detector: detectors) {
-      for (Map.Entry<PowerShellBitness, PowerShellInfo> e: detector.findPowerShells(detectionContext).entrySet()) {
-        if (detected.get(e.getKey()) == null) {
-          detected.put(e.getKey(), e.getValue());
+      for (Map.Entry<String, PowerShellInfo> entry: detector.findShells(detectionContext).entrySet()) {
+        if (!shells.containsKey(entry.getKey())) {
+          shells.put(entry.getKey(), entry.getValue());             
+          entry.getValue().saveInfo(myConfig);
+          myHolder.addShellInfo(entry.getValue());
         }
       }
     }
-    for (PowerShellInfo info: detected.values()) {
-      info.saveInfo(myConfig);
+    // provide parameters for agent compatibility filters
+    if (!myHolder.getShells().isEmpty()) {
+      provideMaxVersions();
+      provideCompatibilityParams();
+    }
+  }
+
+  /**
+   * Provides max version of all {@code edition x bitness} combinations.
+   * Helps with agent requirements
+   */
+  private void provideMaxVersions() {
+    for (PowerShellBitness bitness: PowerShellBitness.values()) {
+      for (PowerShellEdition edition: PowerShellEdition.values()) {
+        PowerShellInfo info = selectTool(bitness, null, edition);
+        if (info != null) {
+          myConfig.addConfigurationParameter("powershell_" + info.getEdition().getValue() + "_" + info.getBitness().getValue(), info.getVersion());
+        }
+      }
+    }
+  }
+
+  private void provideCompatibilityParams() {
+    for (PowerShellBitness bitness: PowerShellBitness.values()) {
+      PowerShellInfo info = selectTool(bitness, null, null); // select max version of each bitness and provide legacy parameters
+      if (info != null) {
+        // todo: remove keys from Bitness
+        myConfig.addConfigurationParameter(bitness.getVersionKey(), info.getVersion());
+        myConfig.addConfigurationParameter(bitness.getPathKey(), info.getHome().toString());
+        myConfig.addConfigurationParameter(bitness.getEditionKey(), info.getEdition().getValue());
+        myConfig.addConfigurationParameter(bitness.getExecutableKey(), info.getExecutable());
+      }
     }
   }
 
   boolean anyPowerShellDetected() {
-    return !getPowerShells().isEmpty();
+    return !myHolder.getShells().isEmpty();
   }
-  
+
   @Nullable
   public PowerShellInfo selectTool(@Nullable final PowerShellBitness bit,
                                    @Nullable final String version,
                                    @Nullable final PowerShellEdition edition) {
-    Map<PowerShellBitness, PowerShellInfo> available = getPowerShellsMap();
-    PowerShellInfo result;
+    // filter by edition
+    List<PowerShellInfo> availableShells = myHolder.getShells();
     if (edition != null) {
-      available = CollectionsUtil.filterMapByValues(available, new Filter<PowerShellInfo>() {
+      availableShells = CollectionsUtil.filterCollection(availableShells, new Filter<PowerShellInfo>() {
         @Override
         public boolean accept(@NotNull PowerShellInfo data) {
           return edition.equals(data.getEdition());
         }
       });
     }
+
+    // filter by version
+    if (version != null) {
+      availableShells = CollectionsUtil.filterCollection(availableShells, new Filter<PowerShellInfo>() {
+        @Override
+        public boolean accept(@NotNull PowerShellInfo data) {
+          return VersionComparatorUtil.compare(data.getVersion(), version) >= 0;
+        }
+      });
+    }
+
+    // filter by bitness
+    if (bit != null) {
+      availableShells = CollectionsUtil.filterCollection(availableShells, new Filter<PowerShellInfo>() {
+        @Override
+        public boolean accept(@NotNull PowerShellInfo data) {
+          return data.getBitness().equals(bit);
+        }
+      });
+    }
+
+    if (availableShells.isEmpty()) {
+      return null;
+    }
+    if (availableShells.size() == 1) {
+      return availableShells.get(0);
+    }
+
+    // prefer desktop over core
+    if (edition == null) {
+      Map<PowerShellEdition, List<PowerShellInfo>> byEdition = new HashMap<PowerShellEdition, List<PowerShellInfo>>();
+      for (PowerShellInfo info: availableShells) {
+        if (!byEdition.containsKey(info.getEdition())) {
+          byEdition.put(info.getEdition(), new ArrayList<PowerShellInfo>());
+        }
+        byEdition.get(info.getEdition()).add(info);
+      }
+      if (byEdition.get(PowerShellEdition.DESKTOP) != null) {
+        availableShells = byEdition.get(PowerShellEdition.DESKTOP);
+      } else {
+        availableShells = byEdition.get(PowerShellEdition.CORE);
+      }
+    }
+
+    if (availableShells.size() == 1) {
+      return availableShells.get(0);
+    }
+    // prefer 64bit over 32bit
     if (bit == null) {
-      if (version != null) {
-        available = CollectionsUtil.filterMapByValues(available, new Filter<PowerShellInfo>() {
-          @Override
-          public boolean accept(@NotNull PowerShellInfo data) {
-            return VersionComparatorUtil.compare(data.getVersion(), version) >= 0;
-          }
-        });
+      Map<PowerShellBitness, List<PowerShellInfo>> byBits = new HashMap<PowerShellBitness, List<PowerShellInfo>>();
+      for (PowerShellInfo info : availableShells) {
+        if (!byBits.containsKey(info.getBitness())) {
+          byBits.put(info.getBitness(), new ArrayList<PowerShellInfo>());
+        }
+        byBits.get(info.getBitness()).add(info);
       }
-      result = available.get(PowerShellBitness.x64);
-      if (result != null) {
-        return result;
-      }
-      return available.get(PowerShellBitness.x86);
-    } else {
-      return available.get(bit);
-    }
-  }
-
-  private Map<PowerShellBitness, PowerShellInfo> getPowerShellsMap() {
-    final Map<PowerShellBitness, PowerShellInfo> result = new HashMap<PowerShellBitness, PowerShellInfo>(2);
-    for (PowerShellBitness bit: PowerShellBitness.values()) {
-      final PowerShellInfo info = PowerShellInfo.loadInfo(myConfig, bit);
-      if (info != null) {
-        result.put(bit, info);
+      if (byBits.containsKey(PowerShellBitness.x64)) {
+        availableShells = byBits.get(PowerShellBitness.x64);
+      } else {
+        availableShells = byBits.get(PowerShellBitness.x86);
       }
     }
-    return result;
-  }
-
-  @NotNull
-  private Collection<PowerShellInfo> getPowerShells() {
-    Collection<PowerShellInfo> infos = new ArrayList<PowerShellInfo>(2);
-    for (PowerShellBitness bit : PowerShellBitness.values()) {
-      final PowerShellInfo i = PowerShellInfo.loadInfo(myConfig, bit);
-      if (i != null) {
-        infos.add(i);
-      }
+    if (availableShells.size() == 1) {
+      return availableShells.get(0);
     }
-    return infos;
+    // select max available version
+    Collections.sort(availableShells, new Comparator<PowerShellInfo>() {
+      @Override
+      public int compare(PowerShellInfo info1, PowerShellInfo info2) {
+        return VersionComparatorUtil.compare(info1.getVersion(), info2.getVersion());
+      }
+    });
+    return availableShells.get(0);
   }
 }

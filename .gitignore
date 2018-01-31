@@ -47,6 +47,7 @@ local.properties
 
 ### JetBrains template
 .idea/
+*.iml
 
 # teamcity-gradle-plugin
 servers/

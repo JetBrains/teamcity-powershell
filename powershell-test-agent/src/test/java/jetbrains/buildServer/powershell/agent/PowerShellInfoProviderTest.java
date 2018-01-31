@@ -22,6 +22,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +40,11 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
 
   private BuildAgentConfiguration myConfig;
 
+  private ShellInfoHolder myHolder;
+
   private EventDispatcher<AgentLifeCycleListener> myEvents;
+
+  private File myTempHome;
 
   @Override
   @BeforeMethod
@@ -51,36 +56,29 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
     }};
     myEvents = m.mock(EventDispatcher.class);
     myConfig = m.mock(BuildAgentConfiguration.class);
+    myHolder = new ShellInfoHolder();
     m.checking(new Expectations() {{
       allowing(myEvents);
     }});
-    myProvider = new PowerShellInfoProvider(myConfig, myEvents, Collections.<PowerShellDetector>emptyList());
+    myTempHome = createTempDir();
+    myProvider = new PowerShellInfoProvider(myConfig, myEvents, Collections.<PowerShellDetector>emptyList(), myHolder);
   }
 
   @Test
   public void testNull_NoToolDetected() {
-    m.checking(new Expectations() {{
-      allowing(myConfig).getConfigurationParameters();
-      will(returnValue(Collections.emptyMap()));
-    }});
     assertNull(myProvider.selectTool(PowerShellBitness.x86, null, null));
   }
 
   @Test(dataProvider = "editionProvider")
-  public void testNull_BitnessNotSatisfied_32_64(@NotNull final PowerShellEdition edition) {
-    final Map<String, String> params = new HashMap<String, String>();
-    params.putAll(mock32Bit("1.0", edition));
-    m.checking(new Expectations() {{
-      allowing(myConfig).getConfigurationParameters();
-      will(returnValue(params));
-    }});
+  public void testNull_BitnessNotSatisfied_32_64(@NotNull final PowerShellEdition edition) throws Exception {
+    myHolder.addShellInfo(new PowerShellInfo(PowerShellBitness.x86, createTempDir(), "1.0", edition, "powershell.exe"));
     assertNull(myProvider.selectTool(PowerShellBitness.x64, null, null));
   }
 
   @Test(dataProvider = "editionProvider")
   public void testNull_BitnessNotSatisfied_64_32(@NotNull final PowerShellEdition edition) {
     final Map<String, String> params = new HashMap<String, String>();
-    params.putAll(mock64bit("1.0", edition));
+    mock64bit("1.0", edition);
     m.checking(new Expectations() {{
       allowing(myConfig).getConfigurationParameters();
       will(returnValue(params));
@@ -95,8 +93,8 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
   @Test(dataProvider = "editionProvider")
   public void testNull_MinVersionNotSatisfied_32bit(@NotNull final PowerShellEdition edition) {
     final Map<String, String> params = new HashMap<String, String>();
-    params.putAll(mock32Bit("1.0", edition));
-    params.putAll(mock64bit("2.0", edition));
+    mock32Bit("1.0", edition);
+    mock64bit("2.0", edition);
     m.checking(new Expectations() {{
       allowing(myConfig).getConfigurationParameters();
       will(returnValue(params));
@@ -113,8 +111,8 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
   @Test(dataProvider = "editionProvider")
   public void testSelect64Over32(@NotNull final PowerShellEdition edition) {
     final Map<String, String> params = new HashMap<String, String>();
-    params.putAll(mock32Bit("2.0", edition));
-    params.putAll(mock64bit("2.0", edition));
+    mock32Bit("2.0", edition);
+    mock64bit("2.0", edition);
     m.checking(new Expectations() {{
       allowing(myConfig).getConfigurationParameters();
       will(returnValue(params));
@@ -132,8 +130,8 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
   @Test(dataProvider = "editionProvider")
   public void testSelect32OVer64_Version(@NotNull final PowerShellEdition edition) {
     final Map<String, String> params = new HashMap<String, String>();
-    params.putAll(mock32Bit("5.0", edition));
-    params.putAll(mock64bit("5.0", edition));
+    mock32Bit("5.0", edition);
+    mock64bit("5.0", edition);
     m.checking(new Expectations() {{
       allowing(myConfig).getConfigurationParameters();
       will(returnValue(params));
@@ -146,8 +144,8 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
   @Test(dataProvider = "editionProvider")
   public void testSelectExact(@NotNull final PowerShellEdition edition) {
     final Map<String, String> params = new HashMap<String, String>();
-    params.putAll(mock32Bit("5.0", edition));
-    params.putAll(mock64bit("6.0", edition));
+    mock32Bit("5.0", edition);
+    mock64bit("6.0", edition);
     m.checking(new Expectations() {{
       allowing(myConfig).getConfigurationParameters();
       will(returnValue(params));
@@ -160,8 +158,8 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
   @Test(dataProvider = "editionProvider")
   public void testUseSemanticVersion(@NotNull final PowerShellEdition edition) {
     final Map<String, String> params = new HashMap<String, String>();
-    params.putAll(mock32Bit("3.0-beta4", edition));
-    params.putAll(mock64bit("6.0-alpha6", edition));
+    mock32Bit("3.0-beta4", edition);
+    mock64bit("6.0-alpha6", edition);
     m.checking(new Expectations() {{
       allowing(myConfig).getConfigurationParameters();
       will(returnValue(params));
@@ -175,20 +173,20 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
   @Test(dataProvider = "editionProvider")
   public void testLoadInfo(@NotNull final PowerShellEdition edition) {
     final Map<String, String> params = new HashMap<String, String>();
-    params.putAll(mock32Bit("1.0", edition));
-    params.putAll(mock64bit("6.0", edition));
+    mock32Bit("1.0", edition);
+    mock64bit("6.0", edition);
     m.checking(new Expectations() {{
       allowing(myConfig).getConfigurationParameters();
       will(returnValue(params));
     }});
     assertTrue(myProvider.anyPowerShellDetected());
   }
-  
+
   @Test
   public void testFilterByEdition() {
     final Map<String, String> params = new HashMap<String, String>();
-    params.putAll(mock32Bit("5.0", PowerShellEdition.DESKTOP));
-    params.putAll(mock64bit("6.0", PowerShellEdition.CORE));
+    mock32Bit("5.0", PowerShellEdition.DESKTOP);
+    mock64bit("6.0", PowerShellEdition.CORE);
     m.checking(new Expectations() {{
       allowing(myConfig).getConfigurationParameters();
       will(returnValue(params));
@@ -206,23 +204,19 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
     assertEquals("5.0", infoDesktop.getVersion());
     assertEquals(PowerShellEdition.DESKTOP, infoDesktop.getEdition());
   }
-  
-  private Map<String, String> mock32Bit(@NotNull final String version, @NotNull final PowerShellEdition edition) {
-    return mockInstance(PowerShellBitness.x86, version, edition);
+
+  private void mock32Bit(@NotNull final String version, @NotNull final PowerShellEdition edition) {
+    mockInstance(PowerShellBitness.x86, version, edition);
   }
 
-  private Map<String, String> mock64bit(@NotNull final String version, @NotNull final PowerShellEdition edition) {
-    return mockInstance(PowerShellBitness.x64, version, edition);
+  private void mock64bit(@NotNull final String version, @NotNull final PowerShellEdition edition) {
+    mockInstance(PowerShellBitness.x64, version, edition);
   }
 
-  private Map<String, String> mockInstance(@NotNull final PowerShellBitness bits,
-                                           @NotNull final String version,
-                                           @NotNull final PowerShellEdition edition) {
-    final Map<String, String> result = new HashMap<String, String>();
-    result.put(bits.getVersionKey(), version);
-    result.put(bits.getPathKey(), "/path/to/" + bits.name());
-    result.put(bits.getEditionKey(), edition.getValue());
-    return result;
+  private void mockInstance(@NotNull final PowerShellBitness bits,
+                            @NotNull final String version,
+                            @NotNull final PowerShellEdition edition) {
+    myHolder.addShellInfo(new PowerShellInfo(bits, myTempHome, version, edition, "powershell"));
   }
 
   @Override

@@ -33,23 +33,24 @@ public class DetectionContext {
   @NotNull
   private final List<String> mySearchPaths;
 
+  private final Map<String, String> myAgentParameters;
+
   public DetectionContext(@NotNull final BuildAgentConfiguration configuration) {
-    final Map<String, String> params = configuration.getConfigurationParameters();
-    myPredefinedPaths = loadPredefinedPaths(params);
-    mySearchPaths = loadSearchPaths(params);
+    myAgentParameters = configuration.getConfigurationParameters();
+    myPredefinedPaths = loadPredefinedPaths();
+    mySearchPaths = loadSearchPaths();
   }
 
   /**
    * Loads predefined paths from agent configuration file
-   * @param params map of agent configuration parameters
    * @see PowerShellBitness#getPathKey()
    *
    * @return map with specific PowerShell paths
    */
-  private Map<PowerShellBitness, String> loadPredefinedPaths(@NotNull final Map<String, String> params) {
+  private Map<PowerShellBitness, String> loadPredefinedPaths() {
     final Map<PowerShellBitness, String> result = new HashMap<PowerShellBitness, String>();
     for (PowerShellBitness bit: PowerShellBitness.values()) {
-      String val = params.get(bit.getPathKey());
+      String val = myAgentParameters.get(bit.getPathKey());
       if (!StringUtil.isEmptyOrSpaces(val)) {
         result.put(bit, val);
       }
@@ -57,8 +58,8 @@ public class DetectionContext {
     return result;
   }
 
-  private List<String> loadSearchPaths(@NotNull final Map<String, String> params) {
-    String val = params.get(PARAM_SEARCH_PATHS);
+  private List<String> loadSearchPaths() {
+    String val = myAgentParameters.get(PARAM_SEARCH_PATHS);
     List<String> result;
     if (!StringUtil.isEmptyOrSpaces(val)) {
       result = StringUtil.split(val, ";");

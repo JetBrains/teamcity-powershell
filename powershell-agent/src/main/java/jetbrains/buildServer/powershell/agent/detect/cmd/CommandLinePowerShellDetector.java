@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.*;
 
@@ -42,21 +43,33 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
   @NotNull
   private final DetectionRunner myRunner;
 
+  /**
+   * https://docs.microsoft.com/en-us/powershell/scripting/setup/installing-powershell-core-on-windows?view=powershell-5.1
+   *
+   * By default the package is installed to $env:ProgramFiles\PowerShell\
+   */
+  private static final List<String> WINDOWS_PATHS = Collections.singletonList(System.getenv("ProgramFiles") + "\\PowerShell");
+
   private static final List<String> PATHS = Arrays.asList(
-          "/usr/local/bin", // mac os
-          "/usr/bin"        // linux
+      "/usr/local/bin", // mac os
+      "/usr/bin"        // linux
+  );
+
+  private static final List<String> EXECUTABLES_WIN = Arrays.asList(
+      "pwsh.exe",
+      "poweshell.exe"
   );
 
   private static final List<String> EXECUTABLES = Arrays.asList(
-          "pwsh",
-          "powershell"
+      "pwsh",
+      "powershell"
   );
 
   private static final String DETECTION_SCRIPT =
-          "Write-Output " +
-                  "$PSVersionTable.PSVersion.toString() " + // shell version
-                  "$PSVersionTable.PSEdition.toString() " + // shell edition
-                  "([IntPtr]::size -eq 8)";                 // shell bitness
+      "Write-Output " +
+          "$PSVersionTable.PSVersion.toString() " + // shell version
+          "$PSVersionTable.PSEdition.toString() " + // shell edition
+          "([IntPtr]::size -eq 8)";                 // shell bitness
 
   public CommandLinePowerShellDetector(@NotNull final BuildAgentConfiguration configuration,
                                        @NotNull final DetectionRunner runner) {
@@ -64,19 +77,28 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
     myRunner = runner;
   }
 
+
   @NotNull
   @Override
-  public Map<PowerShellBitness, PowerShellInfo> findPowerShells(@NotNull final DetectionContext detectionContext) {
-    if (SystemInfo.isWindows) {
-      return Collections.emptyMap();
-    }
-    final Map<PowerShellBitness, PowerShellInfo> result = new HashMap<PowerShellBitness, PowerShellInfo>();
+  public Map<String, PowerShellInfo> findShells(@NotNull DetectionContext detectionContext) {
+    LOG.info("Detecting PowerShell using CommandLinePowerShellDetector");
+    // group by home
+    Map<String, PowerShellInfo> shells = new HashMap<String, PowerShellInfo>();
 
+    // determine paths
+    // todo: add pwsh/powershell executable on path? <- can clash with desktop powershell
+    final List<String> pathsToCheck = !detectionContext.getSearchPaths().isEmpty() ?
+        detectionContext.getSearchPaths() :
+        (SystemInfo.isWindows ? getWindowsPaths() : PATHS);
+
+    final List<String> executablesToCheck = SystemInfo.isWindows ? EXECUTABLES_WIN : EXECUTABLES;
+    LOG.info("Will be detecting powershell at: " + Arrays.toString(pathsToCheck.toArray()));
     File script = null;
     try {
       script = prepareDetectionScript();
       if (script != null) {
         final String scriptPath = script.getAbsolutePath();
+        LOG.info("Detection script path is: " + scriptPath);
         // check predefined paths
         if (!detectionContext.getPredefinedPaths().isEmpty()) {
           // what if 32 bit installation is in place of 64 bit? or otherwise?
@@ -88,38 +110,51 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
                 if (info.getBitness() != e.getKey()) { // if we are to substitute PowerShell installation explicitly, ignoring the bits of detected one
                   LOG.warn("Using configured bitness (" + e.getKey() + ") for PowerShell at [" + info.getHome() + "] instead of detected one (" + info.getBitness() + ")");
                 }
-                register(result, new PowerShellInfo(e.getKey(), info.getHome(), info.getVersion(), info.getEdition(), info.getExecutable()));
+                shells.put(info.getHome().getAbsolutePath(), new PowerShellInfo(e.getKey(), info.getHome(), info.getVersion(), info.getEdition(), info.getExecutable()));
               }
             }
           }
         }
 
-        final List<String> pathsToCheck = !detectionContext.getSearchPaths().isEmpty() ? detectionContext.getSearchPaths() : PATHS;
         for (String path: pathsToCheck) {
-          for (String executable: EXECUTABLES) {
+          for (String executable: executablesToCheck) {
             final PowerShellInfo detected = doDetect(path, executable, scriptPath);
             if (detected != null) {
-              if (result.get(detected.getBitness()) != null) {
-                LOG.warn("Ignoring " + detected.getBitness() + " PowerShell at " + detected.getHome()
-                        + " as it is explicitly replaced by " + result.get(detected.getBitness()).getHome()
-                        + " in build agent properties");
-              } else {
-                register(result, detected);
-              }
+              shells.put(detected.getHome().getAbsolutePath(), detected);
             }
           }
         }
       }
-      return result;
+      return shells;
     } finally {
       if (script != null) {
         FileUtil.delete(script);
       }
     }
   }
-  private void register(@NotNull final Map<PowerShellBitness, PowerShellInfo> detected, @NotNull final PowerShellInfo info) {
-    LOG.info("Registering " + info.getBitness() + " PowerShell at: " + info.getExecutablePath());
-    detected.put(info.getBitness(), info);
+
+  private List<String> getWindowsPaths() {
+    List<String> result = new ArrayList<String>();
+    for (String base: WINDOWS_PATHS) {
+      File f = new File(base);
+      if (f.isDirectory()) {
+        result.addAll(populateWithChildren(f));
+      }
+    }
+    return result;
+  }
+
+  private List<String> populateWithChildren(@NotNull File base) {
+    List<String> result = new ArrayList<String>();
+    for (File f: FileUtil.listFiles(base, new FilenameFilter() {
+      @Override
+      public boolean accept(File file, String s) {
+        return file.isDirectory();
+      }
+    })) {
+      result.add(f.getAbsolutePath());
+    }
+    return result;
   }
 
   @Nullable

@@ -35,7 +35,8 @@ public class DetectionRunner {
    * @return lines from stdout
    * @throws ExecutionException if there was an error during execution
    */
-  List<String> runDetectionScript(@NotNull final String executablePath, @NotNull final String detectionScriptPath) throws ExecutionException {
+  List<String> runDetectionScript(@NotNull final String executablePath,
+                                  @NotNull final String detectionScriptPath) throws ExecutionException {
     final GeneralCommandLine cl = new GeneralCommandLine();
     cl.setExePath(executablePath);
     cl.addParameter("-NoProfile");

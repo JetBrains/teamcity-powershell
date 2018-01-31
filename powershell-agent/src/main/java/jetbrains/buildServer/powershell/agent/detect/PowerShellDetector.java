@@ -7,7 +7,6 @@
 
 package jetbrains.buildServer.powershell.agent.detect;
 
-import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -19,7 +18,14 @@ import java.util.Map;
  */
 public interface PowerShellDetector {
 
+  /**
+   * Detects PowerShells installed on the agent
+   *
+   * @param detectionContext context of detection (agent parameters, etc.)
+   * @return map of detected PowerShells in the format of {@code install_path -> PowerShellInfo}
+   * @see PowerShellInfo
+   */
   @NotNull
-  Map<PowerShellBitness, PowerShellInfo> findPowerShells(@NotNull final DetectionContext detectionContext);
-  
+  Map<String, PowerShellInfo> findShells(@NotNull final DetectionContext detectionContext);
+
 }

@@ -44,7 +44,7 @@ public class PowerShellInfoTest extends BaseTestCase {
       allowing(conf).getConfigurationParameters(); will(returnValue(Collections.unmodifiableMap(confParams)));
       allowing(conf).addConfigurationParameter(with(any(String.class)), with(any(String.class)));
       will(new Action() {
-        public Object invoke(final Invocation invocation) throws Throwable {
+        public Object invoke(final Invocation invocation) {
           final String key = (String) invocation.getParameter(0);
           final String value = (String) invocation.getParameter(1);
           Assert.assertNotNull(key);
@@ -58,18 +58,13 @@ public class PowerShellInfoTest extends BaseTestCase {
         }
       });
     }});
-
+    
+    final String propertyName = "powershell_" + info.getEdition().getValue() + "_" + info.getVersion() + "_" + info.getBitness().getValue();
+    assertNull(conf.getConfigurationParameters().get(propertyName));
+    assertNull(conf.getConfigurationParameters().get(propertyName + "_Path"));
     info.saveInfo(conf);
-
-    PowerShellInfo i = PowerShellInfo.loadInfo(conf, PowerShellBitness.x64);
-
-    Assert.assertNotNull(i);
-    Assert.assertEquals(i.getBitness(), info.getBitness());
-    Assert.assertEquals(i.getHome(), info.getHome());
-    Assert.assertEquals(i.getExecutablePath(), info.getExecutablePath());
-    Assert.assertEquals(i.getVersion(), info.getVersion());
-    Assert.assertEquals(i.getEdition(), info.getEdition());
-    Assert.assertEquals(i.getExecutable(), info.getExecutable());
+    assertEquals(info.getVersion(), conf.getConfigurationParameters().get(propertyName));
+    assertEquals(info.getHome().getAbsolutePath(), conf.getConfigurationParameters().get(propertyName + "_Path"));
   }
 
   @DataProvider(name = "editionProvider")

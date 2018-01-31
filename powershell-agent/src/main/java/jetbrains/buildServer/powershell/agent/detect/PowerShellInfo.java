@@ -98,12 +98,10 @@ public class PowerShellInfo {
     }
     return null;
   }
-
+  
   public void saveInfo(@NotNull final BuildAgentConfiguration config) {
-    config.addConfigurationParameter(myBitness.getVersionKey(), myVersion);
-    config.addConfigurationParameter(myBitness.getPathKey(), myHome.toString());
-    config.addConfigurationParameter(myBitness.getEditionKey(), myEdition.getValue());
-    config.addConfigurationParameter(myBitness.getExecutableKey(), myExecutable);
+    config.addConfigurationParameter("powershell_" + myEdition.getValue() + "_" + myVersion + "_" + myBitness.getValue(), myVersion);
+    config.addConfigurationParameter("powershell_" + myEdition.getValue() + "_" + myVersion + "_" + myBitness.getValue() + "_Path", myHome.toString());
   }
 
   @NotNull

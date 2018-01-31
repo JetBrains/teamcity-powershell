@@ -50,7 +50,7 @@ public enum PowerShellBitness {
   }
 
   public String getExecutableKey() {
-    return getEditionKey() + "_Executable";
+    return getVersionKey() + "_Executable";
   }
 
   public String getEditionKey() {
