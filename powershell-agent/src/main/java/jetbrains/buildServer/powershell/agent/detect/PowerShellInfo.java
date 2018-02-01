@@ -12,10 +12,11 @@ import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellEdition;
 import jetbrains.buildServer.util.FileUtil;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.Map;
+
+import static jetbrains.buildServer.powershell.common.PowerShellConstants.PATH_SUFFIX;
+import static jetbrains.buildServer.powershell.common.PowerShellConstants.generateFullKey;
 
 /**
  * @author Eugene Petrenko (eugene.petrenko@jetbrains.com)
@@ -80,28 +81,10 @@ public class PowerShellInfo {
     return myEdition;
   }
 
-  @Nullable
-  public static PowerShellInfo loadInfo(@NotNull final BuildAgentConfiguration config,
-                                        @Nullable final PowerShellBitness bitness) {
-    if (bitness == null) {
-      return null;
-    }
-
-    final Map<String, String> ps = config.getConfigurationParameters();
-    final String ver = ps.get(bitness.getVersionKey());
-    final String path = ps.get(bitness.getPathKey());
-    final String executable = ps.get(bitness.getExecutableKey());
-    final PowerShellEdition edition = PowerShellEdition.fromString(ps.get(bitness.getEditionKey()));
-
-    if (path != null && ver != null && edition != null) {
-      return new PowerShellInfo(bitness, new File(path), ver, edition, executable);
-    }
-    return null;
-  }
-  
   public void saveInfo(@NotNull final BuildAgentConfiguration config) {
-    config.addConfigurationParameter("powershell_" + myEdition.getValue() + "_" + myVersion + "_" + myBitness.getValue(), myVersion);
-    config.addConfigurationParameter("powershell_" + myEdition.getValue() + "_" + myVersion + "_" + myBitness.getValue() + "_Path", myHome.toString());
+    final String key = generateFullKey(myEdition, myBitness, myVersion);
+    config.addConfigurationParameter(key, myVersion);
+    config.addConfigurationParameter(key + PATH_SUFFIX, myHome.toString());
   }
 
   @NotNull

@@ -8,10 +8,7 @@
 package jetbrains.buildServer.powershell.server;
 
 import jetbrains.buildServer.BaseTestCase;
-import jetbrains.buildServer.powershell.common.PowerShellBitness;
-import jetbrains.buildServer.powershell.common.PowerShellConstants;
-import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
-import jetbrains.buildServer.powershell.common.PowerShellScriptMode;
+import jetbrains.buildServer.powershell.common.*;
 import jetbrains.buildServer.requirements.Requirement;
 import jetbrains.buildServer.requirements.RequirementType;
 import jetbrains.buildServer.serverSide.RunTypeRegistry;
@@ -67,7 +64,7 @@ public class PowerShellRunTypeTest extends BaseTestCase {
     final Collection<Requirement> requirements = runType.getRunnerSpecificRequirements(parameters);
     assertEquals(1, requirements.size());
     final Requirement req = requirements.iterator().next();
-    assertEquals(bitness.getVersionKey(), req.getPropertyName());
+    assertEquals("Exists=>(powershell_Core_" + bitness.getValue() + "|powershell_Desktop_" + bitness.getValue() +")", req.getPropertyName());
     if (version == null) {
       assertEquals(RequirementType.EXISTS, req.getType());
     } else {
@@ -81,36 +78,53 @@ public class PowerShellRunTypeTest extends BaseTestCase {
     final Collection<Requirement> requirements = runType.getRunnerSpecificRequirements(createDummyParameters(bit));
     assertEquals(1, requirements.size());
     final Requirement req = requirements.iterator().next();
-    final String versionKey = bit.getVersionKey();
-    assertEquals(versionKey, req.getPropertyName());
-    assertEquals("powershell_" + bit.getValue(), versionKey);
+    assertEquals("Exists=>(powershell_Core_" + bit.getValue() + "|powershell_Desktop_" + bit.getValue() + ")", req.getPropertyName());
   }
-
-  // do we need migration here? what is chosen by default? is the default setting even stored?
-
+    
   @Test
   @TestFor(issues = "TW-44808")
-  public void testGenerateAnyBitnessRequirement_NoMinVersion() throws Exception {
+  public void testGenerateAnyBitnessRequirement_NoMinVersion() {
     final Map<String, String> input = createDummyParameters(null);
     final Collection<Requirement> requirements = runType.getRunnerSpecificRequirements(input);
     assertEquals(1, requirements.size());
     final Requirement r = requirements.iterator().next();
-    assertEquals("Exists=>(powershell_x86|powershell_x64)", r.getPropertyName());
+    assertEquals("Exists=>(powershell_Core_x86|powershell_Core_x64|powershell_Desktop_x86|powershell_Desktop_x64)", r.getPropertyName());
     assertNull(r.getPropertyValue());
     assertEquals(RequirementType.EXISTS, r.getType());
   }
 
   @Test(dataProvider = "versionProvider")
   @TestFor(issues = "TW-44808")
-  public void testGenerateAnyBitnessRequirement_WithMinVersion(@NotNull final String version) throws Exception {
+  public void testGenerateAnyBitnessRequirement_WithMinVersion(@NotNull final String version) {
     final Map<String, String> input = createDummyParameters(null);
     input.put(PowerShellConstants.RUNNER_MIN_VERSION, version);
     final Collection<Requirement> requirements = runType.getRunnerSpecificRequirements(input);
     assertEquals(1, requirements.size());
     final Requirement r = requirements.iterator().next();
-    assertEquals("Exists=>(powershell_x86|powershell_x64)", r.getPropertyName());
+    assertEquals("Exists=>(powershell_Core_x86|powershell_Core_x64|powershell_Desktop_x86|powershell_Desktop_x64)", r.getPropertyName());
     assertEquals(version, r.getPropertyValue());
     assertEquals(RequirementType.VER_NO_LESS_THAN, r.getType());
+  }
+
+  @Test(dataProvider = "bitnessProvider")
+  public void testAnyEditionSpecificBitness(@NotNull final PowerShellBitness bitness) {
+    final Map<String, String> input = createDummyParameters(bitness);
+    final Collection<Requirement> requirements = runType.getRunnerSpecificRequirements(input);
+    assertEquals(1, requirements.size());
+    final Requirement r = requirements.iterator().next();
+    assertEquals("Exists=>(powershell_Core_" + bitness.getValue() + "|powershell_Desktop_" + bitness.getValue() +")", r.getPropertyName());
+    assertEquals(RequirementType.EXISTS, r.getType());
+  }
+
+  @Test(dataProvider = "editionProvider")
+  public void testAnyBitnessSpecificEdition(@NotNull final PowerShellEdition edition) {
+    final Map<String, String> input = createDummyParameters(null);
+    input.put(PowerShellConstants.RUNNER_EDITION, edition.getValue());
+    final Collection<Requirement> requirements = runType.getRunnerSpecificRequirements(input);
+    assertEquals(1, requirements.size());
+    final Requirement r = requirements.iterator().next();
+    assertEquals("Exists=>(powershell_" + edition.getValue() + "_x86|powershell_" + edition.getValue() +"_x64)", r.getPropertyName());
+    assertEquals(RequirementType.EXISTS, r.getType());
   }
   
   private Map<String, String> createDummyParameters(@Nullable final PowerShellBitness bit) {
@@ -165,6 +179,17 @@ public class PowerShellRunTypeTest extends BaseTestCase {
     int k = 0;
     for (PowerShellBitness bit: bits) {
       result[k++] = new Object[] {bit};
+    }
+    return result;
+  }
+
+  @DataProvider(name = "editionProvider")
+  public Object[][] getEdition() {
+    final PowerShellEdition[] editions = PowerShellEdition.values();
+    Object[][] result = new Object[editions.length][];
+    int k = 0;
+    for (PowerShellEdition e: editions) {
+      result[k++] = new Object[] {e};
     }
     return result;
   }

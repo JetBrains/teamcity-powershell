@@ -84,38 +84,27 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
     LOG.info("Detecting PowerShell using CommandLinePowerShellDetector");
     // group by home
     Map<String, PowerShellInfo> shells = new HashMap<String, PowerShellInfo>();
-
     // determine paths
-    // todo: add pwsh/powershell executable on path? <- can clash with desktop powershell
+    if (LOG.isDebugEnabled()) {
+      if (!detectionContext.getSearchPaths().isEmpty()) {
+        LOG.debug("Detection paths were overridden by [teamcity.powershell.detector.search.paths] property.");
+      }
+    }
     final List<String> pathsToCheck = !detectionContext.getSearchPaths().isEmpty() ?
         detectionContext.getSearchPaths() :
         (SystemInfo.isWindows ? getWindowsPaths() : PATHS);
-
     final List<String> executablesToCheck = SystemInfo.isWindows ? EXECUTABLES_WIN : EXECUTABLES;
-    LOG.info("Will be detecting powershell at: " + Arrays.toString(pathsToCheck.toArray()));
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Will be detecting powershell at: " + Arrays.toString(pathsToCheck.toArray()));
+    }
     File script = null;
     try {
       script = prepareDetectionScript();
       if (script != null) {
         final String scriptPath = script.getAbsolutePath();
-        LOG.info("Detection script path is: " + scriptPath);
-        // check predefined paths
-        if (!detectionContext.getPredefinedPaths().isEmpty()) {
-          // what if 32 bit installation is in place of 64 bit? or otherwise?
-          // need to override in constructor of PowerShellInfo
-          for (Map.Entry<PowerShellBitness, String> e: detectionContext.getPredefinedPaths().entrySet()) {
-            for (String executable : EXECUTABLES) {
-              PowerShellInfo info = doDetect(e.getValue(), executable, scriptPath);
-              if (info != null) {
-                if (info.getBitness() != e.getKey()) { // if we are to substitute PowerShell installation explicitly, ignoring the bits of detected one
-                  LOG.warn("Using configured bitness (" + e.getKey() + ") for PowerShell at [" + info.getHome() + "] instead of detected one (" + info.getBitness() + ")");
-                }
-                shells.put(info.getHome().getAbsolutePath(), new PowerShellInfo(e.getKey(), info.getHome(), info.getVersion(), info.getEdition(), info.getExecutable()));
-              }
-            }
-          }
+        if (LOG.isDebugEnabled()) {
+          LOG.info("Detection script path is: " + scriptPath);
         }
-
         for (String path: pathsToCheck) {
           for (String executable: executablesToCheck) {
             final PowerShellInfo detected = doDetect(path, executable, scriptPath);

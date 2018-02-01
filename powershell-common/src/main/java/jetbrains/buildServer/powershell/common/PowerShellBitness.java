@@ -30,11 +30,6 @@ public enum PowerShellBitness {
   }
 
   @NotNull
-  public String getVersionKey() {
-    return "powershell_" + myValue;
-  }
-
-  @NotNull
   public String getValue() {
     return myValue;
   }
@@ -42,19 +37,6 @@ public enum PowerShellBitness {
   @NotNull
   public String getDisplayName() {
     return myDisplayName;
-  }
-
-  @NotNull
-  public String getPathKey() {
-    return getVersionKey() + "_Path";
-  }
-
-  public String getExecutableKey() {
-    return getVersionKey() + "_Executable";
-  }
-
-  public String getEditionKey() {
-    return getVersionKey() + "_Edition";
   }
 
   @Nullable

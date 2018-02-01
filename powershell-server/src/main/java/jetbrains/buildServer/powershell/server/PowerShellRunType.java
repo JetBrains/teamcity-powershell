@@ -34,8 +34,8 @@ import static jetbrains.buildServer.powershell.common.PowerShellConstants.RUNNER
 public class PowerShellRunType extends RunType {
   private final PluginDescriptor myDescriptor;
 
-  public PowerShellRunType(@NotNull final RunTypeRegistry reg,
-                           @NotNull final PluginDescriptor descriptor) {
+  PowerShellRunType(@NotNull final RunTypeRegistry reg,
+                    @NotNull final PluginDescriptor descriptor) {
     myDescriptor = descriptor;
     reg.registerRunType(this);
   }
@@ -164,41 +164,41 @@ public class PowerShellRunType extends RunType {
   @Override
   public List<Requirement> getRunnerSpecificRequirements(@NotNull final Map<String, String> runParameters) {
     final List<Requirement> result = new ArrayList<>();
+
     final String minVersion = getMinimalVersion(runParameters);
     final PowerShellBitness bit = getBitness(runParameters);
     final PowerShellEdition edition = getEdition(runParameters);
-    if (bit == null) {
-      result.addAll(generateDisjunctionReqs(minVersion, edition));
-    } else {
-      if (minVersion == null) {
-        result.add(new Requirement(bit.getVersionKey(), null, RequirementType.EXISTS));
-      } else {
-        result.add(new Requirement(bit.getVersionKey(), minVersion, RequirementType.VER_NO_LESS_THAN));
-      }
-      if (edition != null) {
-        result.add(new Requirement(bit.getEditionKey(), edition.getValue(), RequirementType.EQUALS));
-      }
-    }
-    return result;
-  }
 
-  private List<Requirement> generateDisjunctionReqs(@Nullable final String minVersion, @Nullable final PowerShellEdition edition) {
-    final List<Requirement> result = new ArrayList<>();
-    if (minVersion == null) { // generate OR requirement of type EXISTS
-      result.add(new Requirement(RequirementQualifier.EXISTS_QUALIFIER + "(" +
-          // version property is set only if corresponding PowerShell is properly detected
-          Arrays.stream(PowerShellBitness.values()).map(PowerShellBitness::getVersionKey).collect(Collectors.joining("|"))+")", null, RequirementType.EXISTS));
+    // filter editions
+    final List<PowerShellEdition> editions = new ArrayList<>();
+    if (edition == null) { // for all editions
+      editions.addAll(Arrays.asList(PowerShellEdition.values()));
     } else {
-      result.add(new Requirement(RequirementQualifier.EXISTS_QUALIFIER + "(" +
-          // version property is set only if corresponding PowerShell is properly detected
-          Arrays.stream(PowerShellBitness.values()).map(PowerShellBitness::getVersionKey).collect(Collectors.joining("|"))+")", minVersion, RequirementType.VER_NO_LESS_THAN));
-      // generate OR requirement of type VER_NO_LESS_THAN
+      editions.add(edition);
     }
-    // if some specific edition is required, add disjunction of editions by bitness
-    if (edition != null) {
+
+    final List<PowerShellBitness> bits = new ArrayList<>();
+    if (bit == null) {
+      bits.addAll(Arrays.asList(PowerShellBitness.values()));
+    } else {
+      bits.add(bit);
+    }
+
+    List<String> keys = new ArrayList<>();
+    for (PowerShellEdition e: editions) {
+      for (PowerShellBitness b: bits) {
+        keys.add(generateGeneralKey(e, b));
+      }
+    }
+
+    if (minVersion == null) { // EXISTS requirement type, as we have no specific version set
       result.add(new Requirement(RequirementQualifier.EXISTS_QUALIFIER + "(" +
           // version property is set only if corresponding PowerShell is properly detected
-          Arrays.stream(PowerShellBitness.values()).map(PowerShellBitness::getEditionKey).collect(Collectors.joining("|"))+")", edition.getValue(), RequirementType.EQUALS));
+          keys.stream().collect(Collectors.joining("|")) + ")", null, RequirementType.EXISTS));
+    } else { // VER_NO_LESS_THAN requirement type, as minimal version is set
+      result.add(new Requirement(RequirementQualifier.EXISTS_QUALIFIER + "(" +
+          // version property is set only if corresponding PowerShell is properly detected
+          keys.stream().collect(Collectors.joining("|")) + ")", minVersion, RequirementType.VER_NO_LESS_THAN));
     }
     return result;
   }

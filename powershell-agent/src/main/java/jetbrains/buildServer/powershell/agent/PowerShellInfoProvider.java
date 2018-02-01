@@ -15,6 +15,7 @@ import jetbrains.buildServer.powershell.agent.detect.DetectionContext;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellDetector;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
+import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellEdition;
 import jetbrains.buildServer.util.CollectionsUtil;
 import jetbrains.buildServer.util.EventDispatcher;
@@ -77,7 +78,7 @@ public class PowerShellInfoProvider {
       for (PowerShellEdition edition: PowerShellEdition.values()) {
         PowerShellInfo info = selectTool(bitness, null, edition);
         if (info != null) {
-          myConfig.addConfigurationParameter("powershell_" + info.getEdition().getValue() + "_" + info.getBitness().getValue(), info.getVersion());
+          myConfig.addConfigurationParameter(PowerShellConstants.generateGeneralKey(edition, bitness), info.getVersion());
         }
       }
     }
@@ -85,13 +86,10 @@ public class PowerShellInfoProvider {
 
   private void provideCompatibilityParams() {
     for (PowerShellBitness bitness: PowerShellBitness.values()) {
-      PowerShellInfo info = selectTool(bitness, null, null); // select max version of each bitness and provide legacy parameters
+      // select shell info of max version of each bitness and provide legacy parameters
+      PowerShellInfo info = selectTool(bitness, null, null);
       if (info != null) {
-        // todo: remove keys from Bitness
-        myConfig.addConfigurationParameter(bitness.getVersionKey(), info.getVersion());
-        myConfig.addConfigurationParameter(bitness.getPathKey(), info.getHome().toString());
-        myConfig.addConfigurationParameter(bitness.getEditionKey(), info.getEdition().getValue());
-        myConfig.addConfigurationParameter(bitness.getExecutableKey(), info.getExecutable());
+        LegacyKeys.fillLegacyKeys(myConfig, bitness, info);
       }
     }
   }
@@ -114,7 +112,6 @@ public class PowerShellInfoProvider {
         }
       });
     }
-
     // filter by version
     if (version != null) {
       availableShells = CollectionsUtil.filterCollection(availableShells, new Filter<PowerShellInfo>() {
@@ -124,7 +121,6 @@ public class PowerShellInfoProvider {
         }
       });
     }
-
     // filter by bitness
     if (bit != null) {
       availableShells = CollectionsUtil.filterCollection(availableShells, new Filter<PowerShellInfo>() {
@@ -134,14 +130,12 @@ public class PowerShellInfoProvider {
         }
       });
     }
-
     if (availableShells.isEmpty()) {
       return null;
     }
     if (availableShells.size() == 1) {
       return availableShells.get(0);
     }
-
     // prefer desktop over core
     if (edition == null) {
       Map<PowerShellEdition, List<PowerShellInfo>> byEdition = new HashMap<PowerShellEdition, List<PowerShellInfo>>();
@@ -157,7 +151,6 @@ public class PowerShellInfoProvider {
         availableShells = byEdition.get(PowerShellEdition.CORE);
       }
     }
-
     if (availableShells.size() == 1) {
       return availableShells.get(0);
     }
