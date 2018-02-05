@@ -27,6 +27,8 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.*;
 
+import static com.intellij.openapi.util.text.StringUtil.isEmptyOrSpaces;
+
 /**
  * Detects PowerShell on non-windows systems
  *
@@ -48,7 +50,7 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
    *
    * By default the package is installed to $env:ProgramFiles\PowerShell\
    */
-  private static final List<String> WINDOWS_PATHS = Collections.singletonList(System.getenv("ProgramFiles") + "\\PowerShell");
+  private final Set<String> WINDOWS_PATHS = getWindowsBasePaths();
 
   private static final List<String> PATHS = Arrays.asList(
       "/usr/local/bin", // mac os
@@ -122,9 +124,29 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
     }
   }
 
+  private Set<String> getWindowsBasePaths() {
+    Set<String> result = new HashSet<String>();
+    checkPathAndAdd(result, System.getenv("ProgramFiles"));
+    checkPathAndAdd(result, System.getenv("ProgramFiles(x86)"));
+    checkPathAndAdd(result, System.getenv("ProgramW6432"));
+    return result;
+  }
+
+  private void checkPathAndAdd(@NotNull final Set<String> paths, String path) {
+    if (!isEmptyOrSpaces(path)) {
+      File base = new File(path + "\\PowerShell");
+      if (base.isDirectory()) {
+        paths.add(base.getAbsolutePath());
+      }
+    }
+  }
+
   private List<String> getWindowsPaths() {
     List<String> result = new ArrayList<String>();
     for (String base: WINDOWS_PATHS) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Processing PowerShell.Core Windows path: " + base);
+      }
       File f = new File(base);
       if (f.isDirectory()) {
         result.addAll(populateWithChildren(f));
@@ -135,12 +157,20 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
 
   private List<String> populateWithChildren(@NotNull File base) {
     List<String> result = new ArrayList<String>();
-    for (File f: FileUtil.listFiles(base, new FilenameFilter() {
+    final File[] files = FileUtil.listFiles(base, new FilenameFilter() {
       @Override
       public boolean accept(File file, String s) {
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("Checking [" + file.getAbsolutePath() + "] (" + file.isDirectory() + " )");
+        }
         return file.isDirectory();
       }
-    })) {
+    });
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Paths under PowerShell home that will be searched for PowerShell.Core install: "
+      + Arrays.toString(files));
+    }
+    for (File f: files) {
       result.add(f.getAbsolutePath());
     }
     return result;
