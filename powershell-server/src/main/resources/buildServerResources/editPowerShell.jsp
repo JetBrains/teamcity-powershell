@@ -24,7 +24,7 @@
 </style>
 
 <tr class="advancedSetting">
-  <th><label for="${bean.minVersionKey}" class="localLabel">PowerShell version: <bs:help file="PowerShell" anchor="version"/> </label></th>
+  <th><label for="${bean.minVersionKey}" class="localLabel">PowerShell version:<bs:help file="PowerShell" anchor="version"/> </label></th>
   <td>
     <props:textProperty name="${bean.minVersionKey}" className="smallField disableBuildTypeParams" onkeyup="BS.PowerShell.updateScriptMode()"/>
     <span class="smallNote">On Desktop edition the <span style="font-style: italic">exact</span> version will be used,
@@ -33,7 +33,7 @@
 </tr>
 
 <tr class="advancedSetting">
-  <th class="noBorder dense"><label for="${bean.bitnessKey}" class="localLabel">Platform: <bs:help file="PowerShell" anchor="platform"/> </label></th>
+  <th class="noBorder dense"><label for="${bean.bitnessKey}" class="localLabel">Platform:<bs:help file="PowerShell" anchor="platform"/> </label></th>
   <td class="noBorder dense">
     <props:selectProperty name="${bean.bitnessKey}" className="smallField ">
       <c:forEach var="val" items="${bean.bitnessValues}">
@@ -46,7 +46,7 @@
 </tr>
 
 <tr class="advancedSetting">
-  <th class="noBorder dense"><label for="${bean.editionKey}" class="localLabel">Edition: <bs:help file="PowerShell" anchor="edition"/> </label></th>
+  <th class="noBorder dense"><label for="${bean.editionKey}" class="localLabel">Edition:<bs:help file="PowerShell" anchor="edition"/> </label></th>
   <td class="noBorder dense">
     <props:selectProperty name="${bean.editionKey}" className="smallField ">
       <c:forEach var="val" items="${bean.editionValues}">
@@ -81,7 +81,7 @@
 </tr>
 
 <tr id="powershell_scriptFile">
-  <th><label for="${bean.scriptFileKey}">Script file: <l:star/></label></th>
+  <th><label for="${bean.scriptFileKey}">Script file:<l:star/></label></th>
   <td>
     <props:textProperty name="${bean.scriptFileKey}" className="longField">
     <jsp:attribute name="afterTextField"><bs:vcsTree fieldId="${bean.scriptFileKey}"/></jsp:attribute>
@@ -92,7 +92,7 @@
 </tr>
 
 <tr id="powershell_sourceCode">
-  <th><label for="${bean.scriptCodeKey}">Script source: <l:star/></label></th>
+  <th><label for="${bean.scriptCodeKey}">Script source:<l:star/></label></th>
   <td>
     <props:multilineProperty name="${bean.scriptCodeKey}"
                              linkTitle="Enter PowerShell script content"
@@ -115,7 +115,7 @@
         </span>
     <span class="error" id="error_${bean.executionModeKey}"></span>
     <forms:attentionComment id="warn_executionMode">
-      Executing scripts from stdin with "-Command -" is unstable and can result in build failures. Consider executing PowerShell script from external file. <bs:help file="PowerShell"/>
+      Executing scripts from stdin with "-Command -" is unstable and can result in build failures. Consider executing PowerShell script from external file.<bs:help file="PowerShell"/>
     </forms:attentionComment>
   </td>
 </tr>
