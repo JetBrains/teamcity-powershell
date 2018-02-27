@@ -34,8 +34,9 @@ import static jetbrains.buildServer.powershell.common.PowerShellConstants.RUNNER
 public class PowerShellRunType extends RunType {
   private final PluginDescriptor myDescriptor;
 
-  PowerShellRunType(@NotNull final RunTypeRegistry reg,
-                    @NotNull final PluginDescriptor descriptor) {
+  @SuppressWarnings("WeakerAccess")
+  public PowerShellRunType(@NotNull final RunTypeRegistry reg,
+                           @NotNull final PluginDescriptor descriptor) {
     myDescriptor = descriptor;
     reg.registerRunType(this);
   }
