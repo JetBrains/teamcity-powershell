@@ -120,6 +120,11 @@ public class PowerShellRunType extends RunType {
       sb.append(minVersion).append(" ");
     }
 
+    final PowerShellEdition edition = getEdition(parameters);
+    if (edition != null) {
+      sb.append(edition.getDisplayName()).append(" ");
+    }
+
     final PowerShellBitness bit = getBitness(parameters);
     if (bit != null) {
       sb.append(bit).append(" ");
