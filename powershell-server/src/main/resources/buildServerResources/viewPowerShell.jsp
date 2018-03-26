@@ -22,7 +22,7 @@
     </c:forEach>
     <c:set var="edition" value="${propertiesBean.properties[bean.editionKey]}"/>
     <c:forEach var="val" items="${bean.editionValues}">
-      <c:if test="${edition eq val.value or empty type and empty val.value}"><c:out value="edition: ${val.key}"/></c:if>
+      <c:if test="${edition eq val.value or empty edition and empty val.value}"><c:out value="edition: ${val.key}"/></c:if>
     </c:forEach>
   </strong>
 </div>

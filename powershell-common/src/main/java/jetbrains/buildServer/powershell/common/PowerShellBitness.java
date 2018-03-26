@@ -16,8 +16,8 @@ import org.jetbrains.annotations.Nullable;
  *         03.12.10 16:50
  */
 public enum PowerShellBitness {
-  x86 ("x86", "32 bit", Bitness.BIT32),
-  x64 ("x64", "64 bit", Bitness.BIT64);
+  x86 ("x86", "32-bit", Bitness.BIT32),
+  x64 ("x64", "64-bit", Bitness.BIT64);
 
   private final String myValue;
   private final String myDisplayName;
