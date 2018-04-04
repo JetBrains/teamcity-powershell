@@ -39,16 +39,28 @@ public class PowerShellInfo {
   @NotNull
   private final String myExecutable;
 
+  private final boolean myVirtual;
+  
   public PowerShellInfo(@NotNull final PowerShellBitness bitness,
                         @NotNull final File home,
                         @NotNull final String version,
                         @NotNull final PowerShellEdition edition,
                         @NotNull final String executable) {
+    this(bitness, home, version, edition, executable, false);
+  }
+
+  public PowerShellInfo(@NotNull final PowerShellBitness bitness,
+                        @NotNull final File home,
+                        @NotNull final String version,
+                        @NotNull final PowerShellEdition edition,
+                        @NotNull final String executable,
+                        boolean isVirtual) {
     myBitness = bitness;
     myHome = home;
     myVersion = version;
     myEdition = edition;
     myExecutable = executable;
+    myVirtual = isVirtual;
   }
 
   @NotNull
@@ -68,7 +80,11 @@ public class PowerShellInfo {
 
   @Override
   public String toString() {
-    return "PowerShell " + myEdition + " Edition v" + myVersion + " " + myBitness + "(" + getHome() + "/" + myExecutable + ")";
+    return (myVirtual ? "(virtual) " : "") + "PowerShell "
+        + myEdition + " Edition v"
+        + myVersion + " "
+        + myBitness
+        + "(" + (myVirtual ? ( getHome() + "/") : "") + myExecutable + ")";
   }
 
   @NotNull
@@ -83,12 +99,18 @@ public class PowerShellInfo {
 
   public void saveInfo(@NotNull final BuildAgentConfiguration config) {
     final String key = generateFullKey(myEdition, myBitness, myVersion);
-    config.addConfigurationParameter(key, myVersion);
-    config.addConfigurationParameter(key + PATH_SUFFIX, myHome.toString());
+    if (!myVirtual) {
+      config.addConfigurationParameter(key, myVersion);
+      config.addConfigurationParameter(key + PATH_SUFFIX, myHome.toString());
+    }
   }
 
   @NotNull
   public String getExecutablePath() {
-    return FileUtil.getCanonicalFile(new File(myHome, myExecutable)).getPath();
+    if (myVirtual) {
+      return myExecutable;
+    } else {
+      return FileUtil.getCanonicalFile(new File(myHome, myExecutable)).getPath();
+    }
   }
 }

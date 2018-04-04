@@ -53,6 +53,7 @@ teamcity {
           javaHome = file(teamCityJavaHome)
           serverOptions '-Xdebug'
           serverOptions '-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5500'
+          serverOptions '-Dteamcity.docker.runners=jetbrains_powershell'
 
           serverOptions '-Dteamcity.development.mode=true'
           serverOptions '-Dteamcity.development.shadowCopyClasses=true'

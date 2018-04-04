@@ -9,6 +9,7 @@ package jetbrains.buildServer.powershell.agent.service;
 
 import com.intellij.execution.configurations.ParametersList;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.util.SystemInfo;
 import jetbrains.buildServer.RunBuildException;
 import jetbrains.buildServer.agent.BuildProgressLogger;
 import jetbrains.buildServer.agent.runner.*;
@@ -17,6 +18,7 @@ import jetbrains.buildServer.powershell.agent.PowerShellInfoProvider;
 import jetbrains.buildServer.powershell.agent.ScriptGenerator;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.agent.system.PowerShellCommands;
+import jetbrains.buildServer.powershell.agent.virtual.VirtualPowerShellSupport;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellEdition;
@@ -28,6 +30,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.*;
 
+import static jetbrains.buildServer.messages.DefaultMessagesInfo.createTextMessage;
+import static jetbrains.buildServer.messages.DefaultMessagesInfo.internalize;
 import static jetbrains.buildServer.powershell.common.PowerShellConstants.*;
 
 /**
@@ -55,9 +59,9 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
   final PowerShellCommands myCommands;
 
   BasePowerShellService(@NotNull final PowerShellInfoProvider infoProvider,
-                               @NotNull final ScriptGenerator scriptGenerator,
-                               @NotNull final PowerShellCommandLineProvider cmdProvider,
-                               @NotNull final PowerShellCommands commands) {
+                        @NotNull final ScriptGenerator scriptGenerator,
+                        @NotNull final PowerShellCommandLineProvider cmdProvider,
+                        @NotNull final PowerShellCommands commands) {
     myInfoProvider = infoProvider;
     myScriptGenerator = scriptGenerator;
     myCmdProvider = cmdProvider;
@@ -68,10 +72,10 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
   @Override
   public ProgramCommandLine makeProgramCommandLine() throws RunBuildException {
     final PowerShellInfo info = selectTool();
+    final BuildProgressLogger buildLogger = getBuild().getBuildLogger();
     final String psExecutable = info.getExecutablePath();
     final String workDir = getWorkingDirectory().getPath();
     final PowerShellExecutionMode mode = PowerShellExecutionMode.fromString(getRunnerParameters().get(RUNNER_EXECUTION_MODE));
-    final BuildProgressLogger buildLogger = getBuild().getBuildLogger();
     buildLogger.message("PowerShell Executable: " + psExecutable);
     buildLogger.message("Working directory: " + workDir);
     if (PowerShellExecutionMode.STDIN == mode) {
@@ -108,20 +112,29 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
   }
 
   private PowerShellInfo selectTool() throws RunBuildException {
-    final PowerShellBitness bit = PowerShellBitness.fromString(getRunnerParameters().get(RUNNER_BITNESS));
-    final String version = getRunnerParameters().get(RUNNER_MIN_VERSION);
-    final PowerShellEdition edition = PowerShellEdition.fromString(getRunnerParameters().get(RUNNER_EDITION));
-    final PowerShellInfo result = myInfoProvider.selectTool(bit, version, edition);
-    if (result == null) {
-      throw new RunBuildException("Could not select PowerShell for given bitness "
-          + (bit == null ? "<Auto>" : bit.getDisplayName() + " and version "
-          + (version == null ? "<Any>" : version)));
+    final BuildProgressLogger buildLogger = getBuild().getBuildLogger();
+    PowerShellInfo result;
+    if (getRunnerContext().isVirtualContext()) {
+      if (SystemInfo.isWindows) {
+        throw new RunBuildException("PowerShell is not supported on windows containers");
+      }
+      buildLogger.logMessage(internalize(createTextMessage("PowerShell is running in virtual agent context")));
+      result = VirtualPowerShellSupport.getVirtualPowerShell();
+    } else {
+      buildLogger.logMessage(internalize(createTextMessage("PowerShell running in non-virtual agent context")));
+      final PowerShellBitness bit = PowerShellBitness.fromString(getRunnerParameters().get(RUNNER_BITNESS));
+      final String version = getRunnerParameters().get(RUNNER_MIN_VERSION);
+      final PowerShellEdition edition = PowerShellEdition.fromString(getRunnerParameters().get(RUNNER_EDITION));
+      result = myInfoProvider.selectTool(bit, version, edition);
+      if (result == null) {
+        throw new RunBuildException("Could not select PowerShell for given bitness "
+                + (bit == null ? "<Auto>" : bit.getDisplayName() + " and version "
+                + (version == null ? "<Any>" : version)));
+      }
     }
     return result;
   }
-
-
-
+  
   @Override
   public boolean isCommandLineLoggingEnabled() {
     return false;
