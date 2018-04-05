@@ -12,6 +12,7 @@ import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellEdition;
 import jetbrains.buildServer.util.FileUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 
@@ -33,7 +34,7 @@ public class PowerShellInfo {
   @NotNull
   private final String myVersion;
 
-  @NotNull
+  @Nullable
   private final PowerShellEdition myEdition;
 
   @NotNull
@@ -44,7 +45,7 @@ public class PowerShellInfo {
   public PowerShellInfo(@NotNull final PowerShellBitness bitness,
                         @NotNull final File home,
                         @NotNull final String version,
-                        @NotNull final PowerShellEdition edition,
+                        @Nullable final PowerShellEdition edition,
                         @NotNull final String executable) {
     this(bitness, home, version, edition, executable, false);
   }
@@ -52,7 +53,7 @@ public class PowerShellInfo {
   public PowerShellInfo(@NotNull final PowerShellBitness bitness,
                         @NotNull final File home,
                         @NotNull final String version,
-                        @NotNull final PowerShellEdition edition,
+                        @Nullable final PowerShellEdition edition,
                         @NotNull final String executable,
                         boolean isVirtual) {
     myBitness = bitness;
@@ -92,7 +93,7 @@ public class PowerShellInfo {
     return myExecutable;
   }
 
-  @NotNull
+  @Nullable
   public PowerShellEdition getEdition() {
     return myEdition;
   }
@@ -112,5 +113,9 @@ public class PowerShellInfo {
     } else {
       return FileUtil.getCanonicalFile(new File(myHome, myExecutable)).getPath();
     }
+  }
+
+  public boolean isVirtual() {
+    return myVirtual;
   }
 }

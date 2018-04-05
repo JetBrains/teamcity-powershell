@@ -57,15 +57,20 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
 
   @NotNull
   final PowerShellCommands myCommands;
+  
+  @NotNull
+  private final VirtualPowerShellSupport myVirtualSupport;
 
   BasePowerShellService(@NotNull final PowerShellInfoProvider infoProvider,
                         @NotNull final ScriptGenerator scriptGenerator,
                         @NotNull final PowerShellCommandLineProvider cmdProvider,
-                        @NotNull final PowerShellCommands commands) {
+                        @NotNull final PowerShellCommands commands,
+                        @NotNull final VirtualPowerShellSupport virtualSupport) {
     myInfoProvider = infoProvider;
     myScriptGenerator = scriptGenerator;
     myCmdProvider = cmdProvider;
     myCommands = commands;
+    myVirtualSupport = virtualSupport;
   }
 
   @NotNull
@@ -116,10 +121,10 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
     PowerShellInfo result;
     if (getRunnerContext().isVirtualContext()) {
       if (SystemInfo.isWindows) {
-        throw new RunBuildException("PowerShell is not supported on windows containers");
+        throw new RunBuildException("PowerShell is not supported on Windows hosts and containers");
       }
       buildLogger.logMessage(internalize(createTextMessage("PowerShell is running in virtual agent context")));
-      result = VirtualPowerShellSupport.getVirtualPowerShell();
+      result = myVirtualSupport.getVirtualPowerShell(getRunnerContext());
     } else {
       buildLogger.logMessage(internalize(createTextMessage("PowerShell running in non-virtual agent context")));
       final PowerShellBitness bit = PowerShellBitness.fromString(getRunnerParameters().get(RUNNER_BITNESS));

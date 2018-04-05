@@ -16,6 +16,7 @@ import jetbrains.buildServer.powershell.agent.PowerShellInfoProvider;
 import jetbrains.buildServer.powershell.agent.ScriptGenerator;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.agent.system.PowerShellCommands;
+import jetbrains.buildServer.powershell.agent.virtual.VirtualPowerShellSupport;
 import jetbrains.buildServer.util.FileUtil;
 import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
@@ -35,8 +36,9 @@ public class PowerShellServiceWindows extends BasePowerShellService {
   public PowerShellServiceWindows(@NotNull final PowerShellInfoProvider infoProvider,
                                   @NotNull final ScriptGenerator scriptGenerator,
                                   @NotNull final PowerShellCommandLineProvider cmdProvider,
-                                  @NotNull final PowerShellCommands commands) {
-    super(infoProvider, scriptGenerator, cmdProvider, commands);
+                                  @NotNull final PowerShellCommands commands,
+                                  @NotNull final VirtualPowerShellSupport virtualSupport) {
+    super(infoProvider, scriptGenerator, cmdProvider, commands, virtualSupport);
   }
 
   @Override
@@ -57,7 +59,7 @@ public class PowerShellServiceWindows extends BasePowerShellService {
   protected SimpleProgramCommandLine getFileCommandLine(@NotNull final PowerShellInfo info,
                                                         @NotNull final Map<String, String> env,
                                                         @NotNull final String workDir,
-                                                        @NotNull final List<String> args) throws RunBuildException {
+                                                        @NotNull final List<String> args) {
     final BuildProgressLogger buildLogger = getBuild().getBuildLogger();
     final String command = myCommands.getNativeCommand(info);
     buildLogger.message("Command: " + command);
@@ -108,6 +110,8 @@ public class PowerShellServiceWindows extends BasePowerShellService {
     return map;
   }
 
+  private static final String EXECUTION_POLICY_MIN_VERSION = "1.0";
+
   /**
    * PowerShell {@code v1.0} does not support execution policy.
    * @param info PowerShell to use
@@ -117,6 +121,8 @@ public class PowerShellServiceWindows extends BasePowerShellService {
    */
   @Override
   protected boolean useExecutionPolicy(@NotNull final PowerShellInfo info) {
-    return isInternalPropertySetExecutionPolicy("set.executionPolicyArg", !info.getVersion().equals("1.0"));
+    return isInternalPropertySetExecutionPolicy(
+        "set.executionPolicyArg",
+        !EXECUTION_POLICY_MIN_VERSION.equals(info.getVersion()));
   }
 }

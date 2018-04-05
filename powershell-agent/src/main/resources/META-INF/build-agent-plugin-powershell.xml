@@ -17,6 +17,7 @@
   <bean class="jetbrains.buildServer.powershell.agent.ScriptGenerator"/>
   <bean class="jetbrains.buildServer.powershell.agent.system.SystemBitness"/>
   <bean class="jetbrains.buildServer.powershell.agent.system.PowerShellCommands"/>
+  <bean class="jetbrains.buildServer.powershell.agent.virtual.VirtualPowerShellSupport"/>
   <bean class="jetbrains.buildServer.powershell.agent.PowerShellServiceFactory"/>
 
   <bean class="jetbrains.buildServer.powershell.agent.detect.registry.RegistryPowerShellDetector"/>

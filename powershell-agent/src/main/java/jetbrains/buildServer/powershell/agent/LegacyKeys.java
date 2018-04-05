@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Oleg Rybak (oleg.rybak@jetbrains.com)
  */
-public class LegacyKeys {
+class LegacyKeys {
 
   private static String getVersionKey(@NotNull final PowerShellBitness bitness) {
     return "powershell_" + bitness.getValue();
@@ -35,12 +35,14 @@ public class LegacyKeys {
     return getVersionKey(bitness) + "_Executable";
   }
 
-  public static void fillLegacyKeys(@NotNull final BuildAgentConfiguration config,
-                                    @NotNull final PowerShellBitness bit,
-                                    @NotNull final PowerShellInfo info) {
+  static void fillLegacyKeys(@NotNull final BuildAgentConfiguration config,
+                             @NotNull final PowerShellBitness bit,
+                             @NotNull final PowerShellInfo info) {
     config.addConfigurationParameter(getVersionKey(bit), info.getVersion());
     config.addConfigurationParameter(getPathKey(bit), info.getHome().toString());
-    config.addConfigurationParameter(getEditionKey(bit), info.getEdition().getValue());
+    if (info.getEdition() != null) {
+      config.addConfigurationParameter(getEditionKey(bit), info.getEdition().getValue());
+    }
     config.addConfigurationParameter(getExecutableKey(bit), info.getExecutable());
   }
 }

@@ -8,6 +8,7 @@
 package jetbrains.buildServer.powershell.common;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Eugene Petrenko (eugene.petrenko@jetbrains.com)
@@ -51,7 +52,7 @@ public class PowerShellConstants {
   
   public static final String PATH_SUFFIX = "_Path";
 
-  public static String generateFullKey(@NotNull final PowerShellEdition edition, @NotNull final PowerShellBitness bitness, @NotNull final String version) {
-    return "powershell_" + edition.getValue() + "_" + version + "_" + bitness.getValue();
+  public static String generateFullKey(@Nullable final PowerShellEdition edition, @NotNull final PowerShellBitness bitness, @NotNull final String version) {
+    return "powershell_" + (edition != null ? edition.getValue() + "_" : "" ) + version + "_" + bitness.getValue();
   }
 }

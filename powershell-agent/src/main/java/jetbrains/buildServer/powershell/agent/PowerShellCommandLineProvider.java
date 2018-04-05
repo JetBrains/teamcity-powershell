@@ -129,6 +129,8 @@ public class PowerShellCommandLineProvider {
   }
 
   static boolean isExplicitVersionSupported(@NotNull final PowerShellInfo info) {
-    return SystemInfo.isWindows && info.getEdition() == PowerShellEdition.DESKTOP;
+    return SystemInfo.isWindows
+        && info.getEdition() == PowerShellEdition.DESKTOP
+        && !info.isVirtual();
   }
 }

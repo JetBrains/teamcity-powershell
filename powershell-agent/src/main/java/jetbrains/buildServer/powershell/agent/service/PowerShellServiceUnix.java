@@ -19,6 +19,7 @@ import jetbrains.buildServer.powershell.agent.PowerShellInfoProvider;
 import jetbrains.buildServer.powershell.agent.ScriptGenerator;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.agent.system.PowerShellCommands;
+import jetbrains.buildServer.powershell.agent.virtual.VirtualPowerShellSupport;
 import jetbrains.buildServer.util.FileUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,8 +39,9 @@ public class PowerShellServiceUnix extends BasePowerShellService {
   public PowerShellServiceUnix(@NotNull final PowerShellInfoProvider infoProvider,
                                @NotNull final ScriptGenerator scriptGenerator,
                                @NotNull final PowerShellCommandLineProvider cmdProvider,
-                               @NotNull final PowerShellCommands commands) {
-    super(infoProvider, scriptGenerator, cmdProvider, commands);
+                               @NotNull final PowerShellCommands commands,
+                               @NotNull final VirtualPowerShellSupport virtualSupport) {
+    super(infoProvider, scriptGenerator, cmdProvider, commands, virtualSupport);
   }
 
   @Override
