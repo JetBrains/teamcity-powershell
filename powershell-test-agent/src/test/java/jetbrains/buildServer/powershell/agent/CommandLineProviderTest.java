@@ -57,6 +57,9 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
     m.checking(new Expectations() {{
       allowing(myInfo).getEdition();
       will(returnValue(edition));
+
+      allowing(myInfo).isVirtual();
+      will(returnValue(false));
     }});
 
     myProvider = new PowerShellCommandLineProvider();
