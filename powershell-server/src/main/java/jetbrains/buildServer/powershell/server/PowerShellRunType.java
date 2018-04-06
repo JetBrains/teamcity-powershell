@@ -198,14 +198,18 @@ public class PowerShellRunType extends RunType {
     }
 
     if (minVersion == null) { // EXISTS requirement type, as we have no specific version set
-      result.add(new Requirement(RequirementQualifier.EXISTS_QUALIFIER + "(" +
-          // version property is set only if corresponding PowerShell is properly detected
-          keys.stream().collect(Collectors.joining("|")) + ")", null, RequirementType.EXISTS));
+      result.add(new Requirement(getRequirementPropertyName(keys), null, RequirementType.EXISTS));
     } else { // VER_NO_LESS_THAN requirement type, as minimal version is set
-      result.add(new Requirement(RequirementQualifier.EXISTS_QUALIFIER + "(" +
-          // version property is set only if corresponding PowerShell is properly detected
-          keys.stream().collect(Collectors.joining("|")) + ")", minVersion, RequirementType.VER_NO_LESS_THAN));
+      result.add(new Requirement(getRequirementPropertyName(keys), minVersion, RequirementType.VER_NO_LESS_THAN));
     }
     return result;
+  }
+
+  private String getRequirementPropertyName(@NotNull final List<String> keys) {
+    if (keys.size() == 1) {
+      return keys.get(0);
+    } else {
+      return RequirementQualifier.EXISTS_QUALIFIER + "(" + keys.stream().collect(Collectors.joining("|")) + ")";
+    }
   }
 }

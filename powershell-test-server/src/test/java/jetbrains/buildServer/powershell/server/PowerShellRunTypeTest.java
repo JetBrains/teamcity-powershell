@@ -74,7 +74,7 @@ public class PowerShellRunTypeTest extends BaseTestCase {
   }
 
   @Test(dataProvider = "bitnessProvider")
-  public void shouldUseInternalValueAsPArtOfRequirement(@NotNull final PowerShellBitness bit) {
+  public void shouldUseInternalValueAsPartOfRequirement(@NotNull final PowerShellBitness bit) {
     final Collection<Requirement> requirements = runType.getRunnerSpecificRequirements(createDummyParameters(bit));
     assertEquals(1, requirements.size());
     final Requirement req = requirements.iterator().next();
@@ -95,15 +95,19 @@ public class PowerShellRunTypeTest extends BaseTestCase {
 
   @Test(dataProvider = "versionProvider")
   @TestFor(issues = "TW-44808")
-  public void testGenerateAnyBitnessRequirement_WithMinVersion(@NotNull final String version) {
+  public void testGenerateAnyBitnessRequirement_WithMinVersion(@Nullable final String version) {
     final Map<String, String> input = createDummyParameters(null);
-    input.put(PowerShellConstants.RUNNER_MIN_VERSION, version);
+    if (version != null) {
+      input.put(PowerShellConstants.RUNNER_MIN_VERSION, version);
+    }
     final Collection<Requirement> requirements = runType.getRunnerSpecificRequirements(input);
     assertEquals(1, requirements.size());
     final Requirement r = requirements.iterator().next();
     assertEquals("Exists=>(powershell_Core_x86|powershell_Core_x64|powershell_Desktop_x86|powershell_Desktop_x64)", r.getPropertyName());
     assertEquals(version, r.getPropertyValue());
-    assertEquals(RequirementType.VER_NO_LESS_THAN, r.getType());
+    if (version != null) {
+      assertEquals(RequirementType.VER_NO_LESS_THAN, r.getType());
+    }
   }
 
   @Test(dataProvider = "bitnessProvider")
@@ -125,6 +129,32 @@ public class PowerShellRunTypeTest extends BaseTestCase {
     final Requirement r = requirements.iterator().next();
     assertEquals("Exists=>(powershell_" + edition.getValue() + "_x86|powershell_" + edition.getValue() +"_x64)", r.getPropertyName());
     assertEquals(RequirementType.EXISTS, r.getType());
+  }
+
+  /**
+   * Tests we provide single property requirement without {@code Exists} qualifier in case of fixed bitness and edition
+   */
+  @Test(dataProvider = "versionProvider")
+  public void testSingleMatchingRequirement(@Nullable final String version) {
+    for (PowerShellBitness bitness: PowerShellBitness.values()) {
+      for (PowerShellEdition edition: PowerShellEdition.values()) {
+        final Map<String, String> parameters = createDummyParameters(bitness);
+        if (version != null) {
+          parameters.put(PowerShellConstants.RUNNER_MIN_VERSION, version);
+        }
+        parameters.put(PowerShellConstants.RUNNER_EDITION, edition.getValue());
+        final Collection<Requirement> requirements = runType.getRunnerSpecificRequirements(parameters);
+        assertEquals(1, requirements.size());
+        final Requirement req = requirements.iterator().next();
+        assertEquals("powershell_" + edition.getValue() + "_" + bitness.getValue(), req.getPropertyName());
+        if (version == null) {
+          assertEquals(RequirementType.EXISTS, req.getType());
+        } else {
+          assertEquals(RequirementType.VER_NO_LESS_THAN, req.getType());
+          assertEquals(version, req.getPropertyValue());
+        }
+      }
+    }
   }
   
   private Map<String, String> createDummyParameters(@Nullable final PowerShellBitness bit) {
@@ -164,11 +194,12 @@ public class PowerShellRunTypeTest extends BaseTestCase {
   @DataProvider(name = "versionProvider")
   public Object[][] getVersion() {
     String[] versions = sampleVersions();
-    final Object[][] result = new Object[versions.length][1];
+    final Object[][] result = new Object[versions.length + 1][1];
     int k = 0;
     for (String ver: versions) {
       result[k++] = new Object[] {ver};
     }
+    result[k] = new Object[] {null};
     return result;
   }
 
