@@ -120,9 +120,6 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
     final BuildProgressLogger buildLogger = getBuild().getBuildLogger();
     PowerShellInfo result;
     if (getRunnerContext().isVirtualContext()) {
-      if (SystemInfo.isWindows) {
-        throw new RunBuildException("PowerShell is not supported on Windows hosts and containers");
-      }
       buildLogger.logMessage(internalize(createTextMessage("PowerShell is running in virtual agent context")));
       result = myVirtualSupport.getVirtualPowerShell(getRunnerContext());
     } else {
