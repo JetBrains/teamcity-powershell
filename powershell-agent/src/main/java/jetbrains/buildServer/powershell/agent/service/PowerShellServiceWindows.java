@@ -61,7 +61,7 @@ public class PowerShellServiceWindows extends BasePowerShellService {
                                                         @NotNull final String workDir,
                                                         @NotNull final List<String> args) {
     final BuildProgressLogger buildLogger = getBuild().getBuildLogger();
-    final String command = myCommands.getNativeCommand(info);
+    final String command = myCommands.getNativeCommand(info, getRunnerContext());
     buildLogger.message("Command: " + command);
     buildLogger.message("PowerShell arguments: " + StringUtil.join(args, ", "));
     return new SimpleProgramCommandLine(env, workDir, command, args);

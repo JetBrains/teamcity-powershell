@@ -7,6 +7,7 @@
 
 package jetbrains.buildServer.powershell.agent;
 
+import jetbrains.buildServer.agent.BuildRunnerContext;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.agent.system.PowerShellCommands;
 import jetbrains.buildServer.powershell.agent.system.SystemBitness;
@@ -39,6 +40,8 @@ public class PowerShellCommandsTest extends BasePowerShellUnitTest {
   private PowerShellInfo my32Info;
   private PowerShellInfo my64Info;
   private Map<String, PowerShellInfo> myShells = new HashMap<String, PowerShellInfo>();
+  private BuildRunnerContext myContext;
+
   private final Map<String, String> myEnv = new HashMap<String, String>() {{
     put("windir", "C:\\Windows");
   }};
@@ -53,12 +56,16 @@ public class PowerShellCommandsTest extends BasePowerShellUnitTest {
       setImposteriser(ClassImposteriser.INSTANCE);
     }};
     my32Info = m.mock(PowerShellInfo.class, "32bit PowerShell");
+    myContext = m.mock(BuildRunnerContext.class );
     m.checking(new Expectations() {{
       allowing(my32Info).getExecutablePath();
       will(returnValue("C:\\Windows\\SysWOW64\\WindowsPowerShell\\v1.0\\powershell.exe"));
 
       allowing(my32Info).getBitness();
       will(returnValue(PowerShellBitness.x86));
+
+      allowing(myContext).isVirtualContext();
+      will(returnValue(false));
     }});
     myShells.put(PS32, my32Info);
 
@@ -78,7 +85,7 @@ public class PowerShellCommandsTest extends BasePowerShellUnitTest {
   @Test(dataProvider = "bitnessVariations")
   public void testPatchPowerShellExecutable(final boolean is32Bit, final String shellName, final String search) {
     addBitnessExpectations(is32Bit);
-    final String result = myCommands.getNativeCommand(myShells.get(shellName));
+    final String result = myCommands.getNativeCommand(myShells.get(shellName), myContext);
     assertContains(result, search);
   }
 
