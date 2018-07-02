@@ -85,7 +85,7 @@ public class PowerShellInfo {
         + myEdition + " Edition v"
         + myVersion + " "
         + myBitness
-        + "(" + (myVirtual ? ( getHome() + "/") : "") + myExecutable + ")";
+        + "(" + (myVirtual ? "" : ( getHome() + "/")) + myExecutable + ")";
   }
 
   @NotNull
