@@ -7,14 +7,15 @@
 
 package jetbrains.buildServer.powershell.agent.detect.registry;
 
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.SystemInfo;
+import jetbrains.buildServer.powershell.agent.Loggers;
 import jetbrains.buildServer.powershell.agent.detect.DetectionContext;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellDetector;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellEdition;
 import jetbrains.buildServer.util.Win32RegistryAccessor;
-import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -27,7 +28,7 @@ import java.util.*;
 public class RegistryPowerShellDetector implements PowerShellDetector {
 
   @NotNull
-  private static final Logger LOG = Logger.getLogger(RegistryPowerShellDetector.class);
+  private static final Logger LOG = Loggers.DETECTION_LOGGER;
 
   @NotNull
   private final Win32RegistryAccessor myAccessor;
@@ -50,7 +51,7 @@ public class RegistryPowerShellDetector implements PowerShellDetector {
       final PowerShellRegistry reg = new PowerShellRegistry(bitness.toBitness(), myAccessor);
 
       if (!reg.isPowerShellInstalled()) {
-        LOG.debug("Powershell for " + bitness + " was not found.");
+        LOG.debug("PowerShell for " + bitness + " was not found.");
         continue;
       }
 
@@ -58,7 +59,7 @@ public class RegistryPowerShellDetector implements PowerShellDetector {
       final File home = reg.getPowerShellHome();
 
       if (ver == null || home == null) {
-        LOG.debug("Found powershell: " + bitness + " " + ver + " " + home);
+        LOG.debug("Found PowerShell: " + bitness + " " + ver + " " + home);
         continue;
       }
 
