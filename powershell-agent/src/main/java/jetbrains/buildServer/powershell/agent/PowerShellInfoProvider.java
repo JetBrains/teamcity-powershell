@@ -7,6 +7,7 @@
 
 package jetbrains.buildServer.powershell.agent;
 
+import com.intellij.openapi.diagnostic.Logger;
 import jetbrains.buildServer.agent.AgentLifeCycleAdapter;
 import jetbrains.buildServer.agent.AgentLifeCycleListener;
 import jetbrains.buildServer.agent.BuildAgent;
@@ -30,9 +31,15 @@ import java.util.*;
  * @author Eugene Petrenko (eugene.petrenko@jetbrains.com)
  *         03.12.10 16:24
  */
+@SuppressWarnings("WeakerAccess")
 public class PowerShellInfoProvider {
 
+  @NotNull
+  private static final Logger LOG = Loggers.DETECTION_LOGGER;
+
+  @NotNull
   private final BuildAgentConfiguration myConfig;
+
   @NotNull
   private final ShellInfoHolder myHolder;
 
@@ -54,7 +61,9 @@ public class PowerShellInfoProvider {
                                            @NotNull final DetectionContext detectionContext) {
     Map<String, PowerShellInfo> shells = new HashMap<String, PowerShellInfo>();
     for (PowerShellDetector detector: detectors) {
+      LOG.debug("Processing detected PowerShells from " + detector.getClass().getName());
       for (Map.Entry<String, PowerShellInfo> entry: detector.findShells(detectionContext).entrySet()) {
+        LOG.debug("Processing detected PowerShell [" + entry.getKey() + "][" + entry.getValue() + "]");
         if (!shells.containsKey(entry.getKey())) {
           shells.put(entry.getKey(), entry.getValue());             
           entry.getValue().saveInfo(myConfig);

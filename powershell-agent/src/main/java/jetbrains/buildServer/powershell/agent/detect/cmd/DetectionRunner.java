@@ -12,6 +12,7 @@ import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.CapturingProcessHandler;
 import com.intellij.execution.process.ProcessOutput;
 import com.intellij.openapi.diagnostic.Logger;
+import jetbrains.buildServer.powershell.agent.Loggers;
 import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +26,7 @@ import java.util.List;
  */
 public class DetectionRunner {
 
-  private static final Logger LOG = Logger.getInstance(DetectionRunner.class.getName());
+  private static final Logger LOG = Loggers.DETECTION_LOGGER;
 
   /**
    * Runs detection script

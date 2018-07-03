@@ -11,6 +11,7 @@ import com.intellij.execution.ExecutionException;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.SystemInfo;
 import jetbrains.buildServer.agent.BuildAgentConfiguration;
+import jetbrains.buildServer.powershell.agent.Loggers;
 import jetbrains.buildServer.powershell.agent.detect.DetectionContext;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellDetector;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
@@ -37,7 +38,7 @@ import static com.intellij.openapi.util.text.StringUtil.isEmptyOrSpaces;
 public class CommandLinePowerShellDetector implements PowerShellDetector {
 
   @NotNull
-  private static final Logger LOG = Logger.getInstance(CommandLinePowerShellDetector.class.getName());
+  private static final Logger LOG = Loggers.DETECTION_LOGGER;
 
   @NotNull
   private final BuildAgentConfiguration myConfiguration;

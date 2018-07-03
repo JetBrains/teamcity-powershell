@@ -15,7 +15,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
+import static jetbrains.buildServer.powershell.agent.Loggers.DETECTION_LOGGER;
 import static jetbrains.buildServer.powershell.common.PowerShellConstants.PATH_SUFFIX;
 import static jetbrains.buildServer.powershell.common.PowerShellConstants.generateFullKey;
 
@@ -85,7 +88,7 @@ public class PowerShellInfo {
         + myEdition + " Edition v"
         + myVersion + " "
         + myBitness
-        + "(" + (myVirtual ? "" : ( getHome() + "/")) + myExecutable + ")";
+        + "(" + (myVirtual ? "" : ( getHome() + File.separator)) + myExecutable + ")";
   }
 
   @NotNull
@@ -99,10 +102,13 @@ public class PowerShellInfo {
   }
 
   public void saveInfo(@NotNull final BuildAgentConfiguration config) {
-    final String key = generateFullKey(myEdition, myBitness, myVersion);
     if (!myVirtual) {
-      config.addConfigurationParameter(key, myVersion);
-      config.addConfigurationParameter(key + PATH_SUFFIX, myHome.toString());
+      Map<String, String> parameters = toConfigurationParameters();
+      DETECTION_LOGGER.debug("Saving configuration parameters:");
+      for (Map.Entry<String, String> entry: parameters.entrySet()) {
+        DETECTION_LOGGER.debug(entry.getKey() + " -> " + entry.getValue());
+        config.addConfigurationParameter(entry.getKey(), entry.getValue());
+      }
     }
   }
 
@@ -117,5 +123,13 @@ public class PowerShellInfo {
 
   public boolean isVirtual() {
     return myVirtual;
+  }
+
+  private Map<String, String> toConfigurationParameters() {
+    final String key = generateFullKey(myEdition, myBitness, myVersion);
+    final Map<String, String> result = new HashMap<String, String>();
+    result.put(key, myVersion);
+    result.put(key + PATH_SUFFIX, myHome.toString());
+    return result;
   }
 }
