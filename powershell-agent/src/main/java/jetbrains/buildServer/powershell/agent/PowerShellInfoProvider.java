@@ -178,16 +178,17 @@ public class PowerShellInfoProvider {
         availableShells = byBits.get(PowerShellBitness.x86);
       }
     }
+    if (availableShells.isEmpty()) {
+      return null;
+    }
     if (availableShells.size() == 1) {
       return availableShells.get(0);
     }
-    // select max available version
-    Collections.sort(availableShells, new Comparator<PowerShellInfo>() {
+    return Collections.max(availableShells, new Comparator<PowerShellInfo>() {
       @Override
       public int compare(PowerShellInfo info1, PowerShellInfo info2) {
         return VersionComparatorUtil.compare(info1.getVersion(), info2.getVersion());
       }
     });
-    return availableShells.get(0);
   }
 }

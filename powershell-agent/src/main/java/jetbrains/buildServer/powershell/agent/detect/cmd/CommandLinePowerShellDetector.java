@@ -65,6 +65,7 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
 
   private static final List<String> EXECUTABLES = Arrays.asList(
       "pwsh",
+      "pwsh-preview",
       "powershell"
   );
 
