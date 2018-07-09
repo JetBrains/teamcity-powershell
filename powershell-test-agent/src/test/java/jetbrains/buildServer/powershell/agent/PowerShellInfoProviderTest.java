@@ -14,6 +14,7 @@ import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellEdition;
 import jetbrains.buildServer.util.EventDispatcher;
+import jetbrains.buildServer.util.TestFor;
 import org.jetbrains.annotations.NotNull;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -203,6 +204,21 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
     assertEquals(PowerShellBitness.x86, infoDesktop.getBitness());
     assertEquals("5.0", infoDesktop.getVersion());
     assertEquals(PowerShellEdition.DESKTOP, infoDesktop.getEdition());
+  }
+
+  @Test
+  @TestFor(issues = "TW-55922")
+  public void testSelectTool_MultipleShells() {
+    final Map<String, String> params = new HashMap<String, String>();
+    mock64bit("6.1.0-preview.2", PowerShellEdition.CORE);
+    mock64bit("6.0", PowerShellEdition.CORE);
+    m.checking(new Expectations() {{
+      allowing(myConfig).getConfigurationParameters();
+      will(returnValue(params));
+    }});
+    final PowerShellInfo info = myProvider.selectTool(PowerShellBitness.x64, null, PowerShellEdition.CORE);
+    assertNotNull(info);
+    assertEquals("6.1.0-preview.2", info.getVersion());
   }
 
   private void mock32Bit(@NotNull final String version, @NotNull final PowerShellEdition edition) {
