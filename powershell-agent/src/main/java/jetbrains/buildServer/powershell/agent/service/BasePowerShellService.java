@@ -24,6 +24,7 @@ import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellEdition;
 import jetbrains.buildServer.powershell.common.PowerShellExecutionMode;
 import jetbrains.buildServer.util.FileUtil;
+import jetbrains.buildServer.util.PropertiesUtil;
 import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -159,7 +160,7 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
   @NotNull
   @Override
   public List<ProcessListener> getListeners() {
-    final boolean logToError = !StringUtil.isEmptyOrSpaces(getRunnerParameters().get(PowerShellConstants.RUNNER_LOG_ERR_TO_ERROR));
+    final boolean logToError = PropertiesUtil.getBoolean(getRunnerParameters().get(PowerShellConstants.RUNNER_LOG_ERR_TO_ERROR));
     final BuildProgressLogger logger = getLogger();
     return Collections.<ProcessListener>singletonList(new ProcessListenerAdapter() {
       private final org.apache.log4j.Logger OUT_LOG = org.apache.log4j.Logger.getLogger("teamcity.out");

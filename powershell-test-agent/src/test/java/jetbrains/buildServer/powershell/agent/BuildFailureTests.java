@@ -142,4 +142,19 @@ public class BuildFailureTests extends AbstractPowerShellIntegrationTest {
     Assert.assertTrue(build.getBuildStatus().isFailed());
     Assert.assertTrue(getBuildLog(build).contains("Process exited with code 123"));
   }
+
+  @Test(dataProvider = "supportedBitnessProvider")
+  public void should_error_to_warning_on_false(@NotNull final PowerShellBitness bitness) throws Throwable {
+    setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "$res = \"This should be warning\" \nWrite-Error $res");
+    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, bitness.getValue());
+
+    setRunnerParameter(PowerShellConstants.RUNNER_LOG_ERR_TO_ERROR, "false");
+    getBuildType().setOption(SBuildType.BT_FAIL_ON_ANY_ERROR_MESSAGE, true);
+
+    final SFinishedBuild build = doTest(null);
+    dumpBuildLogLocally(build);
+    Assert.assertTrue(build.getBuildStatus().isSuccessful());
+  }
 }
