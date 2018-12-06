@@ -52,4 +52,4 @@ local.properties
 # teamcity-gradle-plugin
 servers/
 downloads/
-
+teamcity/
