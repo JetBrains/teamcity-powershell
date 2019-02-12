@@ -24,14 +24,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.*;
 
 import static com.intellij.openapi.util.text.StringUtil.isEmptyOrSpaces;
 
 /**
- * Detects PowerShell on non-windows systems
+ * Detects PowerShell using command line and detection script
  *
  * @author Oleg Rybak (oleg.rybak@jetbrains.com)
  */
@@ -60,7 +59,7 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
 
   private static final List<String> EXECUTABLES_WIN = Arrays.asList(
       "pwsh.exe",
-      "poweshell.exe"
+      "powershell.exe"
   );
 
   private static final List<String> EXECUTABLES = Arrays.asList(
@@ -131,12 +130,14 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
     checkPathAndAdd(result, System.getenv("ProgramFiles"));
     checkPathAndAdd(result, System.getenv("ProgramFiles(x86)"));
     checkPathAndAdd(result, System.getenv("ProgramW6432"));
+    // nanoserver powershell core location
+    result.add(System.getenv("windir") + "\\System32\\WindowsPowerShell\\");
     return result;
   }
 
   private void checkPathAndAdd(@NotNull final Set<String> paths, String path) {
     if (!isEmptyOrSpaces(path)) {
-      File base = new File(path + "\\PowerShell");
+      File base = new File(path, "PowerShell");
       if (base.isDirectory()) {
         paths.add(base.getAbsolutePath());
       }
@@ -151,6 +152,7 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
       }
       File f = new File(base);
       if (f.isDirectory()) {
+        result.add(f.getAbsolutePath());
         result.addAll(populateWithChildren(f));
       }
     }
@@ -159,21 +161,12 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
 
   private List<String> populateWithChildren(@NotNull File base) {
     List<String> result = new ArrayList<String>();
-    final File[] files = FileUtil.listFiles(base, new FilenameFilter() {
-      @Override
-      public boolean accept(File file, String s) {
-        if (LOG.isDebugEnabled()) {
-          LOG.debug("Checking [" + file.getAbsolutePath() + "] (" + file.isDirectory() + " )");
-        }
-        return file.isDirectory();
-      }
-    });
+    for (File subDir: FileUtil.getSubDirectories(base)) {
+      result.add(subDir.getAbsolutePath());
+    }
     if (LOG.isDebugEnabled()) {
       LOG.debug("Paths under PowerShell home that will be searched for PowerShell.Core install: "
-      + Arrays.toString(files));
-    }
-    for (File f: files) {
-      result.add(f.getAbsolutePath());
+      + Arrays.toString(result.toArray()));
     }
     return result;
   }
@@ -188,6 +181,9 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
       LOG.debug("Searching for PowerShell at " + exeFile.getAbsolutePath());
     }
     if (exeFile.isFile()) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Trying PowerShell executable: " + exeFile.getAbsolutePath());
+      }
       String executablePath = exeFile.getAbsolutePath();
       try {
         final List<String> outputLines = myRunner.runDetectionScript(executablePath, scriptPath);
