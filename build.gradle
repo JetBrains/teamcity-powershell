@@ -30,7 +30,7 @@ subprojects {
   version = buildVersion
 
   repositories {
-    maven { url "http://download.jetbrains.com/teamcity-repository" }    
+    maven { url "https://download.jetbrains.com/teamcity-repository/" }    
     mavenCentral()
     mavenLocal()
   }
