@@ -13,6 +13,7 @@ import com.intellij.execution.process.CapturingProcessHandler;
 import com.intellij.execution.process.ProcessOutput;
 import com.intellij.openapi.diagnostic.Logger;
 import jetbrains.buildServer.powershell.agent.Loggers;
+import jetbrains.buildServer.serverSide.TeamCityProperties;
 import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -52,9 +53,10 @@ public class DetectionRunner {
 
   private static ProcessOutput runProcess(@NotNull final GeneralCommandLine cl) throws ExecutionException {
     final CapturingProcessHandler handler = new CapturingProcessHandler(cl.createProcess(), Charset.forName("UTF-8"));
-    final ProcessOutput result = handler.runProcess(20000);
+    final int timeout = TeamCityProperties.getInteger("teamcity.powershell.detector.timeout.msec", 20000);
+    final ProcessOutput result = handler.runProcess(timeout);
     if (result.isTimeout()) {
-      throw new ExecutionException("Process execution of [" + cl.getCommandLineString() + "] has timed out");
+      throw new ExecutionException("Process execution of [" + cl.getCommandLineString() + "] has timed out. Timeout is set to " + timeout + " msec.");
     }
     final String errorOutput = result.getStderr();
     if (!StringUtil.isEmptyOrSpaces(errorOutput)) {
