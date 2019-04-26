@@ -53,26 +53,29 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
   private final Set<String> WINDOWS_PATHS = getWindowsBasePaths();
 
   private static final List<String> PATHS = Arrays.asList(
-      "/usr/local/bin", // mac os
-      "/usr/bin"        // linux
+          "/usr/local/bin", // mac os
+          "/usr/bin"        // linux
   );
 
   private static final List<String> EXECUTABLES_WIN = Arrays.asList(
-      "pwsh.exe",
-      "powershell.exe"
+          "pwsh.exe",
+          "powershell.exe"
   );
 
-  private static final List<String> EXECUTABLES = Arrays.asList(
-      "pwsh",
-      "pwsh-preview",
-      "powershell"
+  private static final List<String> EXECUTABLES_NIX = Arrays.asList(
+          "pwsh",
+          "pwsh-preview"
+  );
+
+  private static final List<String> EXECUTABLES_NIX_LEGACY = Collections.singletonList(
+          "powershell"
   );
 
   private static final String DETECTION_SCRIPT =
-      "Write-Output " +
-          "$PSVersionTable.PSVersion.toString() " + // shell version
-          "$PSVersionTable.PSEdition.toString() " + // shell edition
-          "([IntPtr]::size -eq 8)";                 // shell bitness
+          "Write-Output " +
+                  "$PSVersionTable.PSVersion.toString() " + // shell version
+                  "$PSVersionTable.PSEdition.toString() " + // shell edition
+                  "([IntPtr]::size -eq 8)";                 // shell bitness
 
   public CommandLinePowerShellDetector(@NotNull final BuildAgentConfiguration configuration,
                                        @NotNull final DetectionRunner runner) {
@@ -94,9 +97,8 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
       }
     }
     final List<String> pathsToCheck = !detectionContext.getSearchPaths().isEmpty() ?
-        detectionContext.getSearchPaths() :
-        (SystemInfo.isWindows ? getWindowsPaths() : PATHS);
-    final List<String> executablesToCheck = SystemInfo.isWindows ? EXECUTABLES_WIN : EXECUTABLES;
+            detectionContext.getSearchPaths() :
+            (SystemInfo.isWindows ? getWindowsPaths() : PATHS);
     if (LOG.isDebugEnabled()) {
       LOG.debug("Will be detecting powershell at: " + Arrays.toString(pathsToCheck.toArray()));
     }
@@ -108,12 +110,17 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
         if (LOG.isDebugEnabled()) {
           LOG.info("Detection script path is: " + scriptPath);
         }
-        for (String path: pathsToCheck) {
-          for (String executable: executablesToCheck) {
-            final PowerShellInfo detected = doDetect(path, executable, scriptPath);
-            if (detected != null) {
-              shells.put(detected.getHome().getAbsolutePath(), detected);
-            }
+        if (SystemInfo.isWindows) {
+          doDetectionCycle(shells, pathsToCheck, EXECUTABLES_WIN, scriptPath);
+        } else {
+          // try release versions. powershell has already been renamed to pwsh.
+          // pwsh-preview is used for -preview versions of powershell core
+          LOG.debug("Detecting PowerShell.Core...");
+          doDetectionCycle(shells, pathsToCheck, EXECUTABLES_NIX, scriptPath);
+          // if no shells found - try legacy
+          if (shells.isEmpty()) {
+            LOG.debug("No release versions of PowerShell.Core were detected. Trying to detect legacy and beta versions...");
+            doDetectionCycle(shells, pathsToCheck, EXECUTABLES_NIX_LEGACY, scriptPath);
           }
         }
       }
@@ -121,6 +128,17 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
     } finally {
       if (script != null) {
         FileUtil.delete(script);
+      }
+    }
+  }
+
+  private void doDetectionCycle(Map<String, PowerShellInfo> shells, List<String> pathsToCheck, List<String> executablesToCheck, String scriptPath) {
+    for (String path: pathsToCheck) {
+      for (String executable: executablesToCheck) {
+        final PowerShellInfo detected = doDetect(path, executable, scriptPath);
+        if (detected != null) {
+          shells.put(detected.getHome().getAbsolutePath(), detected);
+        }
       }
     }
   }
@@ -166,7 +184,7 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
     }
     if (LOG.isDebugEnabled()) {
       LOG.debug("Paths under PowerShell home that will be searched for PowerShell.Core install: "
-      + Arrays.toString(result.toArray()));
+              + Arrays.toString(result.toArray()));
     }
     return result;
   }
@@ -187,6 +205,9 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
       String executablePath = exeFile.getAbsolutePath();
       try {
         final List<String> outputLines = myRunner.runDetectionScript(executablePath, scriptPath);
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("Detection script output at " + executablePath + "\n" + StringUtil.join(outputLines, "\n"));
+        }
         if (outputLines.size() == 3) {
           final PowerShellEdition edition = PowerShellEdition.fromString(outputLines.get(1));
           if (edition != null) {
