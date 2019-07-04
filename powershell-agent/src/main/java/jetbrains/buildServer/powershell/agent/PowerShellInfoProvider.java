@@ -13,6 +13,7 @@ import jetbrains.buildServer.agent.AgentLifeCycleListener;
 import jetbrains.buildServer.agent.BuildAgent;
 import jetbrains.buildServer.agent.BuildAgentConfiguration;
 import jetbrains.buildServer.powershell.agent.detect.DetectionContext;
+import jetbrains.buildServer.powershell.agent.detect.DetectionContextImpl;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellDetector;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
@@ -31,7 +32,6 @@ import java.util.*;
  * @author Eugene Petrenko (eugene.petrenko@jetbrains.com)
  *         03.12.10 16:24
  */
-@SuppressWarnings("WeakerAccess")
 public class PowerShellInfoProvider {
 
   @NotNull
@@ -52,7 +52,7 @@ public class PowerShellInfoProvider {
     events.addListener(new AgentLifeCycleAdapter() {
       @Override
       public void afterAgentConfigurationLoaded(@NotNull BuildAgent agent) {
-        registerDetectedPowerShells(detectors, new DetectionContext(agent.getConfiguration()));
+        registerDetectedPowerShells(detectors, new DetectionContextImpl(agent.getConfiguration()));
       }
     });
   }
