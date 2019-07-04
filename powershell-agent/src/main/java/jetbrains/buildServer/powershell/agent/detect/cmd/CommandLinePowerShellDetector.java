@@ -27,8 +27,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-import static com.intellij.openapi.util.text.StringUtil.isEmptyOrSpaces;
-
 /**
  * Detects PowerShell using command line and detection script
  *
@@ -44,18 +42,8 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
 
   @NotNull
   private final DetectionRunner myRunner;
-
-  /**
-   * https://docs.microsoft.com/en-us/powershell/scripting/setup/installing-powershell-core-on-windows?view=powershell-5.1
-   *
-   * By default the package is installed to $env:ProgramFiles\PowerShell\
-   */
-  private final Set<String> WINDOWS_PATHS = getWindowsBasePaths();
-
-  private static final List<String> PATHS = Arrays.asList(
-          "/usr/local/bin", // mac os
-          "/usr/bin"        // linux
-  );
+  @NotNull
+  private final DetectionPaths myDetectionPaths;
 
   private static final List<String> EXECUTABLES_WIN = Arrays.asList(
           "pwsh.exe",
@@ -78,30 +66,24 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
                   "([IntPtr]::size -eq 8)";                 // shell bitness
 
   public CommandLinePowerShellDetector(@NotNull final BuildAgentConfiguration configuration,
-                                       @NotNull final DetectionRunner runner) {
+                                       @NotNull final DetectionRunner runner,
+                                       @NotNull final DetectionPaths detectionPaths) {
     myConfiguration = configuration;
     myRunner = runner;
+    myDetectionPaths = detectionPaths;
   }
-
 
   @NotNull
   @Override
   public Map<String, PowerShellInfo> findShells(@NotNull DetectionContext detectionContext) {
     LOG.info("Detecting PowerShell using CommandLinePowerShellDetector");
     // group by home
-    Map<String, PowerShellInfo> shells = new HashMap<String, PowerShellInfo>();
-    // determine paths
+    final Map<String, PowerShellInfo> shells = new HashMap<String, PowerShellInfo>();
+    final List<String> pathsToCheck = myDetectionPaths.getPaths(detectionContext);
     if (LOG.isDebugEnabled()) {
-      if (!detectionContext.getSearchPaths().isEmpty()) {
-        LOG.debug("Detection paths were overridden by [teamcity.powershell.detector.search.paths] property.");
-      }
+      LOG.debug("Will be detecting PowerShell in the following locations: [\n" + StringUtil.join(pathsToCheck, "\n") + "\n");
     }
-    final List<String> pathsToCheck = !detectionContext.getSearchPaths().isEmpty() ?
-            detectionContext.getSearchPaths() :
-            (SystemInfo.isWindows ? getWindowsPaths() : PATHS);
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("Will be detecting powershell at: " + Arrays.toString(pathsToCheck.toArray()));
-    }
+
     File script = null;
     try {
       script = prepareDetectionScript();
@@ -124,6 +106,11 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
           }
         }
       }
+      if (shells.isEmpty()) {
+        LOG.info("No PowerShell detected. If it is installed in non-standard location, " +
+                "please provide install locations in teamcity.powershell.detector.search.paths " +
+                "agent property (with ';' as a separator)");
+      }
       return shells;
     } finally {
       if (script != null) {
@@ -141,52 +128,6 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
         }
       }
     }
-  }
-
-  private Set<String> getWindowsBasePaths() {
-    Set<String> result = new HashSet<String>();
-    checkPathAndAdd(result, System.getenv("ProgramFiles"));
-    checkPathAndAdd(result, System.getenv("ProgramFiles(x86)"));
-    checkPathAndAdd(result, System.getenv("ProgramW6432"));
-    // nanoserver powershell core location
-    result.add(System.getenv("windir") + "\\System32\\WindowsPowerShell\\");
-    return result;
-  }
-
-  private void checkPathAndAdd(@NotNull final Set<String> paths, String path) {
-    if (!isEmptyOrSpaces(path)) {
-      File base = new File(path, "PowerShell");
-      if (base.isDirectory()) {
-        paths.add(base.getAbsolutePath());
-      }
-    }
-  }
-
-  private List<String> getWindowsPaths() {
-    List<String> result = new ArrayList<String>();
-    for (String base: WINDOWS_PATHS) {
-      if (LOG.isDebugEnabled()) {
-        LOG.debug("Processing PowerShell.Core Windows path: " + base);
-      }
-      File f = new File(base);
-      if (f.isDirectory()) {
-        result.add(f.getAbsolutePath());
-        result.addAll(populateWithChildren(f));
-      }
-    }
-    return result;
-  }
-
-  private List<String> populateWithChildren(@NotNull File base) {
-    List<String> result = new ArrayList<String>();
-    for (File subDir: FileUtil.getSubDirectories(base)) {
-      result.add(subDir.getAbsolutePath());
-    }
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("Paths under PowerShell home that will be searched for PowerShell.Core install: "
-              + Arrays.toString(result.toArray()));
-    }
-    return result;
   }
 
   @Nullable
@@ -211,7 +152,7 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
         if (outputLines.size() == 3) {
           final PowerShellEdition edition = PowerShellEdition.fromString(outputLines.get(1));
           if (edition != null) {
-            result = new PowerShellInfo(Boolean.valueOf(outputLines.get(2)) ? PowerShellBitness.x64 : PowerShellBitness.x86, exeFile.getParentFile(), outputLines.get(0), edition, executable);
+            result = new PowerShellInfo(Boolean.parseBoolean(outputLines.get(2)) ? PowerShellBitness.x64 : PowerShellBitness.x86, exeFile.getParentFile(), outputLines.get(0), edition, executable);
           } else {
             LOG.warn("Failed to determine PowerShell edition for [" + executablePath + "]");
             LOG.debug(StringUtil.join("\n", outputLines));
