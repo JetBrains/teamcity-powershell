@@ -45,9 +45,8 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
   @NotNull
   private final DetectionPaths myDetectionPaths;
 
-  private static final List<String> EXECUTABLES_WIN = Arrays.asList(
-          "pwsh.exe",
-          "powershell.exe"
+  private static final List<String> EXECUTABLES_WIN = Collections.singletonList(
+          "pwsh.exe"
   );
 
   private static final List<String> EXECUTABLES_NIX = Arrays.asList(
@@ -60,9 +59,13 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
   );
 
   private static final String DETECTION_SCRIPT =
-          "Write-Output " +
+          "$edition = \"Desktop\"\n" +
+                  "if (![string]::IsNullOrEmpty($PSVersionTable.PSEdition)) {\n" +
+                  "  $edition = $PSVersionTable.PSEdition\n" +
+                  "} \n" +
+                  "Write-Output " +
                   "$PSVersionTable.PSVersion.toString() " + // shell version
-                  "$PSVersionTable.PSEdition.toString() " + // shell edition
+                  "$edition " + // shell edition
                   "([IntPtr]::size -eq 8)";                 // shell bitness
 
   public CommandLinePowerShellDetector(@NotNull final BuildAgentConfiguration configuration,
@@ -92,24 +95,14 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
         if (LOG.isDebugEnabled()) {
           LOG.info("Detection script path is: " + scriptPath);
         }
-        if (SystemInfo.isWindows) {
-          doDetectionCycle(shells, pathsToCheck, EXECUTABLES_WIN, scriptPath);
-        } else {
-          // try release versions. powershell has already been renamed to pwsh.
-          // pwsh-preview is used for -preview versions of powershell core
-          LOG.debug("Detecting PowerShell.Core...");
-          doDetectionCycle(shells, pathsToCheck, EXECUTABLES_NIX, scriptPath);
-          // if no shells found - try legacy
-          if (shells.isEmpty()) {
-            LOG.debug("No release versions of PowerShell.Core were detected. Trying to detect legacy and beta versions...");
-            doDetectionCycle(shells, pathsToCheck, EXECUTABLES_NIX_LEGACY, scriptPath);
-          }
+        // try release versions. powershell has already been renamed to pwsh.
+        // pwsh-preview is used for -preview versions of powershell core
+        LOG.debug("Detecting PowerShell.Core...");
+        doDetectionCycle(shells, pathsToCheck, SystemInfo.isWindows ? EXECUTABLES_WIN : EXECUTABLES_NIX, scriptPath);
+        if (shells.isEmpty() && !SystemInfo.isWindows) {
+          LOG.debug("No release versions of PowerShell.Core were detected. Trying to detect legacy and beta versions...");
+          doDetectionCycle(shells, pathsToCheck, EXECUTABLES_NIX_LEGACY, scriptPath);
         }
-      }
-      if (shells.isEmpty()) {
-        LOG.info("No PowerShell detected. If it is installed in non-standard location, " +
-                "please provide install locations in teamcity.powershell.detector.search.paths " +
-                "agent property (with ';' as a separator)");
       }
       return shells;
     } finally {

@@ -65,7 +65,7 @@ public class PowerShellInfoProvider {
       for (Map.Entry<String, PowerShellInfo> entry: detector.findShells(detectionContext).entrySet()) {
         LOG.debug("Processing detected PowerShell [" + entry.getKey() + "][" + entry.getValue() + "]");
         if (!shells.containsKey(entry.getKey())) {
-          shells.put(entry.getKey(), entry.getValue());             
+          shells.put(entry.getKey(), entry.getValue());
           entry.getValue().saveInfo(myConfig);
           myHolder.addShellInfo(entry.getValue());
         }
@@ -75,6 +75,10 @@ public class PowerShellInfoProvider {
     if (!myHolder.getShells().isEmpty()) {
       provideMaxVersions();
       provideCompatibilityParams();
+    } else {
+      LOG.info("No PowerShell detected. If it is installed in non-standard location, " +
+              "please provide install locations in teamcity.powershell.detector.search.paths " +
+              "agent property (with ';' as a separator)");
     }
   }
 
