@@ -93,8 +93,9 @@
 
 <tr id="powershell_sourceCode">
   <th><label for="${bean.scriptCodeKey}">Script source:<l:star/></label></th>
-  <td>
+  <td class="codeHighlightTD">
     <props:multilineProperty name="${bean.scriptCodeKey}"
+                             highlight="powershell"
                              linkTitle="Enter PowerShell script content"
                              cols="58" rows="10"
                              expanded="${true}"
