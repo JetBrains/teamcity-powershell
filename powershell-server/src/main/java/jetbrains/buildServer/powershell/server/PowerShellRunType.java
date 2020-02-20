@@ -31,10 +31,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static jetbrains.buildServer.powershell.common.PowerShellConstants.*;
-import static jetbrains.buildServer.powershell.common.PowerShellConstants.RUNNER_SCRIPT_CODE;
 
 /**
  * @author Eugene Petrenko (eugene.petrenko@jetbrains.com)
@@ -218,7 +216,7 @@ public class PowerShellRunType extends RunType {
     if (keys.size() == 1) {
       return keys.get(0);
     } else {
-      return RequirementQualifier.EXISTS_QUALIFIER + "(" + keys.stream().collect(Collectors.joining("|")) + ")";
+      return RequirementQualifier.EXISTS_QUALIFIER + "(" + String.join("|", keys) + ")";
     }
   }
 }
