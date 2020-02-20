@@ -155,6 +155,7 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
           final PowerShellEdition edition = PowerShellEdition.fromString(outputLines.get(1));
           if (edition != null) {
             result = new PowerShellInfo(Boolean.parseBoolean(outputLines.get(2)) ? PowerShellBitness.x64 : PowerShellBitness.x86, exeFile.getParentFile(), outputLines.get(0), edition, executable);
+            LOG.info("Found: " + result);
           } else {
             LOG.warn("Failed to determine PowerShell edition for [" + executablePath + "]");
             LOG.debug(StringUtil.join("\n", outputLines));
