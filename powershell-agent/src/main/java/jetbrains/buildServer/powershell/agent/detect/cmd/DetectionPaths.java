@@ -46,7 +46,6 @@ public class DetectionPaths {
           "/usr/bin"        // linux
   );
 
-
   public List<String> getPaths(@NotNull DetectionContext detectionContext) {
     // add predefined paths
     final List<String> propertyPaths = detectionContext.getSearchPaths();
@@ -59,10 +58,21 @@ public class DetectionPaths {
     final List<String> result = new ArrayList<String>(getPaths(propertyPaths));
     if (SystemInfo.isWindows) {
       result.addAll(getPaths(WINDOWS_PATHS));
+      addGlobalToolsPath(result);
     } else {
       result.addAll(PATHS);
     }
     return result;
+  }
+
+  private void addGlobalToolsPath(@NotNull final List<String> result) {
+    final File toolsPath = new File(System.getenv("USERPROFILE") + "\\.dotnet\\tools");
+    if (toolsPath.isDirectory()) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(".Net tools path " + toolsPath.getAbsolutePath() + " exists. Added to PowerShell search paths");
+      }
+      result.add(toolsPath.getAbsolutePath());
+    }
   }
 
   private List<String> getPaths(@NotNull final Collection<String> paths) {
