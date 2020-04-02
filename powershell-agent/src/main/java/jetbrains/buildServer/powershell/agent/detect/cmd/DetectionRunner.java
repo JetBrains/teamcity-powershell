@@ -26,6 +26,7 @@ import jetbrains.buildServer.serverSide.TeamCityProperties;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.Charset;
+import java.util.Collections;
 import java.util.List;
 
 import static com.intellij.openapi.util.text.StringUtil.isEmptyOrSpaces;
@@ -44,14 +45,19 @@ public class DetectionRunner {
    *
    * @param executablePath executable to run script with
    * @param detectionScriptPath file containing detection script
+   * @param additionalParameters additional parameters for script runner
    * @return lines from stdout
    * @throws ExecutionException if there was an error during execution
    */
   List<String> runDetectionScript(@NotNull final String executablePath,
-                                  @NotNull final String detectionScriptPath) throws ExecutionException {
+                                  @NotNull final String detectionScriptPath,
+                                  @NotNull final List<String> additionalParameters) throws ExecutionException {
     final GeneralCommandLine cl = new GeneralCommandLine();
     cl.setExePath(executablePath);
     cl.addParameter("-NoProfile");
+    for (String str: additionalParameters) {
+      cl.addParameter(str);
+    }
     cl.addParameter("-File");
     cl.addParameter(detectionScriptPath);
     if (LOG.isDebugEnabled()) {

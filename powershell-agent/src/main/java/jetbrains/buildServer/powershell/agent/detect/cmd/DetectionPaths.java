@@ -84,7 +84,7 @@ public class DetectionPaths {
     final List<String> result = new ArrayList<String>();
     for (String base: paths) {
       if (LOG.isDebugEnabled()) {
-        LOG.debug("Processing PowerShell.Core Windows path: " + base);
+        LOG.debug("Processing PowerShell Windows path: " + base);
       }
       File f = new File(base);
       if (f.isDirectory()) {

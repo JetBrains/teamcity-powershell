@@ -67,6 +67,15 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
           "powershell"
   );
 
+  private static final List<String> EXECUTABLES_WIN_DESKTOP = Collections.singletonList(
+          "powershell.exe"
+  );
+
+  private static final List<String> WIN_ADDITIONAL_PARAMETERS = Arrays.asList(
+          "-ExecutionPolicy",
+          "ByPass"
+  );
+
   private static final String DETECTION_SCRIPT =
           "$edition = \"Desktop\"\n" +
                   "if (![string]::IsNullOrEmpty($PSVersionTable.PSEdition)) {\n" +
@@ -108,6 +117,10 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
         // pwsh-preview is used for -preview versions of powershell core
         LOG.debug("Detecting PowerShell.Core...");
         doDetectionCycle(shells, pathsToCheck, SystemInfo.isWindows ? EXECUTABLES_WIN : EXECUTABLES_NIX, scriptPath);
+        // handle the case when JetRegistry.exe could not be executed. Try to search for desktop edition inside given paths
+        if (SystemInfo.isWindows) {
+          doDetectionCycle(shells, pathsToCheck, EXECUTABLES_WIN_DESKTOP, scriptPath, WIN_ADDITIONAL_PARAMETERS);
+        }
         if (shells.isEmpty() && !SystemInfo.isWindows) {
           LOG.debug("No release versions of PowerShell.Core were detected. Trying to detect legacy and beta versions...");
           doDetectionCycle(shells, pathsToCheck, EXECUTABLES_NIX_LEGACY, scriptPath);
@@ -121,10 +134,21 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
     }
   }
 
-  private void doDetectionCycle(Map<String, PowerShellInfo> shells, List<String> pathsToCheck, List<String> executablesToCheck, String scriptPath) {
+  private void doDetectionCycle(Map<String, PowerShellInfo> shells,
+                                List<String> pathsToCheck,
+                                List<String> executablesToCheck,
+                                String scriptPath) {
+    doDetectionCycle(shells, pathsToCheck, executablesToCheck, scriptPath, Collections.<String>emptyList());
+  }
+
+  private void doDetectionCycle(Map<String, PowerShellInfo> shells,
+                                List<String> pathsToCheck,
+                                List<String> executablesToCheck,
+                                String scriptPath,
+                                List<String> additionalParameters) {
     for (String path: pathsToCheck) {
       for (String executable: executablesToCheck) {
-        final PowerShellInfo detected = doDetect(path, executable, scriptPath);
+        final PowerShellInfo detected = doDetect(path, executable, scriptPath, additionalParameters);
         if (detected != null) {
           shells.put(detected.getHome().getAbsolutePath(), detected);
         }
@@ -135,7 +159,8 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
   @Nullable
   private PowerShellInfo doDetect(@NotNull final String homePath,
                                   @NotNull final String executable,
-                                  @NotNull final String scriptPath) {
+                                  @NotNull final String scriptPath,
+                                  @NotNull final List<String> additionalParameters) {
     PowerShellInfo result = null;
     final File exeFile = new File(homePath, executable);
     if (LOG.isDebugEnabled()) {
@@ -147,7 +172,7 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
       }
       String executablePath = exeFile.getAbsolutePath();
       try {
-        final List<String> outputLines = myRunner.runDetectionScript(executablePath, scriptPath);
+        final List<String> outputLines = myRunner.runDetectionScript(executablePath, scriptPath, additionalParameters);
         if (LOG.isDebugEnabled()) {
           LOG.debug("Detection script output at " + executablePath + "\n" + StringUtil.join(outputLines, "\n"));
         }
