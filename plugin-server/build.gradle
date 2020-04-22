@@ -39,7 +39,7 @@ teamcity {
             name = 'powershell-runner'
             displayName = 'PowerShell Runner'
             version = project.version
-            vendorName = 'JetBrains, s.r.o.'
+            vendorName = 'JetBrains'
             vendorUrl = 'http://www.jetbrains.com/'
             description = 'Support for running PowerShell scripts'
             useSeparateClassloader = true
