@@ -35,15 +35,8 @@ teamcity {
     version = teamCityVersion
 
     server {
-		descriptor {
-            name = 'powershell-runner'
-            displayName = 'PowerShell Runner'
-            version = project.version
-            vendorName = 'JetBrains'
-            vendorUrl = 'http://www.jetbrains.com/'
-            description = 'Support for running PowerShell scripts'
-            useSeparateClassloader = true
-        }
+      descriptor = file("$rootDir/teamcity-plugin.xml")
+      tokens = [Plugin_Version: project.version]
 
       files {
      	into('kotlin-dsl') {

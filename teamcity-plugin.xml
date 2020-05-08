@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<teamcity-plugin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:noNamespaceSchemaLocation="urn:schemas-jetbrains-com:teamcity-plugin-v1-xml">
+  <info>
+    <name>powershell-runner</name>
+    <display-name>PowerShell Runner</display-name>
+    <version>@Plugin_Version@</version>
+    <description>Support for running PowerShell scripts</description>
+    <vendor>
+      <name>JetBrains</name>
+      <url>http://www.jetbrains.com</url>
+    </vendor>
+  </info>
+  <deployment use-separate-classloader="true" allow-runtime-reload="true" node-responsibilities-aware="true"/>
+</teamcity-plugin>
