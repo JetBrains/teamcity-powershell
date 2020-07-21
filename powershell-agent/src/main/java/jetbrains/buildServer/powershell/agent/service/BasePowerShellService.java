@@ -18,7 +18,6 @@ package jetbrains.buildServer.powershell.agent.service;
 
 import com.intellij.execution.configurations.ParametersList;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.SystemInfo;
 import jetbrains.buildServer.RunBuildException;
 import jetbrains.buildServer.agent.BuildProgressLogger;
 import jetbrains.buildServer.agent.runner.*;
@@ -54,7 +53,7 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
   static final Logger LOG = Logger.getInstance(BasePowerShellService.class.getName());
 
   @NotNull
-  private PowerShellInfoProvider myInfoProvider;
+  private final PowerShellInfoProvider myInfoProvider;
 
   @NotNull
   private final ScriptGenerator myScriptGenerator;
@@ -106,7 +105,7 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
   private String generateCommand(@NotNull final PowerShellInfo info) throws RunBuildException {
     final ParametersList parametersList = new ParametersList();
     final Map<String, String> runnerParameters = getRunnerParameters();
-    final File scriptFile = myScriptGenerator.generateScript(runnerParameters, getCheckoutDirectory(), getBuildTempDirectory());
+    final File scriptFile = myScriptGenerator.generateScript(runnerParameters, getCheckoutDirectory(), getBuildTempDirectory(), getRunnerContext().getWorkingDirectory());
     // if  we have script entered in runner params it will be dumped to temp file. This file must be removed after build finishes
     if (ScriptGenerator.shouldRemoveGeneratedScript(runnerParameters)) {
       myFilesToRemove.add(scriptFile);
@@ -118,7 +117,7 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
 
   private List<String> generateArguments(@NotNull final PowerShellInfo info) throws RunBuildException {
     final Map<String, String> runnerParameters = getRunnerParameters();
-    final File scriptFile = myScriptGenerator.generateScript(runnerParameters, getCheckoutDirectory(), getBuildTempDirectory());
+    final File scriptFile = myScriptGenerator.generateScript(runnerParameters, getCheckoutDirectory(), getBuildTempDirectory(), getRunnerContext().getWorkingDirectory());
     // if  we have script entered in runner params it will be dumped to temp file. This file must be removed after build finishes
     if (ScriptGenerator.shouldRemoveGeneratedScript(runnerParameters)) {
       myFilesToRemove.add(scriptFile);
