@@ -18,7 +18,6 @@ package jetbrains.buildServer.powershell.agent;
 
 import jetbrains.buildServer.agent.AgentLifeCycleListener;
 import jetbrains.buildServer.agent.BuildAgentConfiguration;
-import jetbrains.buildServer.powershell.agent.detect.PowerShellDetector;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellEdition;
@@ -71,7 +70,7 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
       allowing(myEvents);
     }});
     myTempHome = createTempDir();
-    myProvider = new PowerShellInfoProvider(myConfig, myEvents, Collections.<PowerShellDetector>emptyList(), myHolder);
+    myProvider = new PowerShellInfoProvider(myConfig, myEvents, Collections.emptyList(), myHolder);
   }
 
   @Test
@@ -87,7 +86,7 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
 
   @Test(dataProvider = "editionProvider")
   public void testNull_BitnessNotSatisfied_64_32(@NotNull final PowerShellEdition edition) {
-    final Map<String, String> params = new HashMap<String, String>();
+    final Map<String, String> params = new HashMap<>();
     mock64bit("1.0", edition);
     m.checking(new Expectations() {{
       allowing(myConfig).getConfigurationParameters();
@@ -102,7 +101,7 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
    */
   @Test(dataProvider = "editionProvider")
   public void testNull_MinVersionNotSatisfied_32bit(@NotNull final PowerShellEdition edition) {
-    final Map<String, String> params = new HashMap<String, String>();
+    final Map<String, String> params = new HashMap<>();
     mock32Bit("1.0", edition);
     mock64bit("2.0", edition);
     m.checking(new Expectations() {{
@@ -120,7 +119,7 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
    */
   @Test(dataProvider = "editionProvider")
   public void testSelect64Over32(@NotNull final PowerShellEdition edition) {
-    final Map<String, String> params = new HashMap<String, String>();
+    final Map<String, String> params = new HashMap<>();
     mock32Bit("2.0", edition);
     mock64bit("2.0", edition);
     m.checking(new Expectations() {{
@@ -139,7 +138,7 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
    */
   @Test(dataProvider = "editionProvider")
   public void testSelect32OVer64_Version(@NotNull final PowerShellEdition edition) {
-    final Map<String, String> params = new HashMap<String, String>();
+    final Map<String, String> params = new HashMap<>();
     mock32Bit("5.0", edition);
     mock64bit("5.0", edition);
     m.checking(new Expectations() {{
@@ -153,7 +152,7 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
 
   @Test(dataProvider = "editionProvider")
   public void testSelectExact(@NotNull final PowerShellEdition edition) {
-    final Map<String, String> params = new HashMap<String, String>();
+    final Map<String, String> params = new HashMap<>();
     mock32Bit("5.0", edition);
     mock64bit("6.0", edition);
     m.checking(new Expectations() {{
@@ -167,7 +166,7 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
 
   @Test(dataProvider = "editionProvider")
   public void testUseSemanticVersion(@NotNull final PowerShellEdition edition) {
-    final Map<String, String> params = new HashMap<String, String>();
+    final Map<String, String> params = new HashMap<>();
     mock32Bit("3.0-beta4", edition);
     mock64bit("6.0-alpha6", edition);
     m.checking(new Expectations() {{
@@ -182,7 +181,7 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
 
   @Test(dataProvider = "editionProvider")
   public void testLoadInfo(@NotNull final PowerShellEdition edition) {
-    final Map<String, String> params = new HashMap<String, String>();
+    final Map<String, String> params = new HashMap<>();
     mock32Bit("1.0", edition);
     mock64bit("6.0", edition);
     m.checking(new Expectations() {{
@@ -194,7 +193,7 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
 
   @Test
   public void testFilterByEdition() {
-    final Map<String, String> params = new HashMap<String, String>();
+    final Map<String, String> params = new HashMap<>();
     mock32Bit("5.0", PowerShellEdition.DESKTOP);
     mock64bit("6.0", PowerShellEdition.CORE);
     m.checking(new Expectations() {{
@@ -218,7 +217,7 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
   @Test
   @TestFor(issues = "TW-55922")
   public void testSelectTool_MultipleShells() {
-    final Map<String, String> params = new HashMap<String, String>();
+    final Map<String, String> params = new HashMap<>();
     mock64bit("6.1.0-preview.2", PowerShellEdition.CORE);
     mock64bit("6.0", PowerShellEdition.CORE);
     m.checking(new Expectations() {{

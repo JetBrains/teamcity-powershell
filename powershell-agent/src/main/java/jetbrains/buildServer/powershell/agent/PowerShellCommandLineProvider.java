@@ -46,7 +46,7 @@ public class PowerShellCommandLineProvider {
                                          @NotNull final Map<String, String> runnerParams,
                                          @NotNull final File scriptFile,
                                          final boolean useExecutionPolicy) throws RunBuildException {
-    final List<String> result = new ArrayList<String>();
+    final List<String> result = new ArrayList<>();
     final PowerShellExecutionMode mod = PowerShellExecutionMode.fromString(runnerParams.get(RUNNER_EXECUTION_MODE));
     if (mod == null) {
       throw new RunBuildException("'" + RUNNER_EXECUTION_MODE + "' runner parameter is not defined");
@@ -89,7 +89,7 @@ public class PowerShellCommandLineProvider {
   private void addCustomArguments(@NotNull final List<String> args,
                                   @NotNull final Map<String, String> runnerParams,
                                   @NotNull final String key) {
-    final List<String> result = new ArrayList<String>();
+    final List<String> result = new ArrayList<>();
     final String custom = runnerParams.get(key);
     if (!StringUtil.isEmptyOrSpaces(custom)) {
       for (String _line : custom.split("[\\r\\n]+")) {

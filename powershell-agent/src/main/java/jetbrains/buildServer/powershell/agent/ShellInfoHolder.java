@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class ShellInfoHolder {
 
-  private final List<PowerShellInfo> myShells = new ArrayList<PowerShellInfo>();
+  private final List<PowerShellInfo> myShells = new ArrayList<>();
 
   public void addShellInfo(@NotNull final PowerShellInfo info) {
     myShells.add(info);

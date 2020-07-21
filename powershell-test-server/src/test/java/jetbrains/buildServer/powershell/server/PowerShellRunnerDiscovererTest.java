@@ -212,7 +212,7 @@ public class PowerShellRunnerDiscovererTest extends BaseTestCase {
   }
 
   @Test
-  public void testExcludeAlreadyUsedFiles() throws Exception {
+  public void testExcludeAlreadyUsedFiles() {
     final SBuildRunnerDescriptor definedRunner = m.mock(SBuildRunnerDescriptor.class, "already-defined-descriptor");
     final String scriptFileName = "file1.ps1";
     final Map<String, String> definedRunnerParams = new HashMap<String, String>() {{

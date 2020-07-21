@@ -49,7 +49,7 @@ public class RegistryPowerShellDetector implements PowerShellDetector {
   @NotNull
   @Override
   public Map<String, PowerShellInfo> findShells(@NotNull DetectionContext detectionContext) {
-    Map<String, PowerShellInfo> result = new HashMap<String, PowerShellInfo>();
+    Map<String, PowerShellInfo> result = new HashMap<>();
 
     LOG.info("Detecting PowerShell using RegistryPowerShellDetector");
     if (!SystemInfo.isWindows) {

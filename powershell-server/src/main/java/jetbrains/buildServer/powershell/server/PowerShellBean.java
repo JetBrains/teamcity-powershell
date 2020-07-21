@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
  * @author Eugene Petrenko (eugene.petrenko@jetbrains.com)
  *         03.12.10 18:56
  */
+@SuppressWarnings("SameReturnValue")
 public class PowerShellBean {
 
   @NotNull

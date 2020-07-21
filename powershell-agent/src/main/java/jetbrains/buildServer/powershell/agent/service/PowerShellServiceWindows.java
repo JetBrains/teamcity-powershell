@@ -114,7 +114,7 @@ public class PowerShellServiceWindows extends BasePowerShellService {
       return map;
     }
 
-    map = new TreeMap<String, String>(getEnvironmentVariables());
+    map = new TreeMap<>(getEnvironmentVariables());
     map.put(env, "ByPass");
     return map;
   }

@@ -80,7 +80,7 @@ public class PowerShellServiceUnix extends BasePowerShellService {
     buildLogger.message("Wrapper script: " + scriptFile);
     buildLogger.message("Command: " + argsList);
     enableExecution(scriptFile);
-    return new SimpleProgramCommandLine(env, workDir, scriptFile.getAbsolutePath(), Collections.<String>emptyList());
+    return new SimpleProgramCommandLine(env, workDir, scriptFile.getAbsolutePath(), Collections.emptyList());
   }
 
   @Override

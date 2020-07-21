@@ -62,7 +62,7 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
   private final PowerShellCommandLineProvider myCmdProvider;
 
   @NotNull
-  final Collection<File> myFilesToRemove = new ArrayList<File>();
+  final Collection<File> myFilesToRemove = new ArrayList<>();
 
   @NotNull
   final PowerShellCommands myCommands;
@@ -170,7 +170,7 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
   public List<ProcessListener> getListeners() {
     final boolean logToError = PropertiesUtil.getBoolean(getRunnerParameters().get(PowerShellConstants.RUNNER_LOG_ERR_TO_ERROR));
     final BuildProgressLogger logger = getLogger();
-    return Collections.<ProcessListener>singletonList(new ProcessListenerAdapter() {
+    return Collections.singletonList(new ProcessListenerAdapter() {
       private final org.apache.log4j.Logger OUT_LOG = org.apache.log4j.Logger.getLogger("teamcity.out");
       @Override
       public void onStandardOutput(@NotNull final String text) {

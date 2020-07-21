@@ -19,6 +19,7 @@ package jetbrains.buildServer.powershell.agent.system;
 import com.intellij.openapi.diagnostic.Logger;
 import jetbrains.buildServer.agent.BuildRunnerContext;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
+import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,11 +59,10 @@ public class PowerShellCommands {
    */
   public String getNativeCommand(@NotNull final PowerShellInfo info, @NotNull final BuildRunnerContext context) {
     if (!context.isVirtualContext()) {
-      switch (info.getBitness()) {
-        case x64:
-          if (mySystemBitness.is32bit()) {
-            return info.getExecutablePath().replace(SYSTEM32, NATIVE);
-          }
+      if (info.getBitness() == PowerShellBitness.x64) {
+        if (mySystemBitness.is32bit()) {
+          return info.getExecutablePath().replace(SYSTEM32, NATIVE);
+        }
       }
     }
     return info.getExecutablePath();

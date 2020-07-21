@@ -25,8 +25,7 @@ import jetbrains.buildServer.powershell.agent.Loggers;
 import jetbrains.buildServer.serverSide.TeamCityProperties;
 import org.jetbrains.annotations.NotNull;
 
-import java.nio.charset.Charset;
-import java.util.Collections;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static com.intellij.openapi.util.text.StringUtil.isEmptyOrSpaces;
@@ -67,7 +66,7 @@ public class DetectionRunner {
   }
 
   private ProcessOutput runProcess(@NotNull final GeneralCommandLine cl) throws ExecutionException {
-    final CapturingProcessHandler handler = new CapturingProcessHandler(cl.createProcess(), Charset.forName("UTF-8"));
+    final CapturingProcessHandler handler = new CapturingProcessHandler(cl.createProcess(), StandardCharsets.UTF_8);
     final int timeout = TeamCityProperties.getInteger("teamcity.powershell.detector.timeout.msec", 20000);
     final ProcessOutput result = handler.runProcess(timeout);
     final String errorOutput = result.getStderr();

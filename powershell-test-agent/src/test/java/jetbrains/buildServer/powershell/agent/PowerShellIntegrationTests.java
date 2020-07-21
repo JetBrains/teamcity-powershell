@@ -114,6 +114,7 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
     Assert.assertTrue(getBuildLog(build).contains("ptr: " + output + " NO"));
   }
 
+  @SuppressWarnings("TestMethodWithIncorrectSignature")
   @Test(dataProvider = "supportedBitnessProvider")
   @TestFor(issues = {"TW-39841", "TW-49772"})
   public void testShouldKeepGeneratedFiles_PowerShellSpecific(@NotNull final PowerShellBitness bits) throws Throwable {
@@ -130,6 +131,7 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
     Assert.assertTrue(getBuildLog(build).contains("works"));
   }
 
+  @SuppressWarnings("TestMethodWithIncorrectSignature")
   @Test(dataProvider = "supportedBitnessProvider")
   @TestFor(issues = {"TW-39841", "TW-49772"})
   public void testShouldKeepGeneratedFiles_Global(@NotNull final PowerShellBitness bits) throws Throwable {
@@ -146,6 +148,7 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
     Assert.assertTrue(getBuildLog(build).contains("works"));
   }
 
+  @SuppressWarnings("TestMethodWithIncorrectSignature")
   @Test(dataProvider = "supportedBitnessProvider")
   @TestFor(issues = "TW-44082")
   public void testShouldWriteBOMinExternalFileMode(@NotNull final PowerShellBitness bits) throws Throwable {
@@ -158,18 +161,12 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
     final SFinishedBuild build = doTest(null);
     assertEquals(1, getTempFiles().length);
     final File generatedScript = getTempFiles()[0];
-    InputStreamReader reader = null;
-    try {
-      reader = new InputStreamReader(new FileInputStream(generatedScript), FILES_ENCODING);
+    try (InputStreamReader reader = new InputStreamReader(new FileInputStream(generatedScript), FILES_ENCODING)) {
       char[] buf = new char[1];
       assertEquals(1, reader.read(buf));
       assertEquals("BOM is not written to external file", '\ufeff', buf[0]);
     } catch (IOException e) {
       fail(e.getMessage());
-    } finally {
-      if (reader != null) {
-        reader.close();
-      }
     }
     final String fileContents = FileUtil.readText(getTempFiles()[0], FILES_ENCODING);
     assertTrue("Non-ASCII symbols were not written to generated script", fileContents.contains("\u00f8\u00e5\u00e6"));
@@ -177,6 +174,7 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
     Assert.assertTrue(build.getBuildStatus().isSuccessful());
   }
 
+  @SuppressWarnings("TestMethodWithIncorrectSignature")
   @Test(dataProvider = "supportedBitnessProvider")
   @TestFor(issues = "TW-34775")
   public void testOutputIsWrittenFromScriptInFile(@NotNull final PowerShellBitness bits) throws Throwable {
@@ -207,11 +205,6 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
   @NotNull
   private File[] getTempFiles() {
     File tempDir = new File(getCurrentTempDir(), "buildTmp");
-    return FileUtil.listFiles(tempDir, new FilenameFilter() {
-      @Override
-      public boolean accept(File dir, String name) {
-        return name.startsWith("powershell") && name.endsWith("ps1");
-      }
-    });
+    return FileUtil.listFiles(tempDir, (dir, name) -> name.startsWith("powershell") && name.endsWith("ps1"));
   }
 }

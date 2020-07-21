@@ -18,7 +18,6 @@ package jetbrains.buildServer.powershell.agent.detect.cmd;
 
 import jetbrains.buildServer.BaseTestCase;
 import jetbrains.buildServer.powershell.agent.detect.DetectionContext;
-import org.jetbrains.annotations.NotNull;
 import org.testng.annotations.Test;
 
 import java.io.File;
@@ -41,12 +40,6 @@ public class DetectionPathsTest extends BaseTestCase {
   }
 
   private DetectionContext createContext(final String... paths) {
-    return new DetectionContext() {
-      @NotNull
-      @Override
-      public List<String> getSearchPaths() {
-        return Arrays.asList(paths);
-      }
-    };
+    return () -> Arrays.asList(paths);
   }
 }

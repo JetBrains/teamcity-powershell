@@ -42,7 +42,7 @@ public class DetectionContextImpl implements DetectionContext {
   }
 
   private List<String> loadSearchPaths(@Nullable final String paramValue) {
-    return StringUtil.isEmptyOrSpaces(paramValue) ? Collections.<String>emptyList() : StringUtil.split(paramValue, ";");
+    return StringUtil.isEmptyOrSpaces(paramValue) ? Collections.emptyList() : StringUtil.split(paramValue, ";");
   }
 
   @Override

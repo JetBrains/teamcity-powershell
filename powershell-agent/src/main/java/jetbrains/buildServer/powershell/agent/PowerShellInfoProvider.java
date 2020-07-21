@@ -31,7 +31,6 @@ import jetbrains.buildServer.powershell.common.PowerShellEdition;
 import jetbrains.buildServer.util.CollectionsUtil;
 import jetbrains.buildServer.util.EventDispatcher;
 import jetbrains.buildServer.util.VersionComparatorUtil;
-import jetbrains.buildServer.util.filters.Filter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -68,7 +67,7 @@ public class PowerShellInfoProvider {
 
   private void registerDetectedPowerShells(@NotNull final List<PowerShellDetector> detectors,
                                            @NotNull final DetectionContext detectionContext) {
-    Map<String, PowerShellInfo> shells = new HashMap<String, PowerShellInfo>();
+    Map<String, PowerShellInfo> shells = new HashMap<>();
     for (PowerShellDetector detector: detectors) {
       LOG.debug("Processing detected PowerShells from " + detector.getClass().getName());
       for (Map.Entry<String, PowerShellInfo> entry: detector.findShells(detectionContext).entrySet()) {
@@ -127,30 +126,15 @@ public class PowerShellInfoProvider {
     // filter by edition
     List<PowerShellInfo> availableShells = myHolder.getShells();
     if (edition != null) {
-      availableShells = CollectionsUtil.filterCollection(availableShells, new Filter<PowerShellInfo>() {
-        @Override
-        public boolean accept(@NotNull PowerShellInfo data) {
-          return edition.equals(data.getEdition());
-        }
-      });
+      availableShells = CollectionsUtil.filterCollection(availableShells, data -> edition.equals(data.getEdition()));
     }
     // filter by version
     if (version != null) {
-      availableShells = CollectionsUtil.filterCollection(availableShells, new Filter<PowerShellInfo>() {
-        @Override
-        public boolean accept(@NotNull PowerShellInfo data) {
-          return VersionComparatorUtil.compare(data.getVersion(), version) >= 0;
-        }
-      });
+      availableShells = CollectionsUtil.filterCollection(availableShells, data -> VersionComparatorUtil.compare(data.getVersion(), version) >= 0);
     }
     // filter by bitness
     if (bit != null) {
-      availableShells = CollectionsUtil.filterCollection(availableShells, new Filter<PowerShellInfo>() {
-        @Override
-        public boolean accept(@NotNull PowerShellInfo data) {
-          return data.getBitness().equals(bit);
-        }
-      });
+      availableShells = CollectionsUtil.filterCollection(availableShells, data -> data.getBitness().equals(bit));
     }
     if (availableShells.isEmpty()) {
       return null;
@@ -160,10 +144,10 @@ public class PowerShellInfoProvider {
     }
     // prefer desktop over core
     if (edition == null) {
-      Map<PowerShellEdition, List<PowerShellInfo>> byEdition = new HashMap<PowerShellEdition, List<PowerShellInfo>>();
+      Map<PowerShellEdition, List<PowerShellInfo>> byEdition = new HashMap<>();
       for (PowerShellInfo info: availableShells) {
         if (!byEdition.containsKey(info.getEdition())) {
-          byEdition.put(info.getEdition(), new ArrayList<PowerShellInfo>());
+          byEdition.put(info.getEdition(), new ArrayList<>());
         }
         byEdition.get(info.getEdition()).add(info);
       }
@@ -178,10 +162,10 @@ public class PowerShellInfoProvider {
     }
     // prefer 64bit over 32bit
     if (bit == null) {
-      Map<PowerShellBitness, List<PowerShellInfo>> byBits = new HashMap<PowerShellBitness, List<PowerShellInfo>>();
+      Map<PowerShellBitness, List<PowerShellInfo>> byBits = new HashMap<>();
       for (PowerShellInfo info : availableShells) {
         if (!byBits.containsKey(info.getBitness())) {
-          byBits.put(info.getBitness(), new ArrayList<PowerShellInfo>());
+          byBits.put(info.getBitness(), new ArrayList<>());
         }
         byBits.get(info.getBitness()).add(info);
       }
@@ -197,11 +181,6 @@ public class PowerShellInfoProvider {
     if (availableShells.size() == 1) {
       return availableShells.get(0);
     }
-    return Collections.max(availableShells, new Comparator<PowerShellInfo>() {
-      @Override
-      public int compare(PowerShellInfo info1, PowerShellInfo info2) {
-        return VersionComparatorUtil.compare(info1.getVersion(), info2.getVersion());
-      }
-    });
+    return Collections.max(availableShells, (info1, info2) -> VersionComparatorUtil.compare(info1.getVersion(), info2.getVersion()));
   }
 }

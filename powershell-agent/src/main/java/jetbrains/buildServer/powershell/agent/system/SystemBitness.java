@@ -24,6 +24,7 @@ import com.intellij.openapi.util.SystemInfo;
  *
  * @author Oleg Rybak (oleg.rybak@jetbrains.com)
  */
+@SuppressWarnings("SameReturnValue")
 public class SystemBitness {
   
   public boolean is32bit() {

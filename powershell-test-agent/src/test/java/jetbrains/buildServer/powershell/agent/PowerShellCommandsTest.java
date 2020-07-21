@@ -48,7 +48,7 @@ public class PowerShellCommandsTest extends BasePowerShellUnitTest {
   private PowerShellCommands myCommands;
   private PowerShellInfo my32Info;
   private PowerShellInfo my64Info;
-  private Map<String, PowerShellInfo> myShells = new HashMap<String, PowerShellInfo>();
+  private final Map<String, PowerShellInfo> myShells = new HashMap<>();
   private BuildRunnerContext myContext;
 
   private final Map<String, String> myEnv = new HashMap<String, String>() {{
@@ -117,7 +117,7 @@ public class PowerShellCommandsTest extends BasePowerShellUnitTest {
 
   @DataProvider(name = "bitnessVariations")
   public Object[][] getBitnessVariations() {
-    final List<Object[]> data = new ArrayList<Object[]>();
+    final List<Object[]> data = new ArrayList<>();
     // use 32bit PS from 32bit java
     data.add(new Object[] {true, PS32, "SysWOW64"});
     // use 64bit PS from 32bit java
@@ -131,7 +131,7 @@ public class PowerShellCommandsTest extends BasePowerShellUnitTest {
 
   @DataProvider(name = "commandConditions")
   public Object[][] getCommandConditions() {
-    final List<Object[]> data = new ArrayList<Object[]>();
+    final List<Object[]> data = new ArrayList<>();
     // use 32bit PS from 32bit java
     data.add(new Object[] {true, PS32, "System32"});
     // use 64bit PS from 32bit java

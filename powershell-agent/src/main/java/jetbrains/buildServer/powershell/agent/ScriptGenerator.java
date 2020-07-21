@@ -25,6 +25,7 @@ import jetbrains.buildServer.util.FileUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import static com.intellij.openapi.util.text.StringUtil.convertLineSeparators;
@@ -99,7 +100,7 @@ public class ScriptGenerator {
     File file;
     try {
       file = FileUtil.createTempFile(buildTempDir, "powershell", ".ps1", true);
-      OutputStreamWriter w = new OutputStreamWriter(new FileOutputStream(file), "utf-8");
+      OutputStreamWriter w = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);
       handle = w;
       if (PowerShellExecutionMode.PS1 == PowerShellExecutionMode.fromString(runnerParameters.get(RUNNER_EXECUTION_MODE))) {
         w.write(BOM);

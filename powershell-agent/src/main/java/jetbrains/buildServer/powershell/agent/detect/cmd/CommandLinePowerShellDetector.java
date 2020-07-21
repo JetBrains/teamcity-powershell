@@ -99,7 +99,7 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
   public Map<String, PowerShellInfo> findShells(@NotNull DetectionContext detectionContext) {
     LOG.info("Detecting PowerShell using CommandLinePowerShellDetector");
     // group by home
-    final Map<String, PowerShellInfo> shells = new HashMap<String, PowerShellInfo>();
+    final Map<String, PowerShellInfo> shells = new HashMap<>();
     final List<String> pathsToCheck = myDetectionPaths.getPaths(detectionContext);
     if (LOG.isDebugEnabled()) {
       LOG.debug("Will be detecting PowerShell in the following locations: [\n" + StringUtil.join(pathsToCheck, "\n") + "\n");
@@ -138,7 +138,7 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
                                 List<String> pathsToCheck,
                                 List<String> executablesToCheck,
                                 String scriptPath) {
-    doDetectionCycle(shells, pathsToCheck, executablesToCheck, scriptPath, Collections.<String>emptyList());
+    doDetectionCycle(shells, pathsToCheck, executablesToCheck, scriptPath, Collections.emptyList());
   }
 
   private void doDetectionCycle(Map<String, PowerShellInfo> shells,

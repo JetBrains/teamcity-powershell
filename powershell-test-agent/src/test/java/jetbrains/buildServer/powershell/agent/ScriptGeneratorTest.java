@@ -74,7 +74,7 @@ public class ScriptGeneratorTest extends BasePowerShellUnitTest {
 
   @Test(expectedExceptions = RunBuildException.class)
   public void testNoEmptyScriptAllowed() throws Exception {
-    final Map<String, String> runnerParams = new HashMap<String, String>();
+    final Map<String, String> runnerParams = new HashMap<>();
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "1.0");
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_CODE, "");
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
@@ -90,7 +90,7 @@ public class ScriptGeneratorTest extends BasePowerShellUnitTest {
   @Test
   @TestFor(issues = "TW-36704")
   public void testShouldRemove_CODE() {
-    final Map<String, String> runnerParams = new HashMap<String, String>();
+    final Map<String, String> runnerParams = new HashMap<>();
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "1.0");
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_CODE, SAMPLE_SCRIPT);
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
@@ -105,7 +105,7 @@ public class ScriptGeneratorTest extends BasePowerShellUnitTest {
   @Test
   @TestFor(issues = "TW-36704")
   public void testShouldRemove_FILE() {
-    final Map<String, String> runnerParams = new HashMap<String, String>();
+    final Map<String, String> runnerParams = new HashMap<>();
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "1.0");
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_CODE, SAMPLE_SCRIPT);
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
@@ -117,7 +117,7 @@ public class ScriptGeneratorTest extends BasePowerShellUnitTest {
   @Test(expectedExceptions = RunBuildException.class)
   @TestFor(issues = "TW-49208")
   public void testGenerateScript_FILE_NoFileExists() throws Exception {
-    final Map<String, String> runnerParams = new HashMap<String, String>();
+    final Map<String, String> runnerParams = new HashMap<>();
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "1.0");
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.FILE.getValue());
@@ -129,7 +129,7 @@ public class ScriptGeneratorTest extends BasePowerShellUnitTest {
   @TestFor(issues = "TW-49208")
   public void testGenerateScript_FILE_Exists() throws Exception {
     final String fileName = "script.ps1";
-    final Map<String, String> runnerParams = new HashMap<String, String>();
+    final Map<String, String> runnerParams = new HashMap<>();
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "1.0");
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.FILE.getValue());
@@ -145,7 +145,7 @@ public class ScriptGeneratorTest extends BasePowerShellUnitTest {
   @TestFor(issues = "TW-66762")
   public void generateScript_FILE_WorkingDir() throws Exception {
     final String fileName = "script.ps1";
-    final Map<String, String> runnerParams = new HashMap<String, String>();
+    final Map<String, String> runnerParams = new HashMap<>();
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "1.0");
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.FILE.getValue());

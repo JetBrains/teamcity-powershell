@@ -48,7 +48,7 @@ public class PowerShellInfoTest extends BaseTestCase {
     final Mockery m = new Mockery();
     final BuildAgentConfiguration conf = m.mock(BuildAgentConfiguration.class);
 
-    final Map<String, String> confParams = new HashMap<String, String>();
+    final Map<String, String> confParams = new HashMap<>();
     m.checking(new Expectations(){{
       allowing(conf).getConfigurationParameters(); will(returnValue(Collections.unmodifiableMap(confParams)));
       allowing(conf).addConfigurationParameter(with(any(String.class)), with(any(String.class)));
@@ -67,8 +67,10 @@ public class PowerShellInfoTest extends BaseTestCase {
         }
       });
     }});
-    
-    final String propertyName = "powershell_" + info.getEdition().getValue() + "_" + info.getVersion() + "_" + info.getBitness().getValue();
+
+    final PowerShellEdition e = info.getEdition();
+    assertNotNull(e);
+    final String propertyName = "powershell_" + e.getValue() + "_" + info.getVersion() + "_" + info.getBitness().getValue();
     assertNull(conf.getConfigurationParameters().get(propertyName));
     assertNull(conf.getConfigurationParameters().get(propertyName + "_Path"));
     info.saveInfo(conf);

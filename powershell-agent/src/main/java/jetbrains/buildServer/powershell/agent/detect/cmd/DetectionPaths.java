@@ -55,7 +55,7 @@ public class DetectionPaths {
         LOG.debug(StringUtil.join(propertyPaths, "\n"));
       }
     }
-    final List<String> result = new ArrayList<String>(getPaths(propertyPaths));
+    final List<String> result = new ArrayList<>(getPaths(propertyPaths));
     if (SystemInfo.isWindows) {
       result.addAll(getPaths(WINDOWS_PATHS));
     } else {
@@ -81,7 +81,7 @@ public class DetectionPaths {
   }
 
   private List<String> getPaths(@NotNull final Collection<String> paths) {
-    final List<String> result = new ArrayList<String>();
+    final List<String> result = new ArrayList<>();
     for (String base: paths) {
       if (LOG.isDebugEnabled()) {
         LOG.debug("Processing PowerShell Windows path: " + base);
@@ -96,7 +96,7 @@ public class DetectionPaths {
   }
 
   private List<String> populateWithChildren(@NotNull File base) {
-    List<String> result = new ArrayList<String>();
+    List<String> result = new ArrayList<>();
     for (File subDir: FileUtil.getSubDirectories(base)) {
       result.add(subDir.getAbsolutePath());
     }
@@ -108,7 +108,7 @@ public class DetectionPaths {
   }
 
   private Set<String> getWindowsBasePaths() {
-    final Set<String> result = new HashSet<String>();
+    final Set<String> result = new HashSet<>();
     checkPathAndAdd(result, System.getenv("ProgramFiles"));
     checkPathAndAdd(result, System.getenv("ProgramFiles(x86)"));
     checkPathAndAdd(result, System.getenv("ProgramW6432"));

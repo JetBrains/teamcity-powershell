@@ -136,7 +136,7 @@ public class PowerShellInfo {
 
   private Map<String, String> toConfigurationParameters() {
     final String key = generateFullKey(myEdition, myBitness, myVersion);
-    final Map<String, String> result = new HashMap<String, String>();
+    final Map<String, String> result = new HashMap<>();
     result.put(key, myVersion);
     result.put(key + PATH_SUFFIX, myHome.toString());
     return result;

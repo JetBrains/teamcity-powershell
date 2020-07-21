@@ -127,7 +127,7 @@ public class RegistryPowerShellDetectorTest extends BaseTestCase {
   }
 
   @Test
-  public void test_readPowerShellHomeNone() throws IOException {
+  public void test_readPowerShellHomeNone() {
     m.checking(new Expectations(){{
       allowing(acc).readRegistryText(LOCAL_MACHINE, BIT32, "SOFTWARE\\Microsoft\\PowerShell\\3\\PowerShellEngine", "ApplicationBase"); will(returnValue(null));
       allowing(acc).readRegistryText(LOCAL_MACHINE, BIT32, "SOFTWARE\\Microsoft\\PowerShell\\1\\PowerShellEngine", "ApplicationBase"); will(returnValue(null));
@@ -139,7 +139,7 @@ public class RegistryPowerShellDetectorTest extends BaseTestCase {
 
   @Test
   @SuppressWarnings("Duplicates")
-  public void test_readPowerShellHome_notExists() throws IOException {
+  public void test_readPowerShellHome_notExists() {
     final File hom = new File("zzz");
     m.checking(new Expectations(){{
       allowing(acc).readRegistryText(LOCAL_MACHINE, BIT32, "SOFTWARE\\Microsoft\\PowerShell\\3\\PowerShellEngine", "ApplicationBase"); will(returnValue(null));
@@ -207,7 +207,7 @@ public class RegistryPowerShellDetectorTest extends BaseTestCase {
 
   @Test
   @TestFor(issues = "TW-41000")
-  public void testDetectPowerShell_5() throws Exception {
+  public void testDetectPowerShell_5() {
     m.checking(new Expectations(){{
       allowing(acc).readRegistryText(LOCAL_MACHINE, BIT32, "SOFTWARE\\Microsoft\\PowerShell\\3\\PowerShellEngine", "PowerShellVersion"); will(returnValue("5.0"));
       allowing(acc).readRegistryText(LOCAL_MACHINE, BIT32, "SOFTWARE\\Microsoft\\PowerShell\\1\\PowerShellEngine", "PowerShellVersion"); will(returnValue("2.0"));
@@ -219,7 +219,7 @@ public class RegistryPowerShellDetectorTest extends BaseTestCase {
 
   @Test
   @TestFor(issues = "TW-46689")
-  public void testDetectPowerShell_5_1() throws Exception {
+  public void testDetectPowerShell_5_1() {
     m.checking(new Expectations(){{
       allowing(acc).readRegistryText(LOCAL_MACHINE, BIT32, "SOFTWARE\\Microsoft\\PowerShell\\3\\PowerShellEngine", "PowerShellVersion"); will(returnValue("5.1.14393.0"));
       allowing(acc).readRegistryText(LOCAL_MACHINE, BIT32, "SOFTWARE\\Microsoft\\PowerShell\\1\\PowerShellEngine", "PowerShellVersion"); will(returnValue("2.0"));
@@ -231,7 +231,7 @@ public class RegistryPowerShellDetectorTest extends BaseTestCase {
 
   @Test
   @TestFor(issues = "TW-41000")
-  public void testDetectPowerShell_ExtendedVersion() throws Exception {
+  public void testDetectPowerShell_ExtendedVersion() {
     m.checking(new Expectations(){{
       allowing(acc).readRegistryText(LOCAL_MACHINE, BIT32, "SOFTWARE\\Microsoft\\PowerShell\\3\\PowerShellEngine", "PowerShellVersion"); will(returnValue("5.0.10105"));
       allowing(acc).readRegistryText(LOCAL_MACHINE, BIT32, "SOFTWARE\\Microsoft\\PowerShell\\1\\PowerShellEngine", "PowerShellVersion"); will(returnValue("2.0"));
