@@ -48,9 +48,10 @@ public class ScriptGeneratorTest extends BasePowerShellUnitTest {
 
   private File myTempDir;
 
+  private File myWorkingDir;
+
   private File myCheckoutDir;
 
-  @SuppressWarnings("ResultOfMethodCallIgnored")
   @Override
   @BeforeMethod
   public void setUp() throws Exception {
@@ -60,6 +61,7 @@ public class ScriptGeneratorTest extends BasePowerShellUnitTest {
     }};
     myTempDir = createTempDir();
     myCheckoutDir = createTempDir();
+    myWorkingDir = createTempDir();
     myGenerator = new ScriptGenerator();
   }
 
@@ -77,18 +79,17 @@ public class ScriptGeneratorTest extends BasePowerShellUnitTest {
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_CODE, "");
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
-    myGenerator.generateScript(runnerParams, myCheckoutDir, myTempDir);
+    myGenerator.generateScript(runnerParams, myCheckoutDir, myTempDir, myWorkingDir);
   }
 
   /**
    * Script is taken from runner parameters as plain text and dumped into file.
    * After build finishes, file should be removed
    *
-   * @throws Exception if something goes wrong
    */
   @Test
   @TestFor(issues = "TW-36704")
-  public void testShouldRemove_CODE() throws Exception {
+  public void testShouldRemove_CODE() {
     final Map<String, String> runnerParams = new HashMap<String, String>();
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "1.0");
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_CODE, SAMPLE_SCRIPT);
@@ -100,11 +101,10 @@ public class ScriptGeneratorTest extends BasePowerShellUnitTest {
 
   /**
    * Script is taken from file (from VCS). It should not be deleted after build finishes
-   * @throws Exception if something goes wrong
    */
   @Test
   @TestFor(issues = "TW-36704")
-  public void testShouldRemove_FILE() throws Exception {
+  public void testShouldRemove_FILE() {
     final Map<String, String> runnerParams = new HashMap<String, String>();
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "1.0");
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_CODE, SAMPLE_SCRIPT);
@@ -122,7 +122,7 @@ public class ScriptGeneratorTest extends BasePowerShellUnitTest {
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.FILE.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_FILE, "non_existent_script.ps1");
-    myGenerator.generateScript(runnerParams, myCheckoutDir, myTempDir);
+    myGenerator.generateScript(runnerParams, myCheckoutDir, myTempDir, myWorkingDir);
   }
 
   @Test
@@ -137,7 +137,24 @@ public class ScriptGeneratorTest extends BasePowerShellUnitTest {
     registerAsTempFile(scriptFile);
     FileUtil.writeFile(scriptFile, "Write-Output \"works\"", "UTF-8");
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_FILE, fileName);
-    final File resultingScript = myGenerator.generateScript(runnerParams, myCheckoutDir, myTempDir);
+    final File resultingScript = myGenerator.generateScript(runnerParams, myCheckoutDir, myTempDir, myWorkingDir);
+    assertEquals(scriptFile.getAbsolutePath(), resultingScript.getAbsolutePath());
+  }
+
+  @Test
+  @TestFor(issues = "TW-66762")
+  public void generateScript_FILE_WorkingDir() throws Exception {
+    final String fileName = "script.ps1";
+    final Map<String, String> runnerParams = new HashMap<String, String>();
+    runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "1.0");
+    runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
+    runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.FILE.getValue());
+    // set working directory
+    File scriptFile = new File(myWorkingDir, fileName);
+    registerAsTempFile(scriptFile);
+    FileUtil.writeFile(scriptFile, "Write-Output \"works\"", "UTF-8");
+    runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_FILE, fileName);
+    final File resultingScript = myGenerator.generateScript(runnerParams, myCheckoutDir, myTempDir, myWorkingDir);
     assertEquals(scriptFile.getAbsolutePath(), resultingScript.getAbsolutePath());
   }
 }

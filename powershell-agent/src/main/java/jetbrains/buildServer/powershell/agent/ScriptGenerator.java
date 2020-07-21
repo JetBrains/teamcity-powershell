@@ -47,20 +47,27 @@ public class ScriptGenerator {
    *
    * @param runnerParameters runner parameters
    * @param buildCheckoutDir checkout directory
-   * @param buildTempDir temp directory
+   * @param buildTempDir     temp directory
    * @return if {@code PowerShellScriptMode.FILE} is used - file, that corresponds to {@code RUNNER_SCRIPT_FILE} param,
    * if {@code PowerShellScriptMode.CODE} is used - temp file, containing code from {@code RUNNER_SCRIPT_CODE} param
-   *
    * @throws RunBuildException if value if {@code RUNNER_SCRIPT_CODE} param is empty, or file handling error occurred
    */
   @NotNull
   public File generateScript(@NotNull final Map<String, String> runnerParameters,
-                      @NotNull final File buildCheckoutDir,
-                      @NotNull final File buildTempDir) throws RunBuildException {
+                             @NotNull final File buildCheckoutDir,
+                             @NotNull final File buildTempDir,
+                             @NotNull final File workingDir) throws RunBuildException {
     final PowerShellScriptMode scriptMode = PowerShellScriptMode.fromString(runnerParameters.get(RUNNER_SCRIPT_MODE));
     File scriptFile;
     if (PowerShellScriptMode.FILE == scriptMode) {
-      scriptFile = FileUtil.resolvePath(buildCheckoutDir, runnerParameters.get(RUNNER_SCRIPT_FILE));
+      final String scriptFilePath = runnerParameters.get(RUNNER_SCRIPT_FILE);
+      scriptFile = FileUtil.resolvePath(buildCheckoutDir, scriptFilePath);
+      if (!scriptFile.isFile()) {
+        if (LOG.isDebugEnabled()) {
+          LOG.debug(scriptFilePath + " was not not found in checkout directory. Trying to resolve against working directory");
+        }
+        scriptFile = FileUtil.resolvePath(workingDir, scriptFilePath);
+      }
     } else {
       String sourceScript = runnerParameters.get(RUNNER_SCRIPT_CODE);
       if (isEmptyOrSpaces(sourceScript)) {
@@ -75,7 +82,7 @@ public class ScriptGenerator {
     }
     if (!scriptFile.isFile()) {
       throw new RunBuildException("Cannot find PowerShell script by path specified in build configuration settings: "
-          + scriptFile.getAbsolutePath() + " (absolute path on agent). Please check that the specified path is correct.");
+              + scriptFile.getAbsolutePath() + " (absolute path on agent). Please check that the specified path is correct.");
     }
     return scriptFile;
   }
@@ -87,7 +94,7 @@ public class ScriptGenerator {
   @NotNull
   private File writeToTempFile(@NotNull final File buildTempDir,
                                @NotNull final String text,
-                               @NotNull final  Map<String, String> runnerParameters) throws RunBuildException {
+                               @NotNull final Map<String, String> runnerParameters) throws RunBuildException {
     Closeable handle = null;
     File file;
     try {
