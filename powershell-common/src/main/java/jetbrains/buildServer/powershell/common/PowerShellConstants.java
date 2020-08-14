@@ -64,4 +64,9 @@ public class PowerShellConstants {
   public static String generateFullKey(@Nullable final PowerShellEdition edition, @NotNull final PowerShellBitness bitness, @NotNull final String version) {
     return "powershell_" + (edition != null ? edition.getValue() + "_" : "" ) + version + "_" + bitness.getValue();
   }
+
+  /**
+   * Support for multiline arguments in UI
+   */
+  public static String PARAM_ARGS_MULTILINE = "teamcity.powershell.arguments.multiline";
 }

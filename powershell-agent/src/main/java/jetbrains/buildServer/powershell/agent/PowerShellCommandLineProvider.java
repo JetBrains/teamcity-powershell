@@ -16,6 +16,7 @@
 
 package jetbrains.buildServer.powershell.agent;
 
+import com.intellij.execution.configurations.ParametersList;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.SystemInfo;
 import jetbrains.buildServer.RunBuildException;
@@ -27,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +47,8 @@ public class PowerShellCommandLineProvider {
   public List<String> provideCommandLine(@NotNull final PowerShellInfo info,
                                          @NotNull final Map<String, String> runnerParams,
                                          @NotNull final File scriptFile,
-                                         final boolean useExecutionPolicy) throws RunBuildException {
+                                         final boolean useExecutionPolicy,
+                                         @NotNull final Map<String, String> sharedConfigParams) throws RunBuildException {
     final List<String> result = new ArrayList<>();
     final PowerShellExecutionMode mod = PowerShellExecutionMode.fromString(runnerParams.get(RUNNER_EXECUTION_MODE));
     if (mod == null) {
@@ -57,12 +60,12 @@ public class PowerShellCommandLineProvider {
     }
     result.add("-NonInteractive");
 
-    addCustomArguments(result, runnerParams, RUNNER_CUSTOM_ARGUMENTS);
+    addCustomArguments(result, runnerParams, sharedConfigParams, RUNNER_CUSTOM_ARGUMENTS);
     if (useExecutionPolicy) {
       addExecutionPolicyPreference(result);
     }
 
-    addScriptBody(result, mod, scriptFile, runnerParams);
+    addScriptBody(result, mod, scriptFile, runnerParams, sharedConfigParams);
     return result;
   }
 
@@ -81,24 +84,39 @@ public class PowerShellCommandLineProvider {
   /**
    * Gets arguments from runner parameter with specified key.
    * Adds them to given pre-constructed list
-   *
-   * @param args pre-constructed list of arguments
+   *  @param args pre-constructed list of arguments
    * @param runnerParams runner parameters
+   * @param sharedConfigParams shared configuration parameters
    * @param key runner parameter key
    */
   private void addCustomArguments(@NotNull final List<String> args,
                                   @NotNull final Map<String, String> runnerParams,
+                                  Map<String, String> sharedConfigParams,
                                   @NotNull final String key) {
     final List<String> result = new ArrayList<>();
     final String custom = runnerParams.get(key);
     if (!StringUtil.isEmptyOrSpaces(custom)) {
-      for (String _line : custom.split("[\\r\\n]+")) {
-        String line = _line.trim();
-        if (StringUtil.isEmptyOrSpaces(line)) continue;
-        result.addAll(StringUtil.splitHonorQuotes(line));
+      List<String> lines;
+      if (Boolean.parseBoolean(sharedConfigParams.get(PARAM_ARGS_MULTILINE))) {
+        lines = Collections.singletonList(custom.replace('\r', ' ').replace('\n', ' '));
+      } else {
+        lines = StringUtil.split(custom, true, '\r', '\n');
       }
+      lines.stream().map(String::trim)
+              .filter(it -> !StringUtil.isEmptyOrSpaces(it))
+              .map(StringUtil::splitHonorQuotes)
+              .forEach(result::addAll);
     }
     args.addAll(result);
+  }
+
+  public static void main(String[] args) {
+    String str = "-param1 \"line1 = aaa\nline2 = bbb\"".replace('\n', ' ');
+
+    final ParametersList parametersList = new ParametersList();
+
+    StringUtil.splitHonorQuotes(str).forEach(parametersList::add);
+    System.out.println("-> " + parametersList.getParametersString());//.replace('\n', '^'));
   }
 
   private void addExecutionPolicyPreference(@NotNull final List<String> list) {
@@ -116,7 +134,8 @@ public class PowerShellCommandLineProvider {
   private void addScriptBody(@NotNull final List<String> args,
                              @NotNull final PowerShellExecutionMode mod,
                              @NotNull final File scriptFile,
-                             @NotNull final Map<String, String> runnerParams) throws RunBuildException {
+                             @NotNull final Map<String, String> runnerParams,
+                             @NotNull final Map<String, String> sharedConfigParams) throws RunBuildException {
     switch (mod) {
       case STDIN:
         args.add("-Command");
@@ -130,7 +149,7 @@ public class PowerShellCommandLineProvider {
         }
         args.add("-File");
         args.add(scriptFile.getPath());
-        addCustomArguments(args, runnerParams, RUNNER_SCRIPT_ARGUMENTS);
+        addCustomArguments(args, runnerParams, sharedConfigParams, RUNNER_SCRIPT_ARGUMENTS);
         break;
       default:
         throw new RunBuildException("Unknown ExecutionMode: " + mod);

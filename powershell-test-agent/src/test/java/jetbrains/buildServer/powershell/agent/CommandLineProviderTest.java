@@ -91,9 +91,10 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
     if (PowerShellCommandLineProvider.isExplicitVersionSupported(myInfo)) {
       final String expectedVersionArg = "-Version";
       final Map<String, String> runnerParams = new HashMap<>();
+      final Map<String, String> sharedConfigParams = new HashMap<>();
       runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, version);
       addExecutionExpectations(myInfo, version);
-      final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false);
+      final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false, sharedConfigParams);
       // powershell.exe -Version $version
       assertTrue(result.size() >= 2);
       assertEquals(expectedVersionArg, result.get(0));
@@ -110,6 +111,7 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_ARGUMENTS, args);
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, version);
 
+    final Map<String, String> sharedConfigParams = new HashMap<>();
     addExecutionExpectations(myInfo, version);
 
     final List<String> expected = new ArrayList<String>() {{
@@ -122,7 +124,7 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
       add(myScriptFile.getPath());
       addAll(Arrays.asList(args.split("\\s+")));
     }};
-    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false);
+    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false, sharedConfigParams);
     assertSameElements(result, expected);
   }
 
@@ -131,6 +133,7 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
   @TestFor(issues = "TW-34557")
   public void testUseDefaultPowerShellIfVersionAny() throws Exception {
     final Map<String, String> runnerParams = new HashMap<>();
+    final Map<String, String> sharedConfigParams = new HashMap<>();
 
     m.checking(new Expectations() {{
       allowing(myInfo).getExecutablePath();
@@ -139,7 +142,7 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
       never(myInfo).getVersion();
     }});
 
-    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false);
+    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false, sharedConfigParams);
     for (String str: result) {
       if ("-Version".equals(str)) {
         fail("PowerShell version should not be supplied if Any is selected in runner parameters");
@@ -152,6 +155,8 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
   @TestFor(issues = "TW-34410")
   public void testFromFile() throws Exception {
     final Map<String, String> runnerParams = new HashMap<>();
+    final Map<String, String> sharedConfigParams = new HashMap<>();
+    
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "3.0");
 
@@ -166,7 +171,7 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
       add("-File");
       add(myScriptFile.getPath());
     }};
-    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false);
+    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false, sharedConfigParams);
     assertSameElements(result, expected);
   }
 
@@ -175,6 +180,8 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
   @SuppressWarnings({"ResultOfMethodCallIgnored", "Duplicates"})
   public void testNotEscapeSpacesForFile() throws Exception {
     final Map<String, String> runnerParams = new HashMap<>();
+    final Map<String, String> sharedConfigParams = new HashMap<>();
+    
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "3.0");
     final String subdirName = "sub dir";
@@ -195,7 +202,7 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
       add("-File");
       add(myScriptFile.getPath());
     }};
-    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false);
+    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false, sharedConfigParams);
     assertSameElements(result, expected);
   }
 
@@ -203,6 +210,8 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
   @SuppressWarnings({"ResultOfMethodCallIgnored"})
   public void testLeavePathAsIsForCommand() throws Exception {
     final Map<String, String> runnerParams = new HashMap<>();
+    final Map<String, String> sharedConfigParams = new HashMap<>();
+    
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.STDIN.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "3.0");
     final String subdirName = "sub dir";
@@ -222,7 +231,7 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
       add("<");
       add(myScriptFile.getPath());
     }};
-    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false);
+    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false, sharedConfigParams);
     assertSameElements(result, expected);
   }
 
@@ -230,6 +239,8 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
   @TestFor(issues = "TW-35063")
   public void testMultiWordArgs_File() throws Exception {
     final Map<String, String> runnerParams = new HashMap<>();
+    final Map<String, String> sharedConfigParams = new HashMap<>();
+    
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "3.0");
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_ARGUMENTS, "arg1\r\n\"arg2.1 arg2.2\"\r\narg3\r\narg4 arg5");
@@ -250,7 +261,7 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
       add("arg4");
       add("arg5");
     }};
-    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false);
+    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false, sharedConfigParams);
     assertSameElements(result, expected);
   }
 
@@ -258,6 +269,8 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
   @TestFor(issues = "TW-37730")
   public void testEscapeCmdChar_File() throws Exception {
     final Map<String, String> runnerParams = new HashMap<>();
+    final Map<String, String> sharedConfigParams = new HashMap<>();
+    
     runnerParams.put(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
     runnerParams.put(PowerShellConstants.RUNNER_MIN_VERSION, "3.0");
     runnerParams.put(PowerShellConstants.RUNNER_SCRIPT_ARGUMENTS, "-PassToPowerShell\n^MatchTheWholeString$");
@@ -275,7 +288,7 @@ public class CommandLineProviderTest extends BasePowerShellUnitTest {
       add("-PassToPowerShell");
       add("^MatchTheWholeString$");
     }};
-    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false);
+    final List<String> result = myProvider.provideCommandLine(myInfo, runnerParams, myScriptFile, false, sharedConfigParams);
     assertSameElements(result, expected);
   }
 

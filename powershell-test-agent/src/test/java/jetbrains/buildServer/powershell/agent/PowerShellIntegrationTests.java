@@ -202,6 +202,27 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
     Assert.assertTrue(getBuildLog(build).contains("Function call from Write-Output 366"));
   }
 
+  @SuppressWarnings("TestMethodWithIncorrectSignature")
+  @Test(dataProvider = "supportedBitnessProvider")
+  @TestFor(issues = "TW-65627")
+  public void testMultilineArguments(@NotNull final PowerShellBitness bits) throws Throwable {
+    setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "param(\n" +
+            "\t[string] $param1 = \"\"\n" +
+            ")\n" +
+            "\n" +
+            "Write-Output \"praram1: $param1.\"");
+    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, bits.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_ARGUMENTS, "-param1 \"line1a = line1b\nline2a = line2b\"");
+    setBuildConfigurationParameter(PowerShellConstants.PARAM_ARGS_MULTILINE, "true");
+    final SFinishedBuild build = doTest(null);
+    dumpBuildLogLocally(build);
+    Assert.assertTrue(build.getBuildStatus().isSuccessful());
+    Assert.assertTrue(getBuildLog(build).contains("-param1 \"line1a = line1b line2a = line2b\""));
+    Assert.assertTrue(getBuildLog(build).contains("praram1: line1a = line1b line2a = line2b."));
+  }
+
   @NotNull
   private File[] getTempFiles() {
     File tempDir = new File(getCurrentTempDir(), "buildTmp");
