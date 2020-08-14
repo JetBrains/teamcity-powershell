@@ -23,7 +23,7 @@ import jetbrains.buildServer.serverSide.SFinishedBuild;
 import jetbrains.buildServer.util.FileUtil;
 import jetbrains.buildServer.util.TestFor;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Assert;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.io.*;
@@ -124,7 +124,7 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
 
     setBuildConfigurationParameter(PowerShellConstants.CONFIG_KEEP_GENERATED, "true");
     final SFinishedBuild build = doTest(null);
-    assertEquals(1, getTempFiles().length);
+    Assert.assertEquals(1, getTempFiles().length);
     dumpBuildLogLocally(build);
     Assert.assertTrue(build.getBuildStatus().isSuccessful());
     Assert.assertTrue(getBuildLog(build).contains("works"));
@@ -140,7 +140,7 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
 
     setBuildConfigurationParameter("teamcity.dont.delete.temp.files", "true");
     final SFinishedBuild build = doTest(null);
-    assertEquals(1, getTempFiles().length);
+    Assert.assertEquals(1, getTempFiles().length);
     dumpBuildLogLocally(build);
     Assert.assertTrue(build.getBuildStatus().isSuccessful());
     Assert.assertTrue(getBuildLog(build).contains("works"));
@@ -156,23 +156,23 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
     setBuildConfigurationParameter(PowerShellConstants.CONFIG_KEEP_GENERATED, "true");
 
     final SFinishedBuild build = doTest(null);
-    assertEquals(1, getTempFiles().length);
+    Assert.assertEquals(1, getTempFiles().length);
     final File generatedScript = getTempFiles()[0];
     InputStreamReader reader = null;
     try {
       reader = new InputStreamReader(new FileInputStream(generatedScript), FILES_ENCODING);
       char[] buf = new char[1];
-      assertEquals(1, reader.read(buf));
-      assertEquals("BOM is not written to external file", '\ufeff', buf[0]);
+      Assert.assertEquals(1, reader.read(buf));
+      Assert.assertEquals('\ufeff', buf[0]);
     } catch (IOException e) {
-      fail(e.getMessage());
+      Assert.fail(e.getMessage());
     } finally {
       if (reader != null) {
         reader.close();
       }
     }
     final String fileContents = FileUtil.readText(getTempFiles()[0], FILES_ENCODING);
-    assertTrue("Non-ASCII symbols were not written to generated script", fileContents.contains("\u00f8\u00e5\u00e6"));
+    Assert.assertTrue(fileContents.contains("\u00f8\u00e5\u00e6"));
     dumpBuildLogLocally(build);
     Assert.assertTrue(build.getBuildStatus().isSuccessful());
   }
@@ -202,6 +202,26 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
     Assert.assertTrue(getBuildLog(build).contains("String from Write-Output"));
     Assert.assertTrue(getBuildLog(build).contains("Function call from Write-Host 366"));
     Assert.assertTrue(getBuildLog(build).contains("Function call from Write-Output 366"));
+  }
+
+  @Test(dataProvider = "supportedBitnessProvider")
+  @TestFor(issues = "TW-65627")
+  public void testMultilineArguments(@NotNull final PowerShellBitness bits) throws Throwable {
+    setRunnerParameter(PowerShellConstants.RUNNER_EXECUTION_MODE, PowerShellExecutionMode.PS1.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_MODE, PowerShellScriptMode.CODE.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_CODE, "param(\n" +
+            "\t[string] $param1 = \"\"\n" +
+            ")\n" +
+            "\n" +
+            "Write-Output \"praram1: $param1.\"");
+    setRunnerParameter(PowerShellConstants.RUNNER_BITNESS, bits.getValue());
+    setRunnerParameter(PowerShellConstants.RUNNER_SCRIPT_ARGUMENTS, "-param1 \"line1a = line1b\nline2a = line2b\"");
+    setBuildConfigurationParameter(PowerShellConstants.PARAM_ARGS_MULTILINE, "true");
+    final SFinishedBuild build = doTest(null);
+    dumpBuildLogLocally(build);
+    Assert.assertTrue(build.getBuildStatus().isSuccessful());
+    Assert.assertTrue(getBuildLog(build).contains("-param1 \"line1a = line1b line2a = line2b\""));
+    Assert.assertTrue(getBuildLog(build).contains("praram1: line1a = line1b line2a = line2b."));
   }
 
   @NotNull

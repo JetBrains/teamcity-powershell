@@ -105,13 +105,14 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
   private String generateCommand(@NotNull final PowerShellInfo info) throws RunBuildException {
     final ParametersList parametersList = new ParametersList();
     final Map<String, String> runnerParameters = getRunnerParameters();
+    final Map<String, String> sharedConfigParameters = getBuild().getSharedConfigParameters();
     final File scriptFile = myScriptGenerator.generateScript(runnerParameters, getCheckoutDirectory(), getBuildTempDirectory(), getRunnerContext().getWorkingDirectory());
     // if  we have script entered in runner params it will be dumped to temp file. This file must be removed after build finishes
     if (ScriptGenerator.shouldRemoveGeneratedScript(runnerParameters)) {
       myFilesToRemove.add(scriptFile);
     }
     parametersList.add(info.getExecutablePath());
-    parametersList.addAll(myCmdProvider.provideCommandLine(info, runnerParameters, scriptFile, useExecutionPolicy(info)));
+    parametersList.addAll(myCmdProvider.provideCommandLine(info, runnerParameters, scriptFile, useExecutionPolicy(info), sharedConfigParameters));
     return parametersList.getParametersString();
   }
 
@@ -122,7 +123,7 @@ public abstract class BasePowerShellService extends BuildServiceAdapter {
     if (ScriptGenerator.shouldRemoveGeneratedScript(runnerParameters)) {
       myFilesToRemove.add(scriptFile);
     }
-    return myCmdProvider.provideCommandLine(info, runnerParameters, scriptFile, useExecutionPolicy(info));
+    return myCmdProvider.provideCommandLine(info, runnerParameters, scriptFile, useExecutionPolicy(info), getBuild().getSharedConfigParameters());
   }
 
   private PowerShellInfo selectTool() throws RunBuildException {
