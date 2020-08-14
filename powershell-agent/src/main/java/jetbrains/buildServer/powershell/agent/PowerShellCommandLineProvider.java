@@ -110,15 +110,6 @@ public class PowerShellCommandLineProvider {
     args.addAll(result);
   }
 
-  public static void main(String[] args) {
-    String str = "-param1 \"line1 = aaa\nline2 = bbb\"".replace('\n', ' ');
-
-    final ParametersList parametersList = new ParametersList();
-
-    StringUtil.splitHonorQuotes(str).forEach(parametersList::add);
-    System.out.println("-> " + parametersList.getParametersString());//.replace('\n', '^'));
-  }
-
   private void addExecutionPolicyPreference(@NotNull final List<String> list) {
     final String cmdArg = "-ExecutionPolicy";
     for (String arg: list) {
