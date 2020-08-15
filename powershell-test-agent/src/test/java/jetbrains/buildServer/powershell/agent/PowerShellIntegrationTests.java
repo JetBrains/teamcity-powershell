@@ -219,7 +219,7 @@ public class PowerShellIntegrationTests extends AbstractPowerShellIntegrationTes
     final SFinishedBuild build = doTest(null);
     dumpBuildLogLocally(build);
     Assert.assertTrue(build.getBuildStatus().isSuccessful());
-    Assert.assertTrue(getBuildLog(build).contains("-param1 \"line1a = line1b line2a = line2b\""));
+    Assert.assertTrue(getBuildLog(build).contains("\"line1a = line1b line2a = line2b\""));
     Assert.assertTrue(getBuildLog(build).contains("praram1: line1a = line1b line2a = line2b."));
   }
 
