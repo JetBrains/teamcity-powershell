@@ -36,14 +36,22 @@ public class DetectionPaths {
 
   /**
    * https://docs.microsoft.com/en-us/powershell/scripting/setup/installing-powershell-core-on-windows?view=powershell-5.1
-   *
-   * By default the package is installed to $env:ProgramFiles\PowerShell\
+   * <p>
+   * By default, the package is installed to $env:ProgramFiles\PowerShell\
    */
   private final Set<String> WINDOWS_PATHS = getWindowsBasePaths();
 
   private static final List<String> PATHS = Arrays.asList(
           "/usr/local/bin", // mac os
           "/usr/bin"        // linux
+  );
+
+  /**
+   * Paths, recommended by the documentation for .tar.gz install
+   * https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-core-on-linux?view=powershell-7.1
+   */
+  private static final List<String> ADDITIONAL_ROOTS = Collections.singletonList(
+          "/opt/microsoft/powershell"
   );
 
   public List<String> getPaths(@NotNull DetectionContext detectionContext) {
@@ -59,7 +67,21 @@ public class DetectionPaths {
     if (SystemInfo.isWindows) {
       result.addAll(getPaths(WINDOWS_PATHS));
     } else {
+      // typical *nix locations
       result.addAll(PATHS);
+      // add roots, recommended by documentation
+      ADDITIONAL_ROOTS.stream()
+              .map(File::new)
+              .filter(File::isDirectory)
+              .forEach(dir -> {
+                result.add(dir.getAbsolutePath());
+                result.addAll(populateWithChildren(dir));
+              });
+      // additionally, check $HOME/powershell location
+      File homePath = new File(System.getenv("HOME"), "powershell");
+      if (homePath.isDirectory()) {
+        result.add(homePath.getAbsolutePath());
+      }
     }
     addGlobalToolsPath(result);
     return result;
@@ -82,7 +104,7 @@ public class DetectionPaths {
 
   private List<String> getPaths(@NotNull final Collection<String> paths) {
     final List<String> result = new ArrayList<>();
-    for (String base: paths) {
+    for (String base : paths) {
       if (LOG.isDebugEnabled()) {
         LOG.debug("Processing PowerShell Windows path: " + base);
       }
@@ -97,7 +119,7 @@ public class DetectionPaths {
 
   private List<String> populateWithChildren(@NotNull File base) {
     List<String> result = new ArrayList<>();
-    for (File subDir: FileUtil.getSubDirectories(base)) {
+    for (File subDir : FileUtil.getSubDirectories(base)) {
       result.add(subDir.getAbsolutePath());
     }
     if (LOG.isDebugEnabled()) {
