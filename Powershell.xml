@@ -101,6 +101,11 @@
         Additional arguments to be passed to PowerShell
       </description>
     </param>
+    <param name="jetbrains_powershell_scriptArguments" dslName="scriptArgs">
+      <description>
+        Build parameters to be passed as arguments into the PowerShell script
+      </description>
+    </param>
   </params>
   <types>
     <enum name="Version">
