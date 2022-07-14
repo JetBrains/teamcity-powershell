@@ -219,4 +219,9 @@ public class PowerShellRunType extends RunType {
       return RequirementQualifier.EXISTS_QUALIFIER + "(" + String.join("|", keys) + ")";
     }
   }
+
+  @NotNull
+  public Set<String> getTags() {
+    return new HashSet<>(Arrays.asList("PowerShell", "script"));
+  }
 }
