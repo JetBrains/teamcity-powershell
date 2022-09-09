@@ -16,7 +16,6 @@
 
 package jetbrains.buildServer.powershell.agent.detect;
 
-import jetbrains.buildServer.agent.BuildAgentConfiguration;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellEdition;
 import jetbrains.buildServer.util.FileUtil;
@@ -110,13 +109,13 @@ public class PowerShellInfo {
     return myEdition;
   }
 
-  public void saveInfo(@NotNull final BuildAgentConfiguration config) {
+  public void saveInfo(@NotNull final Map<String, String> configurationParameters) {
     if (!myVirtual) {
       Map<String, String> parameters = toConfigurationParameters();
       DETECTION_LOGGER.debug("Saving configuration parameters:");
       for (Map.Entry<String, String> entry: parameters.entrySet()) {
         DETECTION_LOGGER.debug(entry.getKey() + " -> " + entry.getValue());
-        config.addConfigurationParameter(entry.getKey(), entry.getValue());
+        configurationParameters.put(entry.getKey(), entry.getValue());
       }
     }
   }
