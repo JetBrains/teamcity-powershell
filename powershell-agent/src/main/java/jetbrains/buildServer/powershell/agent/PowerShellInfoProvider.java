@@ -17,10 +17,10 @@
 package jetbrains.buildServer.powershell.agent;
 
 import com.intellij.openapi.diagnostic.Logger;
-import jetbrains.buildServer.agent.AgentLifeCycleAdapter;
-import jetbrains.buildServer.agent.AgentLifeCycleListener;
-import jetbrains.buildServer.agent.BuildAgent;
+import java.util.*;
+import jetbrains.buildServer.ExtensionHolder;
 import jetbrains.buildServer.agent.BuildAgentConfiguration;
+import jetbrains.buildServer.agent.config.AgentParametersSupplier;
 import jetbrains.buildServer.powershell.agent.detect.DetectionContext;
 import jetbrains.buildServer.powershell.agent.detect.DetectionContextImpl;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellDetector;
@@ -29,12 +29,9 @@ import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellEdition;
 import jetbrains.buildServer.util.CollectionsUtil;
-import jetbrains.buildServer.util.EventDispatcher;
 import jetbrains.buildServer.util.VersionComparatorUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.*;
 
 /**
  * @author Eugene Petrenko (eugene.petrenko@jetbrains.com)
@@ -46,27 +43,27 @@ public class PowerShellInfoProvider {
   private static final Logger LOG = Loggers.DETECTION_LOGGER;
 
   @NotNull
-  private final BuildAgentConfiguration myConfig;
-
-  @NotNull
   private final ShellInfoHolder myHolder;
 
   public PowerShellInfoProvider(@NotNull final BuildAgentConfiguration config,
-                                @NotNull final EventDispatcher<AgentLifeCycleListener> events,
+                                @NotNull final ExtensionHolder extensionHolder,
                                 @NotNull final List<PowerShellDetector> detectors,
                                 @NotNull final ShellInfoHolder holder) {
-    myConfig = config;
     myHolder = holder;
-    events.addListener(new AgentLifeCycleAdapter() {
+    extensionHolder.registerExtension(AgentParametersSupplier.class, getClass().getName(), new AgentParametersSupplier(){
       @Override
-      public void afterAgentConfigurationLoaded(@NotNull BuildAgent agent) {
-        registerDetectedPowerShells(detectors, new DetectionContextImpl(agent.getConfiguration()));
+      public Map<String, String> getParameters() {
+        final Map<String, String> parameters = new HashMap<>();
+
+        registerDetectedPowerShells(detectors, new DetectionContextImpl(config), parameters);
+        return parameters;
       }
     });
   }
 
   private void registerDetectedPowerShells(@NotNull final List<PowerShellDetector> detectors,
-                                           @NotNull final DetectionContext detectionContext) {
+                                           @NotNull final DetectionContext detectionContext,
+                                           Map<String, String> parameters) {
     Map<String, PowerShellInfo> shells = new HashMap<>();
     for (PowerShellDetector detector: detectors) {
       LOG.debug("Processing detected PowerShells from " + detector.getClass().getName());
@@ -74,15 +71,15 @@ public class PowerShellInfoProvider {
         LOG.debug("Processing detected PowerShell [" + entry.getKey() + "][" + entry.getValue() + "]");
         if (!shells.containsKey(entry.getKey())) {
           shells.put(entry.getKey(), entry.getValue());
-          entry.getValue().saveInfo(myConfig);
+          entry.getValue().saveInfo(parameters);
           myHolder.addShellInfo(entry.getValue());
         }
       }
     }
     // provide parameters for agent compatibility filters
     if (!myHolder.getShells().isEmpty()) {
-      provideMaxVersions();
-      provideCompatibilityParams();
+      provideMaxVersions(parameters);
+      provideCompatibilityParams(parameters);
     } else {
       LOG.info("No PowerShell detected. If it is installed in non-standard location, " +
               "please provide install locations in teamcity.powershell.detector.search.paths " +
@@ -94,23 +91,23 @@ public class PowerShellInfoProvider {
    * Provides max version of all {@code edition x bitness} combinations.
    * Helps with agent requirements
    */
-  private void provideMaxVersions() {
+  private void provideMaxVersions(Map<String, String> parameters) {
     for (PowerShellBitness bitness: PowerShellBitness.values()) {
       for (PowerShellEdition edition: PowerShellEdition.values()) {
         PowerShellInfo info = selectTool(bitness, null, edition);
         if (info != null) {
-          myConfig.addConfigurationParameter(PowerShellConstants.generateGeneralKey(edition, bitness), info.getVersion());
+          parameters.put(PowerShellConstants.generateGeneralKey(edition, bitness), info.getVersion());
         }
       }
     }
   }
 
-  private void provideCompatibilityParams() {
+  private void provideCompatibilityParams(Map<String, String> parameters) {
     for (PowerShellBitness bitness: PowerShellBitness.values()) {
       // select shell info of max version of each bitness and provide legacy parameters
       PowerShellInfo info = selectTool(bitness, null, null);
       if (info != null) {
-        LegacyKeys.fillLegacyKeys(myConfig, bitness, info);
+        LegacyKeys.fillLegacyKeys(parameters, bitness, info);
       }
     }
   }

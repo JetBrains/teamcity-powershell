@@ -16,7 +16,7 @@
 
 package jetbrains.buildServer.powershell.agent;
 
-import jetbrains.buildServer.agent.AgentLifeCycleListener;
+import jetbrains.buildServer.ExtensionHolder;
 import jetbrains.buildServer.agent.BuildAgentConfiguration;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
@@ -51,7 +51,7 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
 
   private ShellInfoHolder myHolder;
 
-  private EventDispatcher<AgentLifeCycleListener> myEvents;
+  private ExtensionHolder myExtensionHolder;
 
   private File myTempHome;
 
@@ -63,14 +63,14 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
     m = new Mockery() {{
       setImposteriser(ClassImposteriser.INSTANCE);
     }};
-    myEvents = m.mock(EventDispatcher.class);
+    myExtensionHolder = m.mock(ExtensionHolder.class);
     myConfig = m.mock(BuildAgentConfiguration.class);
     myHolder = new ShellInfoHolder();
     m.checking(new Expectations() {{
-      allowing(myEvents);
+      allowing(myExtensionHolder);
     }});
     myTempHome = createTempDir();
-    myProvider = new PowerShellInfoProvider(myConfig, myEvents, Collections.emptyList(), myHolder);
+    myProvider = new PowerShellInfoProvider(myConfig, myExtensionHolder, Collections.emptyList(), myHolder);
   }
 
   @Test
