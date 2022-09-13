@@ -16,19 +16,24 @@
 
 package jetbrains.buildServer.powershell.agent.detect;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import jetbrains.buildServer.BaseTestCase;
 import jetbrains.buildServer.agent.BuildAgentConfiguration;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellEdition;
+import org.hamcrest.Description;
 import org.jetbrains.annotations.NotNull;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
+import org.jmock.api.Action;
+import org.jmock.api.Invocation;
+import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Eugene Petrenko (eugene.petrenko@jetbrains.com)
@@ -46,14 +51,31 @@ public class PowerShellInfoTest extends BaseTestCase {
     final Map<String, String> confParams = new HashMap<>();
     m.checking(new Expectations(){{
       allowing(conf).getConfigurationParameters(); will(returnValue(Collections.unmodifiableMap(confParams)));
+      allowing(conf).addConfigurationParameter(with(any(String.class)), with(any(String.class)));
+      will(new Action() {
+        public Object invoke(final Invocation invocation) {
+          final String key = (String) invocation.getParameter(0);
+          final String value = (String) invocation.getParameter(1);
+          Assert.assertNotNull(key);
+          Assert.assertNotNull(value);
+          confParams.put(key, value);
+          return null;
+        }
+
+        public void describeTo(final Description description) {
+          description.appendText("add Parameters");
+        }
+      });
     }});
 
     final PowerShellEdition e = info.getEdition();
     assertNotNull(e);
     final String propertyName = "powershell_" + e.getValue() + "_" + info.getVersion() + "_" + info.getBitness().getValue();
-    info.saveInfo(confParams);
-    assertEquals(info.getVersion(), confParams.get(propertyName));
-    assertEquals(info.getHome().getAbsolutePath(), confParams.get(propertyName + "_Path"));
+    assertNull(conf.getConfigurationParameters().get(propertyName));
+    assertNull(conf.getConfigurationParameters().get(propertyName + "_Path"));
+    info.saveInfo(conf);
+    assertEquals(info.getVersion(), conf.getConfigurationParameters().get(propertyName));
+    assertEquals(info.getHome().getAbsolutePath(), conf.getConfigurationParameters().get(propertyName + "_Path"));
   }
 
   @DataProvider(name = "editionProvider")
