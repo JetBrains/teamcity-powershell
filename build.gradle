@@ -27,7 +27,7 @@ buildscript {
 }
 
 ext {                                                                                          
-    teamCityVersion = property('TeamCityVersion')   
+    teamCityVersion = project.hasProperty('TeamCityVersion') ? property('TeamCityVersion') : '2022-10-SNAPSHOT'
   	buildVersion = System.getenv("BUILD_NUMBER")
 	if (buildVersion == null || buildVersion.length() == 0) {
 		buildVersion = 'SNAPSHOT-' + new Date().format('yyyyMMddHHmm')
