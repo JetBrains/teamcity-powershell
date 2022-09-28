@@ -24,12 +24,12 @@ tasks.withType(JavaCompile) {
 }
 
 dependencies {
-    compile project(':powershell-common')
-    compile project(':powershell-agent')     
-    compile project(':powershell-server')
-	
-	testCompile 'org.assertj:assertj-core:2.2.0'
-	testCompile "org.jetbrains.teamcity:tests-support:$teamCityVersion"	
+    implementation project(':powershell-common')
+    implementation project(':powershell-agent')
+    implementation project(':powershell-server')
+
+	testImplementation 'org.assertj:assertj-core:2.2.0'
+	testImplementation "org.jetbrains.teamcity:tests-support:$teamCityVersion"
 }
 
 test {

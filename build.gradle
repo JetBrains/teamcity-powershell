@@ -22,12 +22,12 @@ buildscript {
     }
   }
   dependencies {
-    classpath "com.github.rodm:gradle-teamcity-plugin:1.1.1"
+    classpath "com.github.rodm:gradle-teamcity-plugin:1.4.1"
   }
 }
 
-ext {                                                                                          
-    teamCityVersion = project.hasProperty('TeamCityVersion') ? property('TeamCityVersion') : '2022-10-SNAPSHOT'
+ext {
+    teamCityVersion = project.hasProperty('TeamCityVersion') ? property('TeamCityVersion') : '2022.08-SNAPSHOT'
   	buildVersion = System.getenv("BUILD_NUMBER")
 	if (buildVersion == null || buildVersion.length() == 0) {
 		buildVersion = 'SNAPSHOT-' + new Date().format('yyyyMMddHHmm')
@@ -39,13 +39,13 @@ subprojects {
   version = buildVersion
 
   repositories {
-    maven { url "https://download.jetbrains.com/teamcity-repository/" }    
+    maven { url "https://download.jetbrains.com/teamcity-repository/" }
     mavenCentral()
     mavenLocal()
   }
 }
 
-task wrapper(type: Wrapper) {
-  gradleVersion = '4.8.1'
+wrapper {
+  gradleVersion = '7.5.1'
 }
 

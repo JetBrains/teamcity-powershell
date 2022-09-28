@@ -25,9 +25,10 @@ tasks.withType(JavaCompile) {
 }
 
 dependencies {
-    compile project(':powershell-common')
+    implementation project(':powershell-common')
 }
 
 teamcity {
     version = teamCityVersion
+    allowSnapshotVersions = true
 }

@@ -44,10 +44,10 @@ teamcity {
           }
          }
       }
-    
+
       environments {
         teamcityDev {
-          downloadsDir = file(teamcityDownloadsDir) 
+          downloadsDir = file(teamcityDownloadsDir)
           version = teamCityVersion
           homeDir = file(teamCityDir)
           dataDir = file(teamCityDataDir)
@@ -59,7 +59,7 @@ teamcity {
           serverOptions '-Dteamcity.development.mode=true'
           serverOptions '-Dteamcity.development.shadowCopyClasses=true'
         }
-      }  
+      }
     }
 }
 

@@ -224,4 +224,10 @@ public class PowerShellRunType extends RunType {
   public Set<String> getTags() {
     return new HashSet<>(Arrays.asList("PowerShell", "script"));
   }
+
+  @Nullable
+  @Override
+  public String getIconUrl() {
+    return myDescriptor.getPluginResourcesPath("powershell.svg");
+  }
 }
