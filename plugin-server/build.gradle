@@ -36,6 +36,7 @@ teamcity {
     server {
       descriptor = file("$rootDir/teamcity-plugin.xml")
       tokens = [Plugin_Version: project.version]
+      archiveName = "powershell.zip"
 
       files {
      	into('kotlin-dsl') {
