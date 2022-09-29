@@ -41,9 +41,9 @@ dependencies {
     testImplementation "org.jetbrains.teamcity:tests-support:$teamCityVersion"
 
 	if (file("$teamCityDir").exists()) {
-        testCompile files("$teamCityDir/devPackage/tests/tests-integration.jar")
-        testCompile fileTree(dir: "$teamCityDir/webapps/ROOT/WEB-INF/lib/", include: '*.jar')
-        testCompile fileTree(dir: "$teamCityDir/buildAgent/lib/", include: '*.jar')
+        testImplementation files("$teamCityDir/devPackage/tests/tests-integration.jar")
+        testImplementation fileTree(dir: "$teamCityDir/webapps/ROOT/WEB-INF/lib/", include: '*.jar')
+        testImplementation fileTree(dir: "$teamCityDir/buildAgent/lib/", include: '*.jar')
     }
 }
 
