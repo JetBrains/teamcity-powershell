@@ -167,4 +167,32 @@
       </option>
     </enum>
   </types>
+  <examples>
+    <example>
+      <description>
+        A simple powershell script producing "Hello, World!" output to the build log.
+      </description>
+      <code>
+        powerShell {
+          scriptMode = script {
+            content = "Write-Host 'Hello, World!'"
+          }
+        }
+      </code>
+    </example>
+    <example>
+      <description>
+        Run a Powershell script with name "my_script.ps1" in the checkout directory.
+        Use cross-platform "Core" edition of the Powershell.
+      </description>
+      <code>
+        powerShell {
+          edition = PowerShellStep.Edition.Core
+          scriptMode = file {
+            path = "my_script.ps1"
+          }
+        }
+      </code>
+    </example>
+  </examples>
 </dsl-extension>
