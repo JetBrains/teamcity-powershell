@@ -17,8 +17,12 @@
 package jetbrains.buildServer.powershell.agent;
 
 import com.intellij.openapi.diagnostic.Logger;
+import java.io.File;
 import java.util.*;
 import jetbrains.buildServer.ExtensionHolder;
+import jetbrains.buildServer.agent.AgentLifeCycleAdapter;
+import jetbrains.buildServer.agent.AgentLifeCycleListener;
+import jetbrains.buildServer.agent.BuildAgent;
 import jetbrains.buildServer.agent.BuildAgentConfiguration;
 import jetbrains.buildServer.agent.config.AgentParametersSupplier;
 import jetbrains.buildServer.powershell.agent.detect.DetectionContext;
@@ -29,13 +33,14 @@ import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellEdition;
 import jetbrains.buildServer.util.CollectionsUtil;
+import jetbrains.buildServer.util.EventDispatcher;
 import jetbrains.buildServer.util.VersionComparatorUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Eugene Petrenko (eugene.petrenko@jetbrains.com)
- *         03.12.10 16:24
+ * 03.12.10 16:24
  */
 public class PowerShellInfoProvider {
 
@@ -48,9 +53,10 @@ public class PowerShellInfoProvider {
   public PowerShellInfoProvider(@NotNull final BuildAgentConfiguration config,
                                 @NotNull final ExtensionHolder extensionHolder,
                                 @NotNull final List<PowerShellDetector> detectors,
+                                @NotNull final EventDispatcher<AgentLifeCycleListener> eventDispatcher,
                                 @NotNull final ShellInfoHolder holder) {
     myHolder = holder;
-    extensionHolder.registerExtension(AgentParametersSupplier.class, getClass().getName(), new AgentParametersSupplier(){
+    extensionHolder.registerExtension(AgentParametersSupplier.class, getClass().getName(), new AgentParametersSupplier() {
       @Override
       public Map<String, String> getParameters() {
         final Map<String, String> parameters = new HashMap<>();
@@ -59,20 +65,64 @@ public class PowerShellInfoProvider {
         return parameters;
       }
     });
+
+    eventDispatcher.addListener(new AgentLifeCycleAdapter() {
+      @Override
+      public void agentStarted(@NotNull BuildAgent agent) {
+        if (myHolder.getShells().isEmpty()) {
+          addRegisteredPowershellsToState(agent.getConfiguration());
+        }
+      }
+    });
+  }
+
+  private void addRegisteredPowershellsToState(BuildAgentConfiguration configuration) {
+    final Map<String, String> configurationParameters = configuration.getConfigurationParameters();
+    configurationParameters.entrySet()
+                           .stream()
+                           .filter(entry -> entry.getKey().startsWith(PowerShellConstants.POWERSHELL_PREFIX) && !entry.getKey().endsWith(PowerShellConstants.PATH_SUFFIX))
+                           .forEach(entry -> {
+                             final String[] powerShellParts = entry.getKey().split("_");
+
+                             if (powerShellParts.length == 4) {
+                               PowerShellEdition edition = PowerShellEdition.fromString(powerShellParts[1]);
+                               String version = powerShellParts[2];
+                               PowerShellBitness bitness = PowerShellBitness.fromString(powerShellParts[3]);
+                               storePowershellToState(entry.getKey(), configurationParameters, version, bitness, edition);
+                             } else if (powerShellParts.length == 3) {
+                               String version = powerShellParts[1];
+                               PowerShellBitness bitness = PowerShellBitness.fromString(powerShellParts[2]);
+                               storePowershellToState(entry.getKey(), configurationParameters, version, bitness, null);
+                             } else {
+                               LOG.warn("Failed to parse details of powershell entry " + entry.getKey());
+                             }
+                           });
+
+  }
+
+  private void storePowershellToState(@NotNull String entryKey,
+                                      @NotNull Map<String, String> configurationParameters,
+                                      @NotNull String version,
+                                      @Nullable PowerShellBitness bitness,
+                                      @Nullable PowerShellEdition edition) {
+
+    String pathKey = entryKey + PowerShellConstants.PATH_SUFFIX;
+    String shellHome = configurationParameters.get(pathKey);
+    if (shellHome != null && bitness != null) {
+      myHolder.addShellInfo(entryKey, new PowerShellInfo(bitness, new File(shellHome), version, edition, "powershell.exe"));
+    }
   }
 
   private void registerDetectedPowerShells(@NotNull final List<PowerShellDetector> detectors,
                                            @NotNull final DetectionContext detectionContext,
                                            Map<String, String> parameters) {
-    Map<String, PowerShellInfo> shells = new HashMap<>();
-    for (PowerShellDetector detector: detectors) {
+    for (PowerShellDetector detector : detectors) {
       LOG.debug("Processing detected PowerShells from " + detector.getClass().getName());
-      for (Map.Entry<String, PowerShellInfo> entry: detector.findShells(detectionContext).entrySet()) {
+      for (Map.Entry<String, PowerShellInfo> entry : detector.findShells(detectionContext).entrySet()) {
         LOG.debug("Processing detected PowerShell [" + entry.getKey() + "][" + entry.getValue() + "]");
-        if (!shells.containsKey(entry.getKey())) {
-          shells.put(entry.getKey(), entry.getValue());
+        if (!myHolder.getShells().containsKey(entry.getKey())) {
           entry.getValue().saveInfo(parameters);
-          myHolder.addShellInfo(entry.getValue());
+          myHolder.addShellInfo(entry.getKey(), entry.getValue());
         }
       }
     }
@@ -82,8 +132,8 @@ public class PowerShellInfoProvider {
       provideCompatibilityParams(parameters);
     } else {
       LOG.info("No PowerShell detected. If it is installed in non-standard location, " +
-              "please provide install locations in teamcity.powershell.detector.search.paths " +
-              "agent property (with ';' as a separator)");
+               "please provide install locations in teamcity.powershell.detector.search.paths " +
+               "agent property (with ';' as a separator)");
     }
   }
 
@@ -92,8 +142,8 @@ public class PowerShellInfoProvider {
    * Helps with agent requirements
    */
   private void provideMaxVersions(Map<String, String> parameters) {
-    for (PowerShellBitness bitness: PowerShellBitness.values()) {
-      for (PowerShellEdition edition: PowerShellEdition.values()) {
+    for (PowerShellBitness bitness : PowerShellBitness.values()) {
+      for (PowerShellEdition edition : PowerShellEdition.values()) {
         PowerShellInfo info = selectTool(bitness, null, edition);
         if (info != null) {
           parameters.put(PowerShellConstants.generateGeneralKey(edition, bitness), info.getVersion());
@@ -103,7 +153,7 @@ public class PowerShellInfoProvider {
   }
 
   private void provideCompatibilityParams(Map<String, String> parameters) {
-    for (PowerShellBitness bitness: PowerShellBitness.values()) {
+    for (PowerShellBitness bitness : PowerShellBitness.values()) {
       // select shell info of max version of each bitness and provide legacy parameters
       PowerShellInfo info = selectTool(bitness, null, null);
       if (info != null) {
@@ -121,7 +171,7 @@ public class PowerShellInfoProvider {
                                    @Nullable final String version,
                                    @Nullable final PowerShellEdition edition) {
     // filter by edition
-    List<PowerShellInfo> availableShells = myHolder.getShells();
+    List<PowerShellInfo> availableShells = new ArrayList<>(myHolder.getShells().values());
     if (edition != null) {
       availableShells = CollectionsUtil.filterCollection(availableShells, data -> edition.equals(data.getEdition()));
     }
@@ -142,7 +192,7 @@ public class PowerShellInfoProvider {
     // prefer desktop over core
     if (edition == null) {
       Map<PowerShellEdition, List<PowerShellInfo>> byEdition = new HashMap<>();
-      for (PowerShellInfo info: availableShells) {
+      for (PowerShellInfo info : availableShells) {
         if (!byEdition.containsKey(info.getEdition())) {
           byEdition.put(info.getEdition(), new ArrayList<>());
         }

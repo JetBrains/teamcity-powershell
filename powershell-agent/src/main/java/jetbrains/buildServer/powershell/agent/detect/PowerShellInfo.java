@@ -16,15 +16,14 @@
 
 package jetbrains.buildServer.powershell.agent.detect;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellEdition;
 import jetbrains.buildServer.util.FileUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 import static jetbrains.buildServer.powershell.agent.Loggers.DETECTION_LOGGER;
 import static jetbrains.buildServer.powershell.common.PowerShellConstants.PATH_SUFFIX;
@@ -109,13 +108,13 @@ public class PowerShellInfo {
     return myEdition;
   }
 
-  public void saveInfo(@NotNull final Map<String, String> configurationParameters) {
+  public void saveInfo(@NotNull final Map<String, String> agentParameters) {
     if (!myVirtual) {
       Map<String, String> parameters = toConfigurationParameters();
       DETECTION_LOGGER.debug("Saving configuration parameters:");
       for (Map.Entry<String, String> entry: parameters.entrySet()) {
         DETECTION_LOGGER.debug(entry.getKey() + " -> " + entry.getValue());
-        configurationParameters.put(entry.getKey(), entry.getValue());
+        agentParameters.put(entry.getKey(), entry.getValue());
       }
     }
   }

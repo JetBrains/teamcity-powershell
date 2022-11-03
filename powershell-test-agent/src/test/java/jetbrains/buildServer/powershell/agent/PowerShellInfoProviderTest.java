@@ -16,25 +16,28 @@
 
 package jetbrains.buildServer.powershell.agent;
 
+import java.io.File;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import jetbrains.buildServer.ExtensionHolder;
+import jetbrains.buildServer.agent.AgentLifeCycleListener;
+import jetbrains.buildServer.agent.BuildAgent;
 import jetbrains.buildServer.agent.BuildAgentConfiguration;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
+import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellEdition;
 import jetbrains.buildServer.util.EventDispatcher;
 import jetbrains.buildServer.util.TestFor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.io.File;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -54,6 +57,7 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
   private ExtensionHolder myExtensionHolder;
 
   private File myTempHome;
+  private EventDispatcher<AgentLifeCycleListener> myDispatcher;
 
   @Override
   @BeforeMethod
@@ -70,7 +74,8 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
       allowing(myExtensionHolder);
     }});
     myTempHome = createTempDir();
-    myProvider = new PowerShellInfoProvider(myConfig, myExtensionHolder, Collections.emptyList(), myHolder);
+    myDispatcher = EventDispatcher.create(AgentLifeCycleListener.class);
+    myProvider = new PowerShellInfoProvider(myConfig, myExtensionHolder, Collections.emptyList(), myDispatcher, myHolder);
   }
 
   @Test
@@ -80,7 +85,7 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
 
   @Test(dataProvider = "editionProvider")
   public void testNull_BitnessNotSatisfied_32_64(@NotNull final PowerShellEdition edition) throws Exception {
-    myHolder.addShellInfo(new PowerShellInfo(PowerShellBitness.x86, createTempDir(), "1.0", edition, "powershell.exe"));
+    myHolder.addShellInfo("mockKey", new PowerShellInfo(PowerShellBitness.x86, createTempDir(), "1.0", edition, "powershell.exe"));
     assertNull(myProvider.selectTool(PowerShellBitness.x64, null, null));
   }
 
@@ -229,6 +234,68 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
     assertEquals("6.1.0-preview.2", info.getVersion());
   }
 
+  @Test(dataProvider = "editionProvider")
+  public void testSelectExact_OnAgenStart(@NotNull final PowerShellEdition edition) {
+    final Map<String, String> params = new HashMap<>();
+    PowerShellInfo powerShellInfo = getMockPowershellInfo(PowerShellBitness.x64, "5.0", edition);
+    powerShellInfo.saveInfo(params);
+
+    BuildAgent buildAgent = m.mock(BuildAgent.class);
+    m.checking(new Expectations() {{
+      allowing(buildAgent).getConfiguration();
+      will(returnValue(myConfig));
+
+      allowing(myConfig).getConfigurationParameters();
+      will(returnValue(params));
+    }});
+
+    myDispatcher.getMulticaster().agentStarted(buildAgent);
+    final PowerShellInfo info = myProvider.selectTool(PowerShellBitness.x64, "5.0", null);
+    assertNotNull(info);
+    assertEquals(PowerShellBitness.x64, info.getBitness());
+  }
+
+  @Test
+  public void testSelectExact_OnAgenStartWithNullEdition() {
+    final Map<String, String> params = new HashMap<>();
+    PowerShellInfo powerShellInfo = getMockPowershellInfo(PowerShellBitness.x64, "5.0", null);
+    powerShellInfo.saveInfo(params);
+
+    BuildAgent buildAgent = m.mock(BuildAgent.class);
+    m.checking(new Expectations() {{
+      allowing(buildAgent).getConfiguration();
+      will(returnValue(myConfig));
+
+      allowing(myConfig).getConfigurationParameters();
+      will(returnValue(params));
+    }});
+
+    myDispatcher.getMulticaster().agentStarted(buildAgent);
+    final PowerShellInfo info = myProvider.selectTool(PowerShellBitness.x64, "5.0", null);
+    assertNotNull(info);
+    assertEquals(PowerShellBitness.x64, info.getBitness());
+  }
+
+  @Test
+  public void testSelectExact_OnAgenStartWithWrongBadKey() {
+    final Map<String, String> params = new HashMap<>();
+    params.put(PowerShellConstants.POWERSHELL_PREFIX + "something_fake", "value");
+
+    BuildAgent buildAgent = m.mock(BuildAgent.class);
+    m.checking(new Expectations() {{
+      allowing(buildAgent).getConfiguration();
+      will(returnValue(myConfig));
+
+      allowing(myConfig).getConfigurationParameters();
+      will(returnValue(params));
+    }});
+
+    myDispatcher.getMulticaster().agentStarted(buildAgent);
+    final PowerShellInfo info = myProvider.selectTool(null, null, null);
+    assertNull(info);
+  }
+
+
   private void mock32Bit(@NotNull final String version, @NotNull final PowerShellEdition edition) {
     mockInstance(PowerShellBitness.x86, version, edition);
   }
@@ -240,7 +307,14 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
   private void mockInstance(@NotNull final PowerShellBitness bits,
                             @NotNull final String version,
                             @NotNull final PowerShellEdition edition) {
-    myHolder.addShellInfo(new PowerShellInfo(bits, myTempHome, version, edition, "powershell"));
+    myHolder.addShellInfo(PowerShellConstants.generateFullKey(edition, bits, version), getMockPowershellInfo(bits, version, edition));
+  }
+
+  @NotNull
+  private PowerShellInfo getMockPowershellInfo(@NotNull PowerShellBitness bits,
+                                               @NotNull String version,
+                                               @Nullable PowerShellEdition edition) {
+    return new PowerShellInfo(bits, myTempHome, version, edition, "powershell");
   }
 
   @Override

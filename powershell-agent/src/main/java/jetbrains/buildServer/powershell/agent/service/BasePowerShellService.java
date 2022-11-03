@@ -18,6 +18,8 @@ package jetbrains.buildServer.powershell.agent.service;
 
 import com.intellij.execution.configurations.ParametersList;
 import com.intellij.openapi.diagnostic.Logger;
+import java.io.File;
+import java.util.*;
 import jetbrains.buildServer.RunBuildException;
 import jetbrains.buildServer.agent.BuildProgressLogger;
 import jetbrains.buildServer.agent.runner.*;
@@ -35,9 +37,6 @@ import jetbrains.buildServer.util.FileUtil;
 import jetbrains.buildServer.util.PropertiesUtil;
 import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.File;
-import java.util.*;
 
 import static jetbrains.buildServer.messages.DefaultMessagesInfo.createTextMessage;
 import static jetbrains.buildServer.messages.DefaultMessagesInfo.internalize;
