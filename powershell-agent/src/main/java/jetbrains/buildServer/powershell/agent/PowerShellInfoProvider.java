@@ -70,6 +70,7 @@ public class PowerShellInfoProvider {
       @Override
       public void agentStarted(@NotNull BuildAgent agent) {
         if (myHolder.getShells().isEmpty()) {
+          LOG.info("Agent has been initialized from cache, registering powershells from configuration");
           addRegisteredPowershellsToState(agent.getConfiguration());
         }
       }
