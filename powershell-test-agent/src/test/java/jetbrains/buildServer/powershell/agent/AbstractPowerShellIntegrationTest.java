@@ -46,7 +46,7 @@ public abstract class AbstractPowerShellIntegrationTest extends RunnerTest2Base 
   
   @BeforeMethod
   @Override
-  protected void setUp1() throws Throwable {
+  public void setUp1() throws Throwable {
     super.setUp1();
     setPartialMessagesCheckerEx();
   }
