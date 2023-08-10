@@ -239,6 +239,7 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
     final Map<String, String> params = new HashMap<>();
     PowerShellInfo powerShellInfo = getMockPowershellInfo(PowerShellBitness.x64, "5.0", edition);
     powerShellInfo.saveInfo(params);
+    LegacyKeys.fillLegacyKeys(params, powerShellInfo.getBitness(), powerShellInfo);
 
     BuildAgent buildAgent = m.mock(BuildAgent.class);
     m.checking(new Expectations() {{
@@ -260,6 +261,7 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
     final Map<String, String> params = new HashMap<>();
     PowerShellInfo powerShellInfo = getMockPowershellInfo(PowerShellBitness.x64, "5.0", null);
     powerShellInfo.saveInfo(params);
+    LegacyKeys.fillLegacyKeys(params, powerShellInfo.getBitness(), powerShellInfo);
 
     BuildAgent buildAgent = m.mock(BuildAgent.class);
     m.checking(new Expectations() {{

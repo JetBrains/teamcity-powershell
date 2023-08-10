@@ -61,6 +61,7 @@ public class PowerShellConstants {
   }
   
   public static final String PATH_SUFFIX = "_Path";
+  public static final String EXECUTABLE_SUFFIX = "_Executable";
 
   public static String generateFullKey(@Nullable final PowerShellEdition edition, @NotNull final PowerShellBitness bitness, @NotNull final String version) {
     return POWERSHELL_PREFIX + (edition != null ? edition.getValue() + "_" : "" ) + version + "_" + bitness.getValue();

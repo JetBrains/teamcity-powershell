@@ -19,6 +19,7 @@ package jetbrains.buildServer.powershell.agent;
 import java.util.Map;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
+import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -47,8 +48,8 @@ class LegacyKeys {
     return getVersionKey(bitness) + "_Edition";
   }
 
-  private static String getExecutableKey(@NotNull final PowerShellBitness bitness) {
-    return getVersionKey(bitness) + "_Executable";
+  public static String getExecutableKey(@NotNull final PowerShellBitness bitness) {
+    return getVersionKey(bitness) + PowerShellConstants.EXECUTABLE_SUFFIX;
   }
 
   static void fillLegacyKeys(@NotNull final Map<String, String> parameters,

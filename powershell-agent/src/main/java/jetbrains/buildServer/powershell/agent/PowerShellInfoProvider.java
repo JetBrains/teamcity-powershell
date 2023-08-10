@@ -107,10 +107,18 @@ public class PowerShellInfoProvider {
                                       @Nullable PowerShellBitness bitness,
                                       @Nullable PowerShellEdition edition) {
 
-    String pathKey = entryKey + PowerShellConstants.PATH_SUFFIX;
-    String shellHome = configurationParameters.get(pathKey);
-    if (shellHome != null && bitness != null) {
-      myHolder.addShellInfo(entryKey, new PowerShellInfo(bitness, new File(shellHome), version, edition, "powershell.exe"));
+    final String pathKey = entryKey + PowerShellConstants.PATH_SUFFIX;
+    final String executableKey;
+    if (bitness == null){
+      executableKey = entryKey + PowerShellConstants.EXECUTABLE_SUFFIX;
+    } else {
+      executableKey = LegacyKeys.getExecutableKey(bitness);
+    }
+
+    final String shellHome = configurationParameters.get(pathKey);
+    final String executable = configurationParameters.get(executableKey);
+    if (shellHome != null && bitness != null && executable != null) {
+      myHolder.addShellInfo(entryKey, new PowerShellInfo(bitness, new File(shellHome), version, edition, executable));
     }
   }
 
