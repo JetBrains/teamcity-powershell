@@ -26,6 +26,10 @@ buildscript {
   }
 }
 
+plugins {
+  id 'com.github.jk1.dependency-license-report' version '2.5'
+}
+
 ext {
     teamCityVersion = project.hasProperty('TeamCityVersion') ? property('TeamCityVersion') : '2022.10'
   	buildVersion = System.getenv("BUILD_NUMBER")
@@ -49,3 +53,10 @@ wrapper {
   gradleVersion = '7.5.1'
 }
 
+import com.github.jk1.license.render.*
+
+licenseReport {
+  renderers = [new JsonReportRenderer('third-party-libraries.json')]
+}
+
+build.finalizedBy generateLicenseReport
