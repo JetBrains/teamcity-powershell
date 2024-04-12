@@ -2,7 +2,7 @@
 
 package jetbrains.buildServer.powershell.agent;
 
-import com.jetbrains.launcher.SystemInfo;
+import jetbrains.buildServer.util.SystemInfo;
 import jetbrains.buildServer.RunnerTest2Base;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;

@@ -25,12 +25,7 @@ dependencies {
 
 	testImplementation 'org.assertj:assertj-core:2.2.0'
     testImplementation "org.jetbrains.teamcity:tests-support:$teamCityVersion"
-
-	if (file("$teamCityDir").exists()) {
-        testImplementation files("$teamCityDir/devPackage/tests/tests-integration.jar")
-        testImplementation fileTree(dir: "$teamCityDir/webapps/ROOT/WEB-INF/lib/", include: '*.jar')
-        testImplementation fileTree(dir: "$teamCityDir/buildAgent/lib/", include: '*.jar')
-    }
+    testImplementation "org.jetbrains.teamcity.internal:integration-test:$teamCityVersion"
 }
 
 test {

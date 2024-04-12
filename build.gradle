@@ -1,4 +1,4 @@
-
+import java.nio.file.Paths
 
 buildscript {
   repositories {
@@ -8,12 +8,18 @@ buildscript {
     }
   }
   dependencies {
-    classpath "com.github.rodm:gradle-teamcity-plugin:1.4.1"
+    classpath "io.github.rodm:gradle-teamcity-plugin:1.5.2"
   }
 }
 
+
+initializeWorkspace()
+
+def localRepo = anyParamPath('TC_LOCAL_REPO')
+
+
 ext {
-    teamCityVersion = project.hasProperty('TeamCityVersion') ? property('TeamCityVersion') : '2022.10'
+    teamCityVersion = anyParam('teamcityVersion') ?: '2022.10'
   	buildVersion = System.getenv("BUILD_NUMBER")
 	if (buildVersion == null || buildVersion.length() == 0) {
 		buildVersion = 'SNAPSHOT-' + new Date().format('yyyyMMddHHmm')
@@ -25,6 +31,12 @@ subprojects {
   version = buildVersion
 
   repositories {
+    if (localRepo) {
+      maven {
+        name = "local-teamcity-artifacts"
+        url "file:///${localRepo}"
+      }
+    }
     maven { url "https://download.jetbrains.com/teamcity-repository/" }
     mavenCentral()
     mavenLocal()
@@ -33,4 +45,42 @@ subprojects {
 
 wrapper {
   gradleVersion = '7.5.1'
+}
+
+def anyParamPath(String... names) {
+  def param = anyParam(names);
+  if (param == null || param.isEmpty())
+    return null
+  return (Paths.get(param).isAbsolute()) ?
+         Paths.get(param) : getRootDir().toPath().resolve(param)
+}
+
+def anyParam(String... names) {
+  def param
+  try {
+    param = names.findResult {
+      project.hasProperty(it) ? project.getProperty(it) : System.getProperty(it) ?: System.getenv(it) ?: null
+    }
+    if (param == null || param.isEmpty())
+      param = null
+  } finally {
+    println("AnyParam: $names -> $param")
+  }
+  return param
+}
+
+
+def initializeWorkspace() {
+  if (System.getProperty("idea.active") != null) {
+    println "Attempt to configure workspace in IDEA"
+    def coreVersionProperties = project.projectDir.toPath().parent.parent.resolve(".version.properties")
+    if (coreVersionProperties.toFile().exists()) {
+      def p = new Properties().tap {
+        it.load(new FileInputStream(coreVersionProperties.toFile()))
+      }
+      p.forEach { k,v ->
+        System.setProperty(k, v);
+      }
+    }
+  }
 }

@@ -18,6 +18,7 @@ ext {
 
 teamcity {
     version = teamCityVersion
+    allowSnapshotVersions = true
 
     server {
       descriptor = file("$rootDir/teamcity-plugin.xml")
@@ -35,7 +36,7 @@ teamcity {
       environments {
         teamcityDev {
           downloadsDir = file(teamcityDownloadsDir)
-          version = teamCityVersion
+          version = "2024.03"
           homeDir = file(teamCityDir)
           dataDir = file(teamCityDataDir)
           javaHome = file(teamCityJavaHome)

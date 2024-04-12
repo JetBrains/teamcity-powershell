@@ -12,6 +12,7 @@ teamcity {
         descriptor = file('teamcity-plugin.xml')
     }
     version = teamCityVersion
+    allowSnapshotVersions = true
 }
 
 project.tasks.getByName('agentPlugin').version = ''
