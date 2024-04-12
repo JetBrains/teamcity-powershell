@@ -12,4 +12,5 @@ tasks.withType(JavaCompile) {
 
 teamcity {
     version = teamCityVersion
+    allowSnapshotVersions = true
 }
