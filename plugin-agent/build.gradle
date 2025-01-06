@@ -1,6 +1,6 @@
 
 
-apply plugin: 'com.github.rodm.teamcity-agent'
+apply plugin: 'io.github.rodm.teamcity-agent'
 
 dependencies {
     agent project(':powershell-agent')

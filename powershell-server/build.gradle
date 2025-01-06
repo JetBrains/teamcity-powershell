@@ -1,7 +1,7 @@
 
 
 apply plugin: 'java'
-apply plugin: 'com.github.rodm.teamcity-server'
+apply plugin: 'io.github.rodm.teamcity-server'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8

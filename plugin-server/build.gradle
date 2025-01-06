@@ -1,6 +1,6 @@
 
 
-apply plugin: 'com.github.rodm.teamcity-server'
+apply plugin: 'io.github.rodm.teamcity-server'
 
 dependencies {
     agent project(path: ':plugin-agent', configuration: 'plugin')
