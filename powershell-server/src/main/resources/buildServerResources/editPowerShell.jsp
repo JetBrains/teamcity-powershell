@@ -19,7 +19,7 @@
 </style>
 
 <tr class="advancedSetting">
-  <th><label for="${bean.minVersionKey}" class="localLabel">PowerShell version:<bs:help file="PowerShell" anchor="version"/> </label></th>
+  <th><label for="${bean.minVersionKey}" class="localLabel">PowerShell version:<bs:help file="powershell-version"/> </label></th>
   <td>
     <props:textProperty name="${bean.minVersionKey}" className="smallField disableBuildTypeParams" onkeyup="BS.PowerShell.updateScriptMode()"/>
     <span class="smallNote">On Desktop edition the <span style="font-style: italic">exact</span> version will be used,
@@ -28,7 +28,7 @@
 </tr>
 
 <tr class="advancedSetting">
-  <th class="noBorder dense"><label for="${bean.bitnessKey}" class="localLabel">Platform:<bs:help file="PowerShell" anchor="platform"/> </label></th>
+  <th class="noBorder dense"><label for="${bean.bitnessKey}" class="localLabel">Platform:<bs:help file="powershell-platform"/> </label></th>
   <td class="noBorder dense">
     <props:selectProperty name="${bean.bitnessKey}" className="smallField ">
       <c:forEach var="val" items="${bean.bitnessValues}">
@@ -41,7 +41,7 @@
 </tr>
 
 <tr class="advancedSetting">
-  <th class="noBorder dense"><label for="${bean.editionKey}" class="localLabel">Edition:<bs:help file="PowerShell" anchor="edition"/> </label></th>
+  <th class="noBorder dense"><label for="${bean.editionKey}" class="localLabel">Edition:<bs:help file="powershell-edition"/> </label></th>
   <td class="noBorder dense">
     <props:selectProperty name="${bean.editionKey}" className="smallField ">
       <c:forEach var="val" items="${bean.editionValues}">
