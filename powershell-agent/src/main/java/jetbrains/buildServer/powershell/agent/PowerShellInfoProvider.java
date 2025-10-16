@@ -1,20 +1,19 @@
-
-
 package jetbrains.buildServer.powershell.agent;
 
 import com.intellij.openapi.diagnostic.Logger;
 import java.io.File;
 import java.util.*;
+
+import com.intellij.openapi.util.SystemInfo;
 import jetbrains.buildServer.ExtensionHolder;
 import jetbrains.buildServer.agent.AgentLifeCycleAdapter;
 import jetbrains.buildServer.agent.AgentLifeCycleListener;
 import jetbrains.buildServer.agent.BuildAgent;
 import jetbrains.buildServer.agent.BuildAgentConfiguration;
 import jetbrains.buildServer.agent.config.AgentParametersSupplier;
-import jetbrains.buildServer.powershell.agent.detect.DetectionContext;
-import jetbrains.buildServer.powershell.agent.detect.DetectionContextImpl;
-import jetbrains.buildServer.powershell.agent.detect.PowerShellDetector;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
+import jetbrains.buildServer.powershell.agent.detect.cmd.CommandLinePowerShellDetector;
+import jetbrains.buildServer.powershell.agent.detect.registry.RegistryPowerShellDetector;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellEdition;
@@ -36,9 +35,9 @@ public class PowerShellInfoProvider {
   @NotNull
   private final ShellInfoHolder myHolder;
 
-  public PowerShellInfoProvider(@NotNull final BuildAgentConfiguration config,
-                                @NotNull final ExtensionHolder extensionHolder,
-                                @NotNull final List<PowerShellDetector> detectors,
+  public PowerShellInfoProvider(@NotNull final ExtensionHolder extensionHolder,
+                                @NotNull final RegistryPowerShellDetector registryPowerShellDetector,
+                                @NotNull final CommandLinePowerShellDetector commandLinePowerShellDetector,
                                 @NotNull final EventDispatcher<AgentLifeCycleListener> eventDispatcher,
                                 @NotNull final ShellInfoHolder holder) {
     myHolder = holder;
@@ -46,8 +45,7 @@ public class PowerShellInfoProvider {
       @Override
       public Map<String, String> getParameters() {
         final Map<String, String> parameters = new HashMap<>();
-
-        registerDetectedPowerShells(detectors, new DetectionContextImpl(config), parameters);
+        registerDetectedPowerShells(registryPowerShellDetector, commandLinePowerShellDetector, parameters);
         return parameters;
       }
     });
@@ -108,17 +106,19 @@ public class PowerShellInfoProvider {
     }
   }
 
-  private void registerDetectedPowerShells(@NotNull final List<PowerShellDetector> detectors,
-                                           @NotNull final DetectionContext detectionContext,
+  private void registerDetectedPowerShells(RegistryPowerShellDetector registryPowerShellDetector,
+                                           CommandLinePowerShellDetector commandLinePowerShellDetector,
                                            Map<String, String> parameters) {
-    for (PowerShellDetector detector : detectors) {
-      LOG.debug("Processing detected PowerShells from " + detector.getClass().getName());
-      for (Map.Entry<String, PowerShellInfo> entry : detector.findShells(detectionContext).entrySet()) {
-        LOG.debug("Processing detected PowerShell [" + entry.getKey() + "][" + entry.getValue() + "]");
-        if (!myHolder.getShells().containsKey(entry.getKey())) {
-          entry.getValue().saveInfo(parameters);
-          myHolder.addShellInfo(entry.getKey(), entry.getValue());
-        }
+    Map<String, PowerShellInfo> shellsFromReg = SystemInfo.isWindows
+      ? registryPowerShellDetector.findShells()
+      : Collections.emptyMap();
+    Map<String, PowerShellInfo> shellsFromCmd = commandLinePowerShellDetector.findShells(shellsFromReg.keySet());
+    Map<String, PowerShellInfo> shells = new HashMap<>(shellsFromReg);
+    shells.putAll(shellsFromCmd);
+    for (Map.Entry<String, PowerShellInfo> entry : shells.entrySet()) {
+      if (!myHolder.getShells().containsKey(entry.getKey())) {
+        entry.getValue().saveInfo(parameters);
+        myHolder.addShellInfo(entry.getKey(), entry.getValue());
       }
     }
     // provide parameters for agent compatibility filters

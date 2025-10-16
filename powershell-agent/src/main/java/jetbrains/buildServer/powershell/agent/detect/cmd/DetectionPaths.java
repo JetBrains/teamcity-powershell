@@ -4,8 +4,8 @@ package jetbrains.buildServer.powershell.agent.detect.cmd;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.SystemInfo;
+import jetbrains.buildServer.agent.BuildAgentConfiguration;
 import jetbrains.buildServer.powershell.agent.Loggers;
-import jetbrains.buildServer.powershell.agent.detect.DetectionContext;
 import jetbrains.buildServer.util.FileUtil;
 import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
@@ -40,9 +40,16 @@ public class DetectionPaths {
           "/opt/microsoft/powershell"
   );
 
-  public List<String> getPaths(@NotNull DetectionContext detectionContext) {
+  @NotNull
+  private final BuildAgentConfiguration myConfiguration;
+
+  public DetectionPaths(@NotNull BuildAgentConfiguration myConfiguration) {
+    this.myConfiguration = myConfiguration;
+  }
+
+  public List<String> getPaths() {
     // add predefined paths
-    final List<String> propertyPaths = detectionContext.getSearchPaths();
+    final List<String> propertyPaths = getPredefinedPaths();
     if (LOG.isDebugEnabled()) {
       if (!propertyPaths.isEmpty()) {
         LOG.debug("Adding PowerShell detection paths from [teamcity.powershell.detector.search.paths] property.");
@@ -71,6 +78,14 @@ public class DetectionPaths {
     }
     addGlobalToolsPath(result);
     return result;
+  }
+
+  @NotNull
+  private List<String> getPredefinedPaths() {
+    String paths = myConfiguration.getConfigurationParameters().get("teamcity.powershell.detector.search.paths");
+    return isEmptyOrSpaces(paths)
+        ? Collections.emptyList()
+        : StringUtil.split(paths, ";");
   }
 
   private void addGlobalToolsPath(@NotNull final List<String> result) {

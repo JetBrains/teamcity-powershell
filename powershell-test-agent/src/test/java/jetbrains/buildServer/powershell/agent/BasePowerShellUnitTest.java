@@ -1,5 +1,3 @@
-
-
 package jetbrains.buildServer.powershell.agent;
 
 import jetbrains.buildServer.BaseTestCase;

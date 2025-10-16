@@ -7,8 +7,6 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.SystemInfo;
 import jetbrains.buildServer.agent.BuildAgentConfiguration;
 import jetbrains.buildServer.powershell.agent.Loggers;
-import jetbrains.buildServer.powershell.agent.detect.DetectionContext;
-import jetbrains.buildServer.powershell.agent.detect.PowerShellDetector;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
@@ -21,13 +19,14 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Detects PowerShell using command line and detection script
  *
  * @author Oleg Rybak (oleg.rybak@jetbrains.com)
  */
-public class CommandLinePowerShellDetector implements PowerShellDetector {
+public class CommandLinePowerShellDetector {
 
   @NotNull
   private static final Logger LOG = Loggers.DETECTION_LOGGER;
@@ -81,12 +80,15 @@ public class CommandLinePowerShellDetector implements PowerShellDetector {
   }
 
   @NotNull
-  @Override
-  public Map<String, PowerShellInfo> findShells(@NotNull DetectionContext detectionContext) {
+  public Map<String, PowerShellInfo> findShells(Set<String> skipPaths) {
     LOG.info("Detecting PowerShell using CommandLinePowerShellDetector");
     // group by home
     final Map<String, PowerShellInfo> shells = new HashMap<>();
-    final List<String> pathsToCheck = myDetectionPaths.getPaths(detectionContext);
+    final List<String> pathsToCheck = myDetectionPaths
+      .getPaths()
+      .stream()
+      .filter(path -> !skipPaths.contains(path))
+      .collect(Collectors.toList());
     if (LOG.isDebugEnabled()) {
       LOG.debug("Will be detecting PowerShell in the following locations: [\n" + StringUtil.join(pathsToCheck, "\n") + "\n");
     }

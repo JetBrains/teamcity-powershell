@@ -1,5 +1,3 @@
-
-
 package jetbrains.buildServer.powershell.agent.detect;
 
 import java.io.IOException;
