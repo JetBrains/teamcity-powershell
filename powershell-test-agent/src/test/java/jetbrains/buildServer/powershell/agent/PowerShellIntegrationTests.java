@@ -1,4 +1,3 @@
-
 package jetbrains.buildServer.powershell.agent;
 
 import jetbrains.buildServer.powershell.common.PowerShellBitness;

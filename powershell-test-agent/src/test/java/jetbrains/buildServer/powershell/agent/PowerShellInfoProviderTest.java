@@ -1,9 +1,6 @@
-
-
 package jetbrains.buildServer.powershell.agent;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import jetbrains.buildServer.ExtensionHolder;
@@ -11,6 +8,8 @@ import jetbrains.buildServer.agent.AgentLifeCycleListener;
 import jetbrains.buildServer.agent.BuildAgent;
 import jetbrains.buildServer.agent.BuildAgentConfiguration;
 import jetbrains.buildServer.powershell.agent.detect.PowerShellInfo;
+import jetbrains.buildServer.powershell.agent.detect.cmd.CommandLinePowerShellDetector;
+import jetbrains.buildServer.powershell.agent.detect.registry.RegistryPowerShellDetector;
 import jetbrains.buildServer.powershell.common.PowerShellBitness;
 import jetbrains.buildServer.powershell.common.PowerShellConstants;
 import jetbrains.buildServer.powershell.common.PowerShellEdition;
@@ -47,7 +46,6 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
 
   @Override
   @BeforeMethod
-  @SuppressWarnings("unchecked")
   public void setUp() throws Exception {
     super.setUp();
     m = new Mockery() {{
@@ -55,13 +53,15 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
     }};
     myExtensionHolder = m.mock(ExtensionHolder.class);
     myConfig = m.mock(BuildAgentConfiguration.class);
+    RegistryPowerShellDetector registryPowerShellDetector = m.mock(RegistryPowerShellDetector.class);
+    CommandLinePowerShellDetector commandLinePowerShellDetector = m.mock(CommandLinePowerShellDetector.class);
     myHolder = new ShellInfoHolder();
     m.checking(new Expectations() {{
       allowing(myExtensionHolder);
     }});
     myTempHome = createTempDir();
     myDispatcher = EventDispatcher.create(AgentLifeCycleListener.class);
-    myProvider = new PowerShellInfoProvider(myConfig, myExtensionHolder, Collections.emptyList(), myDispatcher, myHolder);
+    myProvider = new PowerShellInfoProvider(myExtensionHolder, registryPowerShellDetector, commandLinePowerShellDetector, myDispatcher, myHolder);
   }
 
   @Test
@@ -77,12 +77,7 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
 
   @Test(dataProvider = "editionProvider")
   public void testNull_BitnessNotSatisfied_64_32(@NotNull final PowerShellEdition edition) {
-    final Map<String, String> params = new HashMap<>();
     mock64bit("1.0", edition);
-    m.checking(new Expectations() {{
-      allowing(myConfig).getConfigurationParameters();
-      will(returnValue(params));
-    }});
     assertNull(myProvider.selectTool(PowerShellBitness.x86, null, null));
   }
 
@@ -92,13 +87,8 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
    */
   @Test(dataProvider = "editionProvider")
   public void testNull_MinVersionNotSatisfied_32bit(@NotNull final PowerShellEdition edition) {
-    final Map<String, String> params = new HashMap<>();
     mock32Bit("1.0", edition);
     mock64bit("2.0", edition);
-    m.checking(new Expectations() {{
-      allowing(myConfig).getConfigurationParameters();
-      will(returnValue(params));
-    }});
     assertNull(myProvider.selectTool(null, "3.0", null));
   }
 
@@ -110,13 +100,8 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
    */
   @Test(dataProvider = "editionProvider")
   public void testSelect64Over32(@NotNull final PowerShellEdition edition) {
-    final Map<String, String> params = new HashMap<>();
     mock32Bit("2.0", edition);
     mock64bit("2.0", edition);
-    m.checking(new Expectations() {{
-      allowing(myConfig).getConfigurationParameters();
-      will(returnValue(params));
-    }});
     final PowerShellInfo info = myProvider.selectTool(null, null, null);
     assertNotNull(info);
     assertEquals(PowerShellBitness.x64, info.getBitness());
@@ -129,13 +114,8 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
    */
   @Test(dataProvider = "editionProvider")
   public void testSelect32OVer64_Version(@NotNull final PowerShellEdition edition) {
-    final Map<String, String> params = new HashMap<>();
     mock32Bit("5.0", edition);
     mock64bit("5.0", edition);
-    m.checking(new Expectations() {{
-      allowing(myConfig).getConfigurationParameters();
-      will(returnValue(params));
-    }});
     final PowerShellInfo info = myProvider.selectTool(null, "3.0", null);
     assertNotNull(info);
     assertEquals(PowerShellBitness.x64, info.getBitness());
@@ -143,13 +123,8 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
 
   @Test(dataProvider = "editionProvider")
   public void testSelectExact(@NotNull final PowerShellEdition edition) {
-    final Map<String, String> params = new HashMap<>();
     mock32Bit("5.0", edition);
     mock64bit("6.0", edition);
-    m.checking(new Expectations() {{
-      allowing(myConfig).getConfigurationParameters();
-      will(returnValue(params));
-    }});
     final PowerShellInfo info = myProvider.selectTool(PowerShellBitness.x64, "6.0", null);
     assertNotNull(info);
     assertEquals(PowerShellBitness.x64, info.getBitness());
@@ -157,13 +132,8 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
 
   @Test(dataProvider = "editionProvider")
   public void testUseSemanticVersion(@NotNull final PowerShellEdition edition) {
-    final Map<String, String> params = new HashMap<>();
     mock32Bit("3.0-beta4", edition);
     mock64bit("6.0-alpha6", edition);
-    m.checking(new Expectations() {{
-      allowing(myConfig).getConfigurationParameters();
-      will(returnValue(params));
-    }});
     final PowerShellInfo info = myProvider.selectTool(null, "4.0", null);
     assertNotNull(info);
     assertEquals(PowerShellBitness.x64, info.getBitness());
@@ -172,25 +142,15 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
 
   @Test(dataProvider = "editionProvider")
   public void testLoadInfo(@NotNull final PowerShellEdition edition) {
-    final Map<String, String> params = new HashMap<>();
     mock32Bit("1.0", edition);
     mock64bit("6.0", edition);
-    m.checking(new Expectations() {{
-      allowing(myConfig).getConfigurationParameters();
-      will(returnValue(params));
-    }});
     assertTrue(myProvider.anyPowerShellDetected());
   }
 
   @Test
   public void testFilterByEdition() {
-    final Map<String, String> params = new HashMap<>();
     mock32Bit("5.0", PowerShellEdition.DESKTOP);
     mock64bit("6.0", PowerShellEdition.CORE);
-    m.checking(new Expectations() {{
-      allowing(myConfig).getConfigurationParameters();
-      will(returnValue(params));
-    }});
 
     final PowerShellInfo infoCore = myProvider.selectTool(null, null, PowerShellEdition.CORE);
     assertNotNull(infoCore);
@@ -208,13 +168,8 @@ public class PowerShellInfoProviderTest extends BasePowerShellUnitTest {
   @Test
   @TestFor(issues = "TW-55922")
   public void testSelectTool_MultipleShells() {
-    final Map<String, String> params = new HashMap<>();
     mock64bit("6.1.0-preview.2", PowerShellEdition.CORE);
     mock64bit("6.0", PowerShellEdition.CORE);
-    m.checking(new Expectations() {{
-      allowing(myConfig).getConfigurationParameters();
-      will(returnValue(params));
-    }});
     final PowerShellInfo info = myProvider.selectTool(PowerShellBitness.x64, null, PowerShellEdition.CORE);
     assertNotNull(info);
     assertEquals("6.1.0-preview.2", info.getVersion());
