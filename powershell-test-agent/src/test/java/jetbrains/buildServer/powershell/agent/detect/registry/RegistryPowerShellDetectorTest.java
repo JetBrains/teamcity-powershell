@@ -12,8 +12,12 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.UUID;
 
+import static java.util.Collections.singletonList;
 import static jetbrains.buildServer.util.Bitness.BIT32;
 import static jetbrains.buildServer.util.Bitness.BIT64;
 import static jetbrains.buildServer.util.Win32RegistryAccessor.Hive.LOCAL_MACHINE;
@@ -41,8 +45,8 @@ public class RegistryPowerShellDetectorTest extends BaseTestCase {
   @Test
   public void should_return_empty_result_when_not_installed() {
     // arrange
-    given(BIT32, "SOFTWARE\\Microsoft\\PowerShell\\3", "Install", null);
-    given(BIT32, "SOFTWARE\\Microsoft\\PowerShell\\1", "Install", null);
+    givenNoDesktopEdition();
+    givenNoCoreEdition();
 
     // act
     Map<String, PowerShellInfo> shells = new RegistryPowerShellDetector(acc).findShells();
@@ -63,7 +67,8 @@ public class RegistryPowerShellDetectorTest extends BaseTestCase {
     given(BIT32, "SOFTWARE\\Microsoft\\PowerShell\\3\\PowerShellEngine", "ApplicationBase", null);
     given(BIT32, "SOFTWARE\\Microsoft\\PowerShell\\1\\PowerShellEngine", "ApplicationBase", home.getPath());
 
-    givenNoPowershellForBit64();
+    givenNoDesktopEditionForBit64();
+    givenNoCoreEdition();
 
     // act
     Map<String, PowerShellInfo> shells = new RegistryPowerShellDetector(acc).findShells();
@@ -85,7 +90,8 @@ public class RegistryPowerShellDetectorTest extends BaseTestCase {
     given(BIT32, "SOFTWARE\\Microsoft\\PowerShell\\3\\PowerShellEngine", "PowerShellVersion", "5.0");
     given(BIT32, "SOFTWARE\\Microsoft\\PowerShell\\3\\PowerShellEngine", "ApplicationBase", home.getPath());
 
-    givenNoPowershellForBit64();
+    givenNoDesktopEditionForBit64();
+    givenNoCoreEdition();
 
     // act
     Map<String, PowerShellInfo> shells = new RegistryPowerShellDetector(acc).findShells();
@@ -109,6 +115,8 @@ public class RegistryPowerShellDetectorTest extends BaseTestCase {
     given(BIT64, "SOFTWARE\\Microsoft\\PowerShell\\3\\PowerShellEngine", "PowerShellVersion", "5.0");
     given(BIT64, "SOFTWARE\\Microsoft\\PowerShell\\3\\PowerShellEngine", "ApplicationBase", createTempDir().getPath());
 
+    givenNoCoreEdition();
+
     // act, assert
     assertEquals(2, new RegistryPowerShellDetector(acc).findShells().size());
   }
@@ -126,7 +134,8 @@ public class RegistryPowerShellDetectorTest extends BaseTestCase {
     given(BIT32, "SOFTWARE\\Microsoft\\PowerShell\\3\\PowerShellEngine", "ApplicationBase", homeV3.getPath());
     given(BIT32, "SOFTWARE\\Microsoft\\PowerShell\\1\\PowerShellEngine", "ApplicationBase", homeV1.getPath());
 
-    givenNoPowershellForBit64();
+    givenNoDesktopEditionForBit64();
+    givenNoCoreEdition();
 
     // act
     Map<String, PowerShellInfo> shells = new RegistryPowerShellDetector(acc).findShells();
@@ -139,7 +148,7 @@ public class RegistryPowerShellDetectorTest extends BaseTestCase {
   }
 
   @Test
-  public void should_check_powershell_home_exists() {
+  public void should_check_powershell_home_exists_for_desktop_edition() {
     // arrange
     final File home = new File("fake");
     given(BIT32, "SOFTWARE\\Microsoft\\PowerShell\\1", "Install", "1");
@@ -147,10 +156,41 @@ public class RegistryPowerShellDetectorTest extends BaseTestCase {
 
     given(BIT32, "SOFTWARE\\Microsoft\\PowerShell\\1\\PowerShellEngine", "PowerShellVersion", "2.0");
     given(BIT32, "SOFTWARE\\Microsoft\\PowerShell\\1\\PowerShellEngine", "ApplicationBase", home.getPath());
-    givenNoPowershellForBit64();
+
+    givenNoDesktopEditionForBit64();
+    givenNoCoreEdition();
 
     // act, assert
     assertEquals(0, new RegistryPowerShellDetector(acc).findShells().size());
+  }
+
+  @Test
+  public void should_find_powershell_core_edition() throws IOException {
+    // arrange
+    final File home = createTempDir();
+    assertTrue(new File(home, "pwsh.exe").createNewFile());
+    String key = UUID.randomUUID().toString();
+    m.checking(new Expectations(){{
+      allowing(acc).listSubKeys(LOCAL_MACHINE, BIT32, "SOFTWARE\\Microsoft\\PowerShellCore\\InstalledVersions");
+      will(returnValue(new HashSet<>(singletonList(key))));
+
+      allowing(acc).listSubKeys(LOCAL_MACHINE, BIT64, "SOFTWARE\\Microsoft\\PowerShellCore\\InstalledVersions");
+      will(returnValue(Collections.emptySet()));
+    }});
+
+    given(BIT32, "SOFTWARE\\Microsoft\\PowerShellCore\\InstalledVersions\\" + key, "InstallLocation", home.getPath());
+    given(BIT32, "SOFTWARE\\Microsoft\\PowerShellCore\\InstalledVersions\\" + key, "SemanticVersion", "7.5.3");
+
+    givenNoDesktopEdition();
+
+    // act
+    Map<String, PowerShellInfo> shells = new RegistryPowerShellDetector(acc).findShells();
+
+    // assert
+    assertEquals(1, shells.size());
+    Map.Entry<String, PowerShellInfo> shell = shells.entrySet().stream().findFirst().get();
+    assertEquals("7.5.3", shell.getValue().getVersion());
+    assertEquals(home, shell.getValue().getHome());
   }
 
   private void given(Bitness bitness, String path, String key, Object value) {
@@ -159,10 +199,25 @@ public class RegistryPowerShellDetectorTest extends BaseTestCase {
     }});
   }
 
-  private void givenNoPowershellForBit64() {
+  private void givenNoDesktopEdition() {
+    given(BIT32, "SOFTWARE\\Microsoft\\PowerShell\\3", "Install", null);
+    given(BIT32, "SOFTWARE\\Microsoft\\PowerShell\\1", "Install", null);
+  }
+
+  private void givenNoDesktopEditionForBit64() {
     given(BIT64, "SOFTWARE\\Microsoft\\PowerShell\\3\\PowerShellEngine", "PowerShellVersion", null);
     given(BIT64, "SOFTWARE\\Microsoft\\PowerShell\\1\\PowerShellEngine", "PowerShellVersion", null);
     given(BIT64, "SOFTWARE\\Microsoft\\PowerShell\\3\\PowerShellEngine", "ApplicationBase", null);
     given(BIT64, "SOFTWARE\\Microsoft\\PowerShell\\1\\PowerShellEngine", "ApplicationBase", null);
+  }
+
+  private void givenNoCoreEdition() {
+    m.checking(new Expectations() {{
+      allowing(acc).listSubKeys(LOCAL_MACHINE, BIT32, "SOFTWARE\\Microsoft\\PowerShellCore\\InstalledVersions");
+      will(returnValue(Collections.emptySet()));
+
+      allowing(acc).listSubKeys(LOCAL_MACHINE, BIT64, "SOFTWARE\\Microsoft\\PowerShellCore\\InstalledVersions");
+      will(returnValue(Collections.emptySet()));
+    }});
   }
 }

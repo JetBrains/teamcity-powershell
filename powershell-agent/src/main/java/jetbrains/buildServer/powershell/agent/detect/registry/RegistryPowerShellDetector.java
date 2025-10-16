@@ -11,9 +11,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import static jetbrains.buildServer.util.Bitness.BIT32;
 import static jetbrains.buildServer.util.Win32RegistryAccessor.Hive.LOCAL_MACHINE;
@@ -46,8 +46,8 @@ public class RegistryPowerShellDetector {
   @NotNull
   private Map<String, PowerShellInfo> findDesktopEditions() {
     Map<String, PowerShellInfo> result = new HashMap<>();
-    boolean isV1Installed = isInstalled("1");
-    boolean isV3Installed = isInstalled("3");
+    boolean isV1Installed = isDesktopEditionInstalled("1");
+    boolean isV3Installed = isDesktopEditionInstalled("3");
     if (!isV1Installed && !isV3Installed) {
       LOG.debug("PowerShell desktop edition for was not found");
       return result;
@@ -61,7 +61,7 @@ public class RegistryPowerShellDetector {
         info = fetchInfoForDesktopEdition(bitness, "1");
       }
       if (info != null) {
-        LOG.info("Found through registry: " + info);
+        logFound(info);
         result.put(info.getHome().getAbsolutePath(), info);
       }
     }
@@ -70,11 +70,39 @@ public class RegistryPowerShellDetector {
 
   @NotNull
   private Map<String, PowerShellInfo> findCoreEditions() {
-    // TODO https://youtrack.jetbrains.com/issue/TW-96434
-    return Collections.emptyMap();
+    Map<String, PowerShellInfo> result = new HashMap<>();
+    String rootPath = "SOFTWARE\\Microsoft\\PowerShellCore\\InstalledVersions";
+    for (PowerShellBitness bitness : PowerShellBitness.values()) {
+
+      Set<String> keys = myAccessor.listSubKeys(LOCAL_MACHINE, bitness.toBitness(), rootPath);
+      for (String key : keys) {
+        String keyPath = rootPath + "\\" + key;
+        String homeStr = myAccessor.readRegistryText(LOCAL_MACHINE, bitness.toBitness(), keyPath, "InstallLocation");
+        if (homeStr == null) {
+          LOG.warn("Could not fetch InstallLocation from " + keyPath);
+          continue;
+        }
+        File home = asDirectoryOrNull(homeStr);
+        if (home == null) {
+          LOG.warn("Found InstallLocation is not a valid directory: " + homeStr);
+          continue;
+        }
+        String version = myAccessor.readRegistryText(LOCAL_MACHINE, bitness.toBitness(), keyPath, "SemanticVersion");
+        if (version == null) {
+          LOG.warn("Could not fetch SemanticVersion from " + keyPath);
+          continue;
+        }
+        if (new File(home, "pwsh.exe").exists()) {
+          PowerShellInfo info = new PowerShellInfo(bitness, home, version, PowerShellEdition.CORE, "pwsh.exe");
+          logFound(info);
+          result.put(info.getHome().getAbsolutePath(), info);
+        }
+      }
+    }
+    return result;
   }
 
-  private boolean isInstalled(String oneOrThree) {
+  private boolean isDesktopEditionInstalled(String oneOrThree) {
     String path = "SOFTWARE\\Microsoft\\PowerShell\\" + oneOrThree;
     // TODO check, maybe it's a bug that BIT32 is always passed, this logic was initially introduced in 2010 or before
     return "1".equals(myAccessor.readRegistryText(LOCAL_MACHINE, BIT32, path, "Install"));
@@ -84,7 +112,7 @@ public class RegistryPowerShellDetector {
   private PowerShellInfo fetchInfoForDesktopEdition(@NotNull PowerShellBitness bitness, @NotNull String oneOrThree) {
     String path = "SOFTWARE\\Microsoft\\PowerShell\\" + oneOrThree + "\\PowerShellEngine";
     String version = myAccessor.readRegistryText(LOCAL_MACHINE, bitness.toBitness(), path, "PowerShellVersion");
-    File home = asFileOrNull(myAccessor.readRegistryText(LOCAL_MACHINE, bitness.toBitness(), path, "ApplicationBase"));
+    File home = asDirectoryOrNull(myAccessor.readRegistryText(LOCAL_MACHINE, bitness.toBitness(), path, "ApplicationBase"));
     if (version == null || home == null) {
       LOG.debug("Skip PowerShell: " + bitness + " " + version + " " + home);
       return null;
@@ -93,9 +121,13 @@ public class RegistryPowerShellDetector {
   }
 
   @Nullable
-  private static File asFileOrNull(@Nullable String path) {
+  private static File asDirectoryOrNull(@Nullable String path) {
     if (path == null) return null;
-    final File file = FileUtil.getCanonicalFile(new File(path));
-    return file.isDirectory() ? file : null;
+    final File directory = FileUtil.getCanonicalFile(new File(path));
+    return directory.isDirectory() ? directory : null;
+  }
+
+  private static void logFound(PowerShellInfo info) {
+    LOG.info("Found through registry: " + info);
   }
 }
