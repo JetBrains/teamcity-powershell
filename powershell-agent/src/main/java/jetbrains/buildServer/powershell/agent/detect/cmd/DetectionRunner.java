@@ -1,5 +1,3 @@
-
-
 package jetbrains.buildServer.powershell.agent.detect.cmd;
 
 import com.intellij.execution.ExecutionException;
@@ -7,6 +5,7 @@ import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.CapturingProcessHandler;
 import com.intellij.execution.process.ProcessOutput;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.util.text.StringUtil;
 import jetbrains.buildServer.powershell.agent.Loggers;
 import jetbrains.buildServer.serverSide.TeamCityProperties;
 import org.jetbrains.annotations.NotNull;
@@ -52,19 +51,30 @@ public class DetectionRunner {
   }
 
   private ProcessOutput runProcess(@NotNull final GeneralCommandLine cl) throws ExecutionException {
-    final CapturingProcessHandler handler = new CapturingProcessHandler(cl.createProcess(), StandardCharsets.UTF_8);
+    final int attempts = TeamCityProperties.getInteger("teamcity.powershell.detector.attempts", 1);
     final int timeout = TeamCityProperties.getInteger("teamcity.powershell.detector.timeout.msec", 20000);
-    final ProcessOutput result = handler.runProcess(timeout);
-    final String errorOutput = result.getStderr();
-    if (!isEmptyOrSpaces(errorOutput)) {
-      logProcessOutput(result);
-      throw new ExecutionException(errorOutput);
+    for (int attempt = 1; attempt <= attempts; attempt++) {
+      final CapturingProcessHandler handler = new CapturingProcessHandler(cl.createProcess(), StandardCharsets.UTF_8);
+      final ProcessOutput result = handler.runProcess(timeout);
+      final String errorOutput = result.getStderr();
+      if (!isEmptyOrSpaces(errorOutput)) {
+        logProcessOutput(result);
+        throw new ExecutionException(errorOutput);
+      }
+      if (result.isTimeout()) {
+        logProcessOutput(result);
+        int leftAttempts = attempts - attempt;
+        if (leftAttempts > 0) {
+          LOG.warn(String.format("PowerShell detection timed out, %d %s left",
+                  leftAttempts, StringUtil.pluralize("attempt", leftAttempts)
+          ));
+          continue;
+        }
+        throw new ExecutionException("Process execution of [" + cl.getCommandLineString() + "] has timed out. Timeout is set to " + timeout + " msec.");
+      }
+      return result;
     }
-    if (result.isTimeout()) {
-      logProcessOutput(result);
-      throw new ExecutionException("Process execution of [" + cl.getCommandLineString() + "] has timed out. Timeout is set to " + timeout + " msec.");
-    }
-    return result;
+    throw new ExecutionException("Failed to detect PowerShell"); // must be unreachable
   }
 
   private void logProcessOutput(@NotNull final ProcessOutput output) {
