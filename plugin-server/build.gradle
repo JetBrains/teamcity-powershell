@@ -1,5 +1,3 @@
-
-
 apply plugin: 'com.github.rodm.teamcity-server'
 
 dependencies {
@@ -50,5 +48,3 @@ teamcity {
       }
     }
 }
-
-project.tasks.getByName('serverPlugin').version = ''
