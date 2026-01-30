@@ -41,6 +41,7 @@ test {
               "--add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED",
               "--add-opens=java.base/java.nio.charset=ALL-UNNAMED",
               "--add-opens=java.base/sun.security.util=ALL-UNNAMED",
+//            "-Djava.security.manager=allow"
       ]
     }
 }
