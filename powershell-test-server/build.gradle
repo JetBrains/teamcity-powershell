@@ -20,4 +20,5 @@ dependencies {
 
 test {
     useTestNG()
+    jvmArgs("-Dnet.bytebuddy.experimental=true")
 }
