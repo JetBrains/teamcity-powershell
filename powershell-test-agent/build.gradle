@@ -30,4 +30,17 @@ dependencies {
 
 test {
     useTestNG()
+    if (JavaVersion.current().isJava9Compatible()) {
+      jvmArgs += [
+              "-Dnet.bytebuddy.experimental=true",
+              "-XX:+IgnoreUnrecognizedVMOptions",
+              "--add-opens=java.base/java.lang=ALL-UNNAMED",
+              "--add-opens=java.base/java.io=ALL-UNNAMED",
+              "--add-opens=java.base/java.util=ALL-UNNAMED",
+              "--add-opens=java.base/java.util.concurrent=ALL-UNNAMED",
+              "--add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED",
+              "--add-opens=java.base/java.nio.charset=ALL-UNNAMED",
+              "--add-opens=java.base/sun.security.util=ALL-UNNAMED",
+      ]
+    }
 }
