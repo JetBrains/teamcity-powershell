@@ -25,7 +25,7 @@ def localRepo = anyParamPath('TC_LOCAL_REPO')
 
 ext {
     teamCityVersion = anyParam('teamcityVersion') ?: '2022.10'
-  	buildVersion = System.getenv("BUILD_NUMBER")
+  	buildVersion = anyParam('PluginVersion')
 	if (buildVersion == null || buildVersion.length() == 0) {
 		buildVersion = 'SNAPSHOT-' + new Date().format('yyyyMMddHHmm')
 	}
