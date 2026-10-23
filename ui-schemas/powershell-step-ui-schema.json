@@ -1,0 +1,120 @@
+{
+  "title": "PowerShell",
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "InputPathControl",
+      "label": "Working directory",
+      "scope": "#/properties/working-directory",
+      "options": {
+        "placeholder": "repository root"
+      }
+    },
+    {
+      "type": "Control",
+      "label": "Script",
+      "scope": "#/properties/script-mode",
+      "options": {
+        "branches": {
+          "file": {
+            "type": "VerticalLayout",
+            "elements": [
+              {
+                "type": "InputPathControl",
+                "label": "Script file",
+                "scope": "#/properties/path",
+                "options": {
+                  "onlyDirectories": false,
+                  "description": "Path to the PowerShell script, relative to the checkout directory"
+                }
+              }
+            ]
+          },
+          "script": {
+            "type": "VerticalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "label": "Script source",
+                "scope": "#/properties/content",
+                "options": {
+                  "multi": true,
+                  "description": "Enter contents of a PowerShell script. TeamCity references will be replaced in the code"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "Control",
+      "label": "Script execution mode",
+      "scope": "#/properties/script-exec-mode",
+      "options": {
+        "description": "Specify PowerShell script execution mode. By default, PowerShell may not allow execution of arbitrary .ps1 files. TeamCity will try to supply -ExecutionPolicy ByPass argument."
+      }
+    },
+    {
+      "type": "Control",
+      "label": "Script arguments",
+      "scope": "#/properties/script-args",
+      "options": {
+        "multi": true,
+        "description": "Enter script arguments"
+      },
+      "rule": {
+        "effect": "HIDE",
+        "condition": {
+          "scope": "#/properties/script-exec-mode",
+          "schema": {"const": "stdin"}
+        }
+      }
+    },
+    {
+      "type": "AdvancedSettingsSection",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "PowerShell version",
+          "scope": "#/properties/min-required-version",
+          "options": {
+            "description": "On Desktop edition the exact version will be used, on Core edition the lower bound version requirement will be added"
+          }
+        },
+        {
+          "type": "Control",
+          "label": "Platform",
+          "scope": "#/properties/platform",
+          "options": {
+            "description": "If <Auto> is chosen, x64 will be preferred over x86 when both are available"
+          }
+        },
+        {
+          "type": "Control",
+          "label": "Edition",
+          "scope": "#/properties/edition"
+        },
+        {
+          "type": "Control",
+          "label": "Format stderr as error",
+          "scope": "#/properties/format-stderr-as-error"
+        },
+        {
+          "type": "Control",
+          "label": "Add -NoProfile argument",
+          "scope": "#/properties/no-profile"
+        },
+        {
+          "type": "Control",
+          "label": "Additional command line parameters",
+          "scope": "#/properties/args",
+          "options": {
+            "multi": true,
+            "description": "Enter additional command line parameters to powershell.exe."
+          }
+        }
+      ]
+    }
+  ]
+}

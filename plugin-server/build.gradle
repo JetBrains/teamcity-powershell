@@ -29,6 +29,9 @@ teamcity {
             include 'Powershell.xml'
           }
          }
+     	into('ui-schemas') {
+          from("$rootDir/ui-schemas")
+         }
       }
 
       environments {
