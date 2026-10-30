@@ -7,7 +7,8 @@
       "label": "Working directory",
       "scope": "#/properties/working-directory",
       "options": {
-        "placeholder": "repository root"
+        "placeholder": "repository root",
+        "description": "Optional, set if differs from the checkout directory. [Learn more](https://www.jetbrains.com/help/teamcity/?Build+Working+Directory)."
       }
     },
     {
@@ -15,6 +16,7 @@
       "label": "Script",
       "scope": "#/properties/script-mode",
       "options": {
+        "description": "",
         "branches": {
           "file": {
             "type": "VerticalLayout",
@@ -79,7 +81,7 @@
           "label": "PowerShell version",
           "scope": "#/properties/min-required-version",
           "options": {
-            "description": "On Desktop edition the exact version will be used, on Core edition the lower bound version requirement will be added"
+            "description": "On Desktop edition the exact version will be used, on Core edition the lower bound version requirement will be added. [Learn more](https://www.jetbrains.com/help/teamcity/?powershell-version)."
           }
         },
         {
@@ -87,13 +89,16 @@
           "label": "Platform",
           "scope": "#/properties/platform",
           "options": {
-            "description": "If <Auto> is chosen, x64 will be preferred over x86 when both are available"
+            "description": "If <Auto> is chosen, x64 will be preferred over x86 when both are available. [Learn more](https://www.jetbrains.com/help/teamcity/?powershell-platform)."
           }
         },
         {
           "type": "Control",
           "label": "Edition",
-          "scope": "#/properties/edition"
+          "scope": "#/properties/edition",
+          "options": {
+            "description": "[Learn more](https://www.jetbrains.com/help/teamcity/?powershell-edition)."
+          }
         },
         {
           "type": "Control",
