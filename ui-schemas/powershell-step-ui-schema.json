@@ -63,7 +63,7 @@
       "scope": "#/properties/script-args",
       "options": {
         "multi": true,
-        "description": "Enter script arguments"
+        "description": ""
       },
       "rule": {
         "effect": "HIDE",
