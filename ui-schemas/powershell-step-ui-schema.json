@@ -62,8 +62,7 @@
       "label": "Script arguments",
       "scope": "#/properties/script-args",
       "options": {
-        "multi": true,
-        "description": ""
+        "multi": true
       },
       "rule": {
         "effect": "HIDE",
@@ -115,7 +114,7 @@
           "label": "Additional command line parameters",
           "scope": "#/properties/args",
           "options": {
-            "multi": true,
+            "resizable": true,
             "description": "Enter additional command line parameters to powershell.exe."
           }
         }
